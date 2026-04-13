@@ -18,15 +18,16 @@
               params[kv[0]] = kv[1];
             });
           var path = params["p"]
-            ? "/" + params["p"].replace(/~and~/g, "&")
+            ? params["p"].replace(/~and~/g, "&")
             : "";
           var search = params["q"]
             ? "?" + params["q"].replace(/~and~/g, "&")
             : "";
+          var base = window.location.pathname.replace(/\/$/, "");
           window.history.replaceState(
             null,
             "",
-            window.location.pathname + path + search + window.location.hash,
+            base + "/" + path + search + window.location.hash,
           );
         }
       })();
