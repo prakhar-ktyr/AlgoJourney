@@ -88,6 +88,23 @@ The client dev server proxies `/api` requests to the backend automatically.
 npm run build         # Builds the client to client/dist/
 ```
 
+### 5. Deploy frontend to GitHub Pages
+
+The client is configured for GitHub Pages deployment with clean SPA routing.
+
+**Automatic (CI):** Push to `main` and the GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) builds and deploys automatically. Enable GitHub Pages in your repo: Settings → Pages → Source: **GitHub Actions**.
+
+**Manual:**
+
+```bash
+cd client
+npm run deploy        # Builds with /AlgoJourney/ base path and deploys via gh-pages
+```
+
+Your site will be live at `https://prakhar-ktyr.github.io/AlgoJourney/`.
+
+> **Note:** Locally, `npm run dev` runs without the base path. The `/AlgoJourney/` prefix is only applied when `GITHUB_PAGES=true` (set automatically by the CI workflow and `build:ghpages` script).
+
 ## Running Tests
 
 ```bash
@@ -161,6 +178,17 @@ Health check endpoint. Returns:
   - **Tutorials** — CS fundamentals, web dev, databases
   - **AI & ML** — Neural networks, transformers, hands-on examples
   - **DSA Tracker** — Curated problem list with progress tracking
+
+### DSA Sheet Page (Client)
+
+- **Accordion layout** — All 18 topics displayed on a single page as expandable/collapsible sections (like takeuforward.org)
+- **Two-level dropdowns** — Click a topic to reveal subtopics; click a subtopic to reveal its problems table
+- **Multiple open sections** — Any number of steps and subtopics can be open simultaneously
+- **Per-step progress bars** — Each step header shows a progress bar and completion count
+- **Overall progress bar** — Tracks completion across all 455 problems
+- **Completion persistence** — Checked problems are saved to localStorage
+- **Problem links** — LeetCode and GeeksforGeeks links where available
+- **Difficulty indicators** — Color-coded Easy / Medium / Hard labels
 
 ### Server
 
@@ -316,6 +344,26 @@ Health check endpoint. Returns:
 | `Feature cards > DSA Tracker`  | Card icon + title + description present      |
 | `Feature cards > exactly 3`    | DOM contains exactly 3 feature card elements |
 
+### DSASheetPage Tests (`client/src/pages/DSASheetPage.test.jsx`) — 14 tests
+
+| Test                                               | What it verifies                                           |
+| -------------------------------------------------- | ---------------------------------------------------------- |
+| `renders the page title`                           | "A2Z DSA Sheet" heading displayed                          |
+| `shows the progress bar at 0%`                     | Progress shows 0/455                                       |
+| **Accordion – Step headers**                       |                                                            |
+| `renders all step headers on one page`             | Accordion container + representative step titles present   |
+| `shows progress count on each step header`         | Step 1 header shows completion count (0/N)                 |
+| `all steps are collapsed by default`               | No subtopics or problems visible on initial render         |
+| **Accordion – Expanding steps**                    |                                                            |
+| `clicking a step expands its subtopics`            | Step 1 subtopics appear after click                        |
+| `clicking an expanded step collapses it`           | Subtopics disappear after second click                     |
+| `multiple steps can be open simultaneously`        | Steps 1 and 2 can both be expanded at the same time        |
+| **Accordion – Expanding subtopics (problems)**     |                                                            |
+| `clicking a subtopic reveals its problems table`   | Problems like "User Input / Output" appear                 |
+| `can check a problem as completed`                 | Checkbox toggles completion, progress updates to 1/455     |
+| `shows difficulty labels with color`               | Easy/Medium/Hard labels rendered                           |
+| `clicking a subtopic again collapses the problems` | Problems disappear after second click on the same subtopic |
+
 ## Adding New Features
 
 When adding a new feature, follow this checklist:
@@ -338,6 +386,13 @@ When adding a new feature, follow this checklist:
 | `npm run test:client` | Run client tests only                  |
 | `npm run test:watch`  | Run all tests in watch mode            |
 | `npm run install:all` | Install deps in both server + client   |
+
+### Client-only Scripts (run from `client/`)
+
+| Command                 | Description                                         |
+| ----------------------- | --------------------------------------------------- |
+| `npm run build:ghpages` | Build with GitHub Pages base path (`/AlgoJourney/`) |
+| `npm run deploy`        | Build and deploy to GitHub Pages via `gh-pages`     |
 
 ## License
 
