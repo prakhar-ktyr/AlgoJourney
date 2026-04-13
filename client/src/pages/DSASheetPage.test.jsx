@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import DSASheetPage from "./DSASheetPage";
@@ -14,9 +14,7 @@ const renderPage = () =>
 describe("DSASheetPage", () => {
   it("renders the page title", () => {
     renderPage();
-    expect(
-      screen.getByText("Striver's A2Z DSA Sheet"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("A2Z DSA Sheet")).toBeInTheDocument();
   });
 
   it("shows the progress bar at 0%", () => {
@@ -24,56 +22,121 @@ describe("DSASheetPage", () => {
     expect(screen.getByText(/0\/455/)).toBeInTheDocument();
   });
 
-  it("renders step and difficulty filter dropdowns", () => {
-    renderPage();
-    expect(screen.getByLabelText("Filter by step")).toBeInTheDocument();
-    expect(screen.getByLabelText("Filter by difficulty")).toBeInTheDocument();
+  describe("Accordion – Step headers", () => {
+    it("renders all step headers on one page", () => {
+      renderPage();
+      const accordion = screen.getByTestId("steps-accordion");
+      expect(accordion).toBeInTheDocument();
+      expect(screen.getByText("Learn the basics")).toBeInTheDocument();
+      expect(
+        screen.getByText("Learn Important Sorting Techniques"),
+      ).toBeInTheDocument();
+      expect(screen.getByText(/Solve Problems on Arrays/)).toBeInTheDocument();
+    });
+
+    it("shows progress count on each step header", () => {
+      renderPage();
+      const step1 = screen.getByLabelText(/Step 1: Learn the basics/);
+      expect(step1).toHaveTextContent(/0\/\d+/);
+    });
+
+    it("all steps are collapsed by default", () => {
+      renderPage();
+      expect(screen.queryByTestId("step-1-subtopics")).not.toBeInTheDocument();
+      expect(screen.queryByText("User Input / Output")).not.toBeInTheDocument();
+    });
   });
 
-  it("renders problems from the Striver sheet in the table", () => {
-    renderPage();
-    expect(screen.getByText("User Input / Output")).toBeInTheDocument();
+  describe("Accordion – Expanding steps", () => {
+    it("clicking a step expands its subtopics", async () => {
+      const user = userEvent.setup();
+      renderPage();
+      await user.click(screen.getByLabelText(/Step 1: Learn the basics/));
+      expect(screen.getByTestId("step-1-subtopics")).toBeInTheDocument();
+      expect(
+        screen.getByText("Things to Know in C++/Java/Python or any language"),
+      ).toBeInTheDocument();
+      expect(screen.getByText("Build-up Logical Thinking")).toBeInTheDocument();
+    });
+
+    it("clicking an expanded step collapses it", async () => {
+      const user = userEvent.setup();
+      renderPage();
+      const stepBtn = screen.getByLabelText(/Step 1: Learn the basics/);
+      await user.click(stepBtn);
+      expect(screen.getByTestId("step-1-subtopics")).toBeInTheDocument();
+      await user.click(stepBtn);
+      expect(screen.queryByTestId("step-1-subtopics")).not.toBeInTheDocument();
+    });
+
+    it("multiple steps can be open simultaneously", async () => {
+      const user = userEvent.setup();
+      renderPage();
+      await user.click(screen.getByLabelText(/Step 1: Learn the basics/));
+      await user.click(
+        screen.getByLabelText(/Step 2: Learn Important Sorting Techniques/),
+      );
+      expect(screen.getByTestId("step-1-subtopics")).toBeInTheDocument();
+      expect(screen.getByTestId("step-2-subtopics")).toBeInTheDocument();
+    });
   });
 
-  it("shows difficulty labels with color", () => {
-    renderPage();
-    const easyElements = screen.getAllByText("Easy");
-    expect(easyElements.length).toBeGreaterThan(0);
-  });
+  describe("Accordion – Expanding subtopics (problems)", () => {
+    it("clicking a subtopic reveals its problems table", async () => {
+      const user = userEvent.setup();
+      renderPage();
+      await user.click(screen.getByLabelText(/Step 1: Learn the basics/));
+      await user.click(
+        screen.getByLabelText(
+          "Things to Know in C++/Java/Python or any language",
+        ),
+      );
+      expect(screen.getByText("User Input / Output")).toBeInTheDocument();
+      expect(screen.getByText("Data Types")).toBeInTheDocument();
+    });
 
-  it("can check a problem as completed", async () => {
-    const user = userEvent.setup();
-    renderPage();
-    const checkbox = screen.getByLabelText(
-      "Mark User Input / Output as completed",
-    );
-    expect(checkbox).not.toBeChecked();
-    await user.click(checkbox);
-    expect(checkbox).toBeChecked();
-    expect(screen.getByText(/1\/455/)).toBeInTheDocument();
-  });
+    it("can check a problem as completed", async () => {
+      const user = userEvent.setup();
+      renderPage();
+      await user.click(screen.getByLabelText(/Step 1: Learn the basics/));
+      await user.click(
+        screen.getByLabelText(
+          "Things to Know in C++/Java/Python or any language",
+        ),
+      );
+      const checkbox = screen.getByLabelText(
+        "Mark User Input / Output as completed",
+      );
+      expect(checkbox).not.toBeChecked();
+      await user.click(checkbox);
+      expect(checkbox).toBeChecked();
+      expect(screen.getByText(/1\/455/)).toBeInTheDocument();
+    });
 
-  it("can filter by difficulty", async () => {
-    const user = userEvent.setup();
-    renderPage();
-    const diffSelect = screen.getByLabelText("Filter by difficulty");
-    await user.selectOptions(diffSelect, "Hard");
-    // Basic problem shouldn't show under Hard
-    expect(
-      screen.queryByText("User Input / Output"),
-    ).not.toBeInTheDocument();
-  });
+    it("shows difficulty labels with color", async () => {
+      const user = userEvent.setup();
+      renderPage();
+      await user.click(screen.getByLabelText(/Step 1: Learn the basics/));
+      await user.click(
+        screen.getByLabelText(
+          "Things to Know in C++/Java/Python or any language",
+        ),
+      );
+      const easyElements = screen.getAllByText("Easy");
+      expect(easyElements.length).toBeGreaterThan(0);
+    });
 
-  it("shows empty message when no problems match filter", async () => {
-    const user = userEvent.setup();
-    renderPage();
-    // Select a step + difficulty combo that yields no results
-    const stepSelect = screen.getByLabelText("Filter by step");
-    await user.selectOptions(stepSelect, "1");
-    const diffSelect = screen.getByLabelText("Filter by difficulty");
-    await user.selectOptions(diffSelect, "Hard");
-    expect(
-      screen.getByText("No problems match the selected filters."),
-    ).toBeInTheDocument();
+    it("clicking a subtopic again collapses the problems", async () => {
+      const user = userEvent.setup();
+      renderPage();
+      await user.click(screen.getByLabelText(/Step 1: Learn the basics/));
+      const subBtn = screen.getByLabelText(
+        "Things to Know in C++/Java/Python or any language",
+      );
+      await user.click(subBtn);
+      expect(screen.getByText("User Input / Output")).toBeInTheDocument();
+      await user.click(subBtn);
+      expect(screen.queryByText("User Input / Output")).not.toBeInTheDocument();
+    });
   });
 });

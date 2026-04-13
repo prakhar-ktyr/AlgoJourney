@@ -7,7 +7,7 @@ const renderApp = (route = "/") =>
   render(
     <MemoryRouter initialEntries={[route]}>
       <App />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
 describe("App routing & layout", () => {
@@ -38,7 +38,7 @@ describe("App routing & layout", () => {
 
   it("renders DSASheetPage at /dsa-sheet", () => {
     renderApp("/dsa-sheet");
-    expect(screen.getByText("DSA Tracking Sheet")).toBeInTheDocument();
+    expect(screen.getByText("A2Z DSA Sheet")).toBeInTheDocument();
   });
 
   it("renders AboutPage at /about", () => {
