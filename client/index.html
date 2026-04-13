@@ -5,6 +5,32 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AlgoJourney — Learn CS &amp; AI</title>
+    <!-- GitHub Pages SPA: restore real URL from 404.html redirect -->
+    <script>
+      (function () {
+        var q = window.location.search;
+        if (q.length > 2 && q.indexOf("p=") !== -1) {
+          var params = {};
+          q.slice(1)
+            .split("&")
+            .forEach(function (s) {
+              var kv = s.split("=");
+              params[kv[0]] = kv[1];
+            });
+          var path = params["p"]
+            ? "/" + params["p"].replace(/~and~/g, "&")
+            : "";
+          var search = params["q"]
+            ? "?" + params["q"].replace(/~and~/g, "&")
+            : "";
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname + path + search + window.location.hash,
+          );
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
