@@ -21,7 +21,8 @@ const STRIVERS_SHEET = [
             title: "Data Types",
             difficulty: "Easy",
             lcLink: null,
-            gfgLink: "https://bit.ly/3Dqmgvx",
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/data-type_8357232",
           },
           {
             id: 3,
