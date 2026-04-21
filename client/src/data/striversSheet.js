@@ -14,7 +14,10 @@ const STRIVERS_SHEET = [
             title: "User Input / Output",
             difficulty: "Easy",
             lcLink: null,
-            gfgLink: "https://practice.geeksforgeeks.org/problems/search-query-auto-complete/0?category%5B%5D=Strings&category%5B%5D=Strings&problemStatus=unsolved&difficulty%5B%5D=2&page=1&query=category%5B%5DStringsproblemStatusunsolveddifficulty%5B%5D2page1category%5B%5DStr",
+            gfgLink: {
+              "C++": "https://www.geeksforgeeks.org/problems/c-input-output2432/1",
+              "Java": "https://www.geeksforgeeks.org/problems/java-inputoutput0118/1",
+            },
           },
           {
             id: 2,

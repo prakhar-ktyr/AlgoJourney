@@ -59,12 +59,28 @@ npm run install:all
 
 ### 2. Configure environment
 
-The server uses a `.env` file at `server/.env`:
+Copy the example file and fill in real values:
+
+```bash
+cp server/.env.example server/.env
+```
+
+The server reads:
 
 ```env
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/algojourney
 NODE_ENV=development
+CLIENT_URL=                       # required only when NODE_ENV=production (CORS origin)
+```
+
+The client optionally reads `VITE_API_BASE_URL` at build time. Leave unset for local
+development (the Vite dev server proxies `/api/*` to the Express server). Set it for
+production deployments where there is no proxy:
+
+```bash
+# client/.env.production (or pass inline at build time)
+VITE_API_BASE_URL=https://api.example.com
 ```
 
 Update `MONGODB_URI` if your MongoDB instance runs elsewhere (e.g., MongoDB Atlas).

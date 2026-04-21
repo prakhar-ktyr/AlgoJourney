@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import STRIVERS_SHEET from "../data/striversSheet";
 
 /* Compact platform icons (16×16 inline SVGs) */
@@ -34,6 +34,77 @@ const DIFF_COLORS = {
   Medium: "text-amber-400",
   Hard: "text-red-400",
 };
+
+/** Badge with a dropdown for language-specific links */
+function MultiLinkBadge({ links, icon, label, className, title }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClick = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
+
+  return (
+    <span ref={ref} className="relative inline-flex">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded transition cursor-pointer ${className}`}
+        title={title}
+        aria-expanded={open}
+        aria-label={`${title} language links`}
+      >
+        {icon} {label} <span className="text-[10px] ml-0.5">▾</span>
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 mt-1 z-20 bg-gray-900 border border-gray-700 rounded shadow-lg min-w-[100px]">
+          {Object.entries(links).map(([lang, url]) => (
+            <a
+              key={lang}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block px-3 py-1.5 text-xs text-gray-300 hover:bg-gray-800 hover:text-white transition first:rounded-t last:rounded-b"
+            >
+              {lang}
+            </a>
+          ))}
+        </div>
+      )}
+    </span>
+  );
+}
+
+/** Renders a platform link — handles both string URL and object (multi-language) */
+function PlatformLink({ link, icon, label, className, title }) {
+  if (!link) return null;
+  if (typeof link === "object") {
+    return (
+      <MultiLinkBadge
+        links={link}
+        icon={icon}
+        label={label}
+        className={className}
+        title={title}
+      />
+    );
+  }
+  return (
+    <a
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded transition ${className}`}
+      title={title}
+    >
+      {icon} {label}
+    </a>
+  );
+}
 
 /** Flatten all problems for total count / progress */
 function flattenProblems(sheet) {
@@ -275,39 +346,27 @@ export default function DSASheetPage() {
                                     </td>
                                     <td className="px-3 py-2.5 text-center">
                                       <div className="flex items-center justify-center gap-2">
-                                        {p.lcLink && (
-                                          <a
-                                            href={p.lcLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-amber-900/40 text-amber-400 hover:bg-amber-900/70 transition"
-                                            title="LeetCode"
-                                          >
-                                            <LCIcon /> LC
-                                          </a>
-                                        )}
-                                        {p.gfgLink && (
-                                          <a
-                                            href={p.gfgLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-green-900/40 text-green-400 hover:bg-green-900/70 transition"
-                                            title="GeeksforGeeks"
-                                          >
-                                            <GFGIcon /> GFG
-                                          </a>
-                                        )}
-                                        {p.cnLink && (
-                                          <a
-                                            href={p.cnLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-orange-900/40 text-orange-400 hover:bg-orange-900/70 transition"
-                                            title="Coding Ninjas"
-                                          >
-                                            <CNIcon /> CN
-                                          </a>
-                                        )}
+                                        <PlatformLink
+                                          link={p.lcLink}
+                                          icon={<LCIcon />}
+                                          label="LC"
+                                          className="bg-amber-900/40 text-amber-400 hover:bg-amber-900/70"
+                                          title="LeetCode"
+                                        />
+                                        <PlatformLink
+                                          link={p.gfgLink}
+                                          icon={<GFGIcon />}
+                                          label="GFG"
+                                          className="bg-green-900/40 text-green-400 hover:bg-green-900/70"
+                                          title="GeeksforGeeks"
+                                        />
+                                        <PlatformLink
+                                          link={p.cnLink}
+                                          icon={<CNIcon />}
+                                          label="CN"
+                                          className="bg-orange-900/40 text-orange-400 hover:bg-orange-900/70"
+                                          title="Coding Ninjas"
+                                        />
                                         {!p.lcLink && !p.gfgLink && !p.cnLink && (
                                           <span className="text-gray-600 text-xs">
                                             —
