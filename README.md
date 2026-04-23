@@ -204,6 +204,7 @@ Health check endpoint. Returns:
 - **Overall progress bar** — Tracks completion across all 455 problems
 - **Completion persistence** — Checked problems are saved to localStorage
 - **Problem links** — LeetCode and GeeksforGeeks links where available
+- **Resource column** — Per-problem "📘 Notes" link to an in-app course material page (`/dsa-sheet/problem/:slug`) with overview, concepts, approach, complexity, and a reference solution. The page has a language selector at the top (C++ / Java / Python / JavaScript) that swaps every code snippet; the choice persists in `localStorage` under `preferred-language`. Each code snippet has a one-click **Copy** button. Course content lives as Markdown files under [client/src/data/resources/](client/src/data/resources/) — one `<id>-<slug>.md` per problem with YAML frontmatter (`id`, `time`, `space`, `concepts`) and `## Overview` / `## Approach` / `## Solution` sections; solutions are authored as fenced code blocks tagged ` ```cpp `, ` ```java `, ` ```python `, ` ```javascript ` and loaded via Vite's `import.meta.glob`.
 - **Difficulty indicators** — Color-coded Easy / Medium / Hard labels
 
 ### Server
