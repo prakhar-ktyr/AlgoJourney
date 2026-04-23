@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import TutorialsPage from "./pages/TutorialsPage";
 import TopicPage from "./pages/TopicPage";
 import DSASheetPage from "./pages/DSASheetPage";
+import ProblemResourcePage from "./pages/ProblemResourcePage";
 import AboutPage from "./pages/AboutPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/tutorials" element={<TutorialsPage />} />
           <Route path="/tutorials/:slug" element={<TopicPage />} />
           <Route path="/dsa-sheet" element={<DSASheetPage />} />
+          <Route path="/dsa-sheet/problem/:slug" element={<ProblemResourcePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

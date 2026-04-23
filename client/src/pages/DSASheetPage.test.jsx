@@ -108,6 +108,16 @@ describe("DSASheetPage", () => {
       expect(easyElements.length).toBeGreaterThan(0);
     });
 
+    it("renders a Resource notes link for each problem", async () => {
+      const user = userEvent.setup();
+      renderPage();
+      await user.click(screen.getByLabelText(/Step 1: Learn the basics/));
+      await user.click(screen.getByLabelText("Things to Know in C++/Java/Python or any language"));
+      const link = screen.getByLabelText("Open course material for User Input / Output");
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", "/dsa-sheet/problem/1-user-input-output");
+    });
+
     it("clicking a subtopic again collapses the problems", async () => {
       const user = userEvent.setup();
       renderPage();
