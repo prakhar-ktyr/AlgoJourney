@@ -33,6 +33,7 @@ const STRIVERS_SHEET = [
             difficulty: "Easy",
             lcLink: null,
             gfgLink: "https://practice.geeksforgeeks.org/problems/java-if-else-decision-making0924/0?category%5B%5D=Java&category%5B%5D=Java&difficulty%5B%5D=-2&page=1&query=category%5B%5DJavadifficulty%5B%5D-2page1category%5B%5DJava",
+            cnLink: "https://www.naukri.com/code360/problems/if-else-decision-making_8357235",
           },
           {
             id: 4,

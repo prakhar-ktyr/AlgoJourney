@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import DSASheetPage from "./DSASheetPage";
@@ -116,6 +116,20 @@ describe("DSASheetPage", () => {
       const link = screen.getByLabelText("Open course material for User Input / Output");
       expect(link).toBeInTheDocument();
       expect(link).toHaveAttribute("href", "/dsa-sheet/problem/1-user-input-output");
+    });
+
+    it("renders the Coding Ninjas link for If Else statements", async () => {
+      const user = userEvent.setup();
+      renderPage();
+      await user.click(screen.getByLabelText(/Step 1: Learn the basics/));
+      await user.click(screen.getByLabelText("Things to Know in C++/Java/Python or any language"));
+      const row = screen.getByText("If Else statements").closest("tr");
+      expect(row).not.toBeNull();
+      const link = within(row).getByRole("link", { name: "CN" });
+      expect(link).toHaveAttribute(
+        "href",
+        "https://www.naukri.com/code360/problems/if-else-decision-making_8357235",
+      );
     });
 
     it("clicking a subtopic again collapses the problems", async () => {
