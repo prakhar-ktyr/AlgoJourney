@@ -111,8 +111,10 @@
  *   JavaScript   javascript, js
  *
  *   Only the four languages above appear in the language selector.
- *   You don't have to include all four — omitting one causes the UI to show
- *   "A <lang> solution hasn't been written yet."
+ *   You don't have to include all four — omitting one language causes the UI
+ *   to show "A <lang> solution hasn't been written yet."
+ *   Omitting the ## Solution section entirely (or including no code fences)
+ *   hides the Solution heading completely — no fallback message is shown.
  *
  * -----------------------------------------------------------------------------
  * INLINE MARKDOWN (supported in Overview, Approach, Concepts body text)
@@ -123,6 +125,11 @@
  *   `inline code`
  *   **`bold + inline code`**       ← nesting is supported
  *   **`fn()` (label):**            ← bold wrapping code + plain text
+ *
+ *   Markdown headings (rendered as styled <h1>–<h6> elements):
+ *
+ *     ### What is an Array?
+ *     #### Sub-heading
  *
  *   Fenced code blocks inside prose sections (e.g. inside ## Approach):
  *

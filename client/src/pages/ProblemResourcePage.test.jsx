@@ -61,9 +61,15 @@ describe("ProblemResourcePage", () => {
   });
 
   it("shows a coming-soon placeholder for problems without resources yet", () => {
-    renderAt("5-what-are-arrays-strings");
+    renderAt("7-while-loops");
     expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
     expect(screen.getByTestId("language-selector")).toBeInTheDocument();
+  });
+
+  it("treats complexity and solution as optional when absent", () => {
+    renderAt("5-what-are-arrays-strings");
+    expect(screen.queryByRole("heading", { name: "Complexity" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Solution" })).not.toBeInTheDocument();
   });
 
   it("shows a not-found message for unknown slugs", () => {

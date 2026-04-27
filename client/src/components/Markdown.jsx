@@ -4,11 +4,12 @@ import CodeBlock from "./CodeBlock";
 /**
  * Lightweight markdown renderer for the small subset of markdown we author
  * inside problem resource files: paragraphs, unordered/ordered lists, inline
- * `code`, **bold**, *emphasis*, and fenced ```code blocks. Fenced blocks are
+ * `code`, **bold**, *emphasis*, markdown headings, and fenced ```code blocks.
+ * Fenced blocks are
  * rendered through the shared CodeBlock component so they look consistent
  * with the dedicated reference-solution snippet.
  *
- * This is intentionally minimal — no link/image/table/heading support — to
+ * This is intentionally minimal — no link/image/table support — to
  * keep the bundle small and the parser predictable. If we need richer
  * formatting later we can swap this out for `react-markdown`.
  */
@@ -50,6 +51,18 @@ function parseBlocks(text) {
       continue;
     }
 
+    // Markdown heading (### Title).
+    const heading = line.match(/^(#{1,6})\s+(.*)$/);
+    if (heading) {
+      blocks.push({
+        type: "heading",
+        level: Math.min(heading[1].length, 6),
+        text: heading[2].trim(),
+      });
+      i++;
+      continue;
+    }
+
     // List (- or * or 1.) — collect contiguous list items.
     const listMarker = line.match(/^(\s*)([-*]|\d+\.)\s+(.*)$/);
     if (listMarker) {
@@ -86,6 +99,7 @@ function parseBlocks(text) {
       if (
         !next.trim() ||
         /^```/.test(next) ||
+        /^(#{1,6})\s+/.test(next) ||
         /^(\s*)([-*]|\d+\.)\s+/.test(next)
       ) {
         break;
@@ -121,6 +135,22 @@ function renderBlock(block, key) {
           </li>
         ))}
       </Tag>
+    );
+  }
+  if (block.type === "heading") {
+    const HeadingTag = `h${block.level}`;
+    const HEADING_CLASS = {
+      1: "text-3xl font-bold text-white",
+      2: "text-2xl font-semibold text-white",
+      3: "text-xl font-semibold text-white",
+      4: "text-lg font-semibold text-white",
+      5: "text-base font-semibold text-white",
+      6: "text-sm font-semibold text-white uppercase tracking-wide",
+    };
+    return (
+      <HeadingTag key={key} className={HEADING_CLASS[block.level]}>
+        {renderInline(block.text)}
+      </HeadingTag>
     );
   }
   return (

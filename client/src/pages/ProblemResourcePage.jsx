@@ -75,6 +75,7 @@ export default function ProblemResourcePage() {
   const resource = getProblemResource(problem.id);
   const resolved = resolveProblemResource(problem.id, language);
   const solution = resolved?.solution;
+  const hasAnySolution = (resolved?.availableLanguages?.length ?? 0) > 0;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
@@ -163,17 +164,19 @@ export default function ProblemResourcePage() {
               </section>
             )}
 
-          <section>
-            <h2 className="text-xl font-semibold text-white mb-3">Solution</h2>
-            {solution ? (
-              <CodeBlock code={solution} language={language} testId="solution-code" />
-            ) : (
-              <p className="text-gray-400 italic">
-                A {language} solution for this problem hasn&apos;t been written yet. Try another
-                language above.
-              </p>
-            )}
-          </section>
+          {hasAnySolution && (
+            <section>
+              <h2 className="text-xl font-semibold text-white mb-3">Solution</h2>
+              {solution ? (
+                <CodeBlock code={solution} language={language} testId="solution-code" />
+              ) : (
+                <p className="text-gray-400 italic">
+                  A {language} solution for this problem hasn&apos;t been written yet. Try another
+                  language above.
+                </p>
+              )}
+            </section>
+          )}
         </article>
       ) : (
         <div className="rounded-xl border border-gray-800 bg-gray-900/60 p-8">
