@@ -1,7 +1,19 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import STRIVERS_SHEET from "../data/striversSheet";
 import { problemSlug } from "../lib/slugify";
+
+const SHEET_VIEW_STATE_KEY = "dsa-sheet-view-state";
+
+function loadViewState() {
+  try {
+    const raw = sessionStorage.getItem(SHEET_VIEW_STATE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
 
 /* Compact platform icons (16×16 inline SVGs) */
 const LCIcon = () => (
@@ -152,8 +164,12 @@ function countStepProblems(step) {
 const ALL_PROBLEMS = flattenProblems(STRIVERS_SHEET);
 
 export default function DSASheetPage() {
-  const [openSteps, setOpenSteps] = useState(new Set());
-  const [openSubSteps, setOpenSubSteps] = useState(new Set());
+  const [openSteps, setOpenSteps] = useState(
+    () => new Set(loadViewState()?.openSteps ?? []),
+  );
+  const [openSubSteps, setOpenSubSteps] = useState(
+    () => new Set(loadViewState()?.openSubSteps ?? []),
+  );
   const [completed, setCompleted] = useState(() => {
     try {
       const saved = localStorage.getItem("dsa-sheet-completed");
@@ -162,6 +178,54 @@ export default function DSASheetPage() {
       return new Set();
     }
   });
+
+  // Persist accordion open/closed state across navigations within the session.
+  useEffect(() => {
+    try {
+      const prev = loadViewState() ?? {};
+      sessionStorage.setItem(
+        SHEET_VIEW_STATE_KEY,
+        JSON.stringify({
+          ...prev,
+          openSteps: [...openSteps],
+          openSubSteps: [...openSubSteps],
+        }),
+      );
+    } catch {
+      /* ignore quota / disabled storage */
+    }
+  }, [openSteps, openSubSteps]);
+
+  // Save scroll position so we can restore it when returning to this page.
+  useEffect(() => {
+    const saveScroll = () => {
+      try {
+        const prev = loadViewState() ?? {};
+        sessionStorage.setItem(
+          SHEET_VIEW_STATE_KEY,
+          JSON.stringify({ ...prev, scrollY: window.scrollY }),
+        );
+      } catch {
+        /* ignore */
+      }
+    };
+    window.addEventListener("scroll", saveScroll, { passive: true });
+    window.addEventListener("beforeunload", saveScroll);
+    return () => {
+      saveScroll();
+      window.removeEventListener("scroll", saveScroll);
+      window.removeEventListener("beforeunload", saveScroll);
+    };
+  }, []);
+
+  // Restore scroll position after the accordion content has been rendered.
+  useLayoutEffect(() => {
+    const saved = loadViewState();
+    if (saved && typeof saved.scrollY === "number") {
+      window.scrollTo(0, saved.scrollY);
+    }
+    // Only run on mount; open state is restored synchronously above.
+  }, []);
 
   const toggleStep = (stepNo) => {
     setOpenSteps((prev) => {
