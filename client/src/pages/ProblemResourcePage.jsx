@@ -46,6 +46,11 @@ export default function ProblemResourcePage() {
   const match = useMemo(() => findProblemBySlug(slug), [slug]);
   const [language, setLanguage] = useState(readStoredLanguage);
 
+  // Always start the resource page from the top when navigating in.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
+
   useEffect(() => {
     try {
       localStorage.setItem(LANG_STORAGE_KEY, language);

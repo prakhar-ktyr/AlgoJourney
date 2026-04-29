@@ -343,6 +343,14 @@ function buildResource(raw, path) {
   const id = Number(meta.id ?? idFromPath?.[1]);
   if (!Number.isFinite(id)) return null;
 
+  // Treat empty placeholder files (no frontmatter, no sections) as if no
+  // resource has been authored yet — the UI then shows the "coming soon"
+  // state instead of a blank page.
+  const hasMeta = Object.keys(meta).length > 0;
+  const hasSections =
+    Object.keys(generic).length > 0 || Object.keys(byLang).length > 0;
+  if (!hasMeta && !hasSections) return null;
+
   const fallbackComplexity = parseComplexitySection(generic.complexity) || {};
   const complexity = {
     time: (typeof meta.time === "string" ? meta.time : null) || fallbackComplexity.time || null,
