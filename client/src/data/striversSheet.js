@@ -127,8 +127,8 @@ const STRIVERS_SHEET = [
             id: 14,
             title: "Reverse a Number",
             difficulty: "Easy",
-            lcLink: "https://leetcode.com/problems/reverse-integer/",
-            gfgLink: "https://practice.geeksforgeeks.org/problems/reverse-bits3556/1",
+            // lcLink: "https://leetcode.com/problems/reverse-integer/",
+            gfgLink: "https://www.geeksforgeeks.org/problems/reverse-digit0316/1",
           },
           {
             id: 15,
