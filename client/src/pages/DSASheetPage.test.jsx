@@ -24,7 +24,7 @@ describe("DSASheetPage", () => {
 
   it("shows the progress bar at 0%", () => {
     renderPage();
-    expect(screen.getByText(/0\/455/)).toBeInTheDocument();
+    expect(screen.getByText(/0\/454/)).toBeInTheDocument();
   });
 
   describe("Accordion – Step headers", () => {
@@ -101,7 +101,7 @@ describe("DSASheetPage", () => {
       expect(checkbox).not.toBeChecked();
       await user.click(checkbox);
       expect(checkbox).toBeChecked();
-      expect(screen.getByText(/1\/455/)).toBeInTheDocument();
+      expect(screen.getByText(/1\/454/)).toBeInTheDocument();
     });
 
     it("shows difficulty labels with color", async () => {
@@ -120,7 +120,7 @@ describe("DSASheetPage", () => {
       await user.click(screen.getByLabelText("Things to Know in C++/Java/Python or any language"));
       const link = screen.getByLabelText("Open course material for User Input / Output");
       expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute("href", "/dsa-sheet/problem/1-user-input-output");
+      expect(link).toHaveAttribute("href", "/dsa-sheet/problem/user-input-output");
     });
 
     it("renders the Coding Ninjas link for If Else statements", async () => {

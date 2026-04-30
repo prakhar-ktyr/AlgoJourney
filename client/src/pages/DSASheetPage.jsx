@@ -150,7 +150,7 @@ function countStepCompleted(step, completed) {
   let count = 0;
   for (const sub of step.subSteps) {
     for (const p of sub.problems) {
-      if (completed.has(p.id)) count++;
+      if (completed.has(problemSlug(p))) count++;
     }
   }
   return count;
@@ -260,11 +260,11 @@ export default function DSASheetPage() {
     });
   };
 
-  const toggleCompleted = (id) => {
+  const toggleCompleted = (slug) => {
     setCompleted((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
       localStorage.setItem("dsa-sheet-completed", JSON.stringify([...next]));
       return next;
     });
@@ -350,7 +350,9 @@ export default function DSASheetPage() {
                   {step.subSteps.map((sub) => {
                     const subKey = `${step.stepNo}-${sub.subStepNo}`;
                     const isSubOpen = openSubSteps.has(subKey);
-                    const subDone = sub.problems.filter((p) => completed.has(p.id)).length;
+                    const subDone = sub.problems.filter((p) =>
+                      completed.has(problemSlug(p)),
+                    ).length;
                     const subTotal = sub.problems.length;
 
                     return (
@@ -393,76 +395,78 @@ export default function DSASheetPage() {
                                 </tr>
                               </thead>
                               <tbody>
-                                {sub.problems.map((p) => (
-                                  <tr
-                                    key={p.id}
-                                    className="border-t border-gray-800/40 hover:bg-gray-900/30 transition"
-                                  >
-                                    <td className="px-5 py-2.5 pl-14">
-                                      <input
-                                        type="checkbox"
-                                        checked={completed.has(p.id)}
-                                        onChange={() => toggleCompleted(p.id)}
-                                        className="accent-emerald-500 w-4 h-4 cursor-pointer"
-                                        aria-label={`Mark ${p.title} as completed`}
-                                      />
-                                    </td>
-                                    <td className="px-3 py-2.5">
-                                      <span
-                                        className={
-                                          completed.has(p.id)
-                                            ? "line-through text-gray-500"
-                                            : "text-white"
-                                        }
-                                      >
-                                        {p.title}
-                                      </span>
-                                    </td>
-                                    <td
-                                      className={`px-3 py-2.5 font-medium ${DIFF_COLORS[p.difficulty]}`}
+                                {sub.problems.map((p) => {
+                                  const slug = problemSlug(p);
+                                  const isDone = completed.has(slug);
+                                  return (
+                                    <tr
+                                      key={slug}
+                                      className="border-t border-gray-800/40 hover:bg-gray-900/30 transition"
                                     >
-                                      {p.difficulty}
-                                    </td>
-                                    <td className="px-3 py-2.5 text-center">
-                                      <div className="flex items-center justify-center gap-2">
-                                        <PlatformLink
-                                          link={p.lcLink}
-                                          icon={<LCIcon />}
-                                          label="LC"
-                                          className="bg-amber-900/40 text-amber-400 hover:bg-amber-900/70"
-                                          title="LeetCode"
+                                      <td className="px-5 py-2.5 pl-14">
+                                        <input
+                                          type="checkbox"
+                                          checked={isDone}
+                                          onChange={() => toggleCompleted(slug)}
+                                          className="accent-emerald-500 w-4 h-4 cursor-pointer"
+                                          aria-label={`Mark ${p.title} as completed`}
                                         />
-                                        <PlatformLink
-                                          link={p.gfgLink}
-                                          icon={<GFGIcon />}
-                                          label="GFG"
-                                          className="bg-green-900/40 text-green-400 hover:bg-green-900/70"
-                                          title="GeeksforGeeks"
-                                        />
-                                        <PlatformLink
-                                          link={p.cnLink}
-                                          icon={<CNIcon />}
-                                          label="CN"
-                                          className="bg-orange-900/40 text-orange-400 hover:bg-orange-900/70"
-                                          title="Coding Ninjas"
-                                        />
-                                        {!p.lcLink && !p.gfgLink && !p.cnLink && (
-                                          <span className="text-gray-600 text-xs">—</span>
-                                        )}
-                                      </div>
-                                    </td>
-                                    <td className="px-3 py-2.5 text-center">
-                                      <Link
-                                        to={`/dsa-sheet/problem/${problemSlug(p)}`}
-                                        className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-indigo-900/40 text-indigo-300 hover:bg-indigo-900/70 transition"
-                                        title={`Course material for ${p.title}`}
-                                        aria-label={`Open course material for ${p.title}`}
+                                      </td>
+                                      <td className="px-3 py-2.5">
+                                        <span
+                                          className={
+                                            isDone ? "line-through text-gray-500" : "text-white"
+                                          }
+                                        >
+                                          {p.title}
+                                        </span>
+                                      </td>
+                                      <td
+                                        className={`px-3 py-2.5 font-medium ${DIFF_COLORS[p.difficulty]}`}
                                       >
-                                        📘 Notes
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                ))}
+                                        {p.difficulty}
+                                      </td>
+                                      <td className="px-3 py-2.5 text-center">
+                                        <div className="flex items-center justify-center gap-2">
+                                          <PlatformLink
+                                            link={p.lcLink}
+                                            icon={<LCIcon />}
+                                            label="LC"
+                                            className="bg-amber-900/40 text-amber-400 hover:bg-amber-900/70"
+                                            title="LeetCode"
+                                          />
+                                          <PlatformLink
+                                            link={p.gfgLink}
+                                            icon={<GFGIcon />}
+                                            label="GFG"
+                                            className="bg-green-900/40 text-green-400 hover:bg-green-900/70"
+                                            title="GeeksforGeeks"
+                                          />
+                                          <PlatformLink
+                                            link={p.cnLink}
+                                            icon={<CNIcon />}
+                                            label="CN"
+                                            className="bg-orange-900/40 text-orange-400 hover:bg-orange-900/70"
+                                            title="Coding Ninjas"
+                                          />
+                                          {!p.lcLink && !p.gfgLink && !p.cnLink && (
+                                            <span className="text-gray-600 text-xs">—</span>
+                                          )}
+                                        </div>
+                                      </td>
+                                      <td className="px-3 py-2.5 text-center">
+                                        <Link
+                                          to={`/dsa-sheet/problem/${problemSlug(p)}`}
+                                          className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-indigo-900/40 text-indigo-300 hover:bg-indigo-900/70 transition"
+                                          title={`Course material for ${p.title}`}
+                                          aria-label={`Open course material for ${p.title}`}
+                                        >
+                                          📘 Notes
+                                        </Link>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
                               </tbody>
                             </table>
                           </div>

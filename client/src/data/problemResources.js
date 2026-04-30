@@ -4,29 +4,32 @@
  * =============================================================================
  *
  * Each problem's course material lives in a single Markdown file under
- * `./resources/`.  The file name must start with the problem's numeric ID
- * followed by a hyphen, e.g. `42-trapping-rain-water.md`.
+ * `./resources/<NN-step-slug>/`.  Files are organized into per-step
+ * subfolders (e.g. `01-learn-the-basics/`) so the file tree mirrors the
+ * sheet's logical order.  Lookup is by slug only — the folder is purely
+ * for human navigation.
  *
- * FILES ARE PICKED UP AUTOMATICALLY — just drop the file in the folder.
+ * FILES ARE PICKED UP AUTOMATICALLY from any subfolder — just drop the
+ * file into the matching step folder.
  *
  * -----------------------------------------------------------------------------
  * NAMING CONVENTION
  * -----------------------------------------------------------------------------
  *
- *   <id>-<url-friendly-title>.md
- *   e.g. 1-user-input-output.md
- *        42-trapping-rain-water.md
+ *   resources/<NN-step-slug>/<url-friendly-title>.md
+ *   e.g. resources/01-learn-the-basics/user-input-output.md
+ *        resources/03-solve-problems-on-arrays-easy-medium-hard/trapping-rain-water.md
  *
- * The numeric ID must match the `id` field inside the problem's entry in
- * `striversSheet.js`.  Either the filename prefix OR the frontmatter `id`
- * field can provide it — frontmatter takes precedence when both are present.
+ * The slug must match `slugify(problem.title)` from `lib/slugify.js` (which
+ * is also what the routing layer uses). The filename (not the folder) is
+ * the source of truth for the slug; a frontmatter `slug:` field can
+ * override it if a title ever needs to change without renaming the file.
  *
  * -----------------------------------------------------------------------------
  * FULL FILE TEMPLATE
  * -----------------------------------------------------------------------------
  *
  *   ---
- *   id: 42
  *   time: O(n)
  *   space: O(1)
  *   concepts:
@@ -68,7 +71,7 @@
  * FRONTMATTER FIELDS
  * -----------------------------------------------------------------------------
  *
- *   id        (required if not in filename) — integer matching striversSheet
+ *   slug      (optional) — override the slug derived from the filename
  *   time      (optional) — default time complexity, e.g. "O(n log n)"
  *   space     (optional) — default space complexity, e.g. "O(1)"
  *   concepts  (optional) — YAML list; used as the default Concepts fallback
@@ -214,7 +217,6 @@
  * -----------------------------------------------------------------------------
  *
  *   ---
- *   id: 1
  *   time: O(1)
  *   space: O(1)
  *   ---
@@ -277,7 +279,7 @@ function normalizeLanguage(tag) {
   return direct ?? null;
 }
 
-const rawModules = import.meta.glob("./resources/*.md", {
+const rawModules = import.meta.glob("./resources/**/*.md", {
   query: "?raw",
   import: "default",
   eager: true,
@@ -439,9 +441,9 @@ export function __buildResource(raw, path) {
 function buildResource(raw, path) {
   const { meta, body } = parseFrontmatter(raw);
   const { generic, byLang, solutionSections } = parseSections(body);
-  const idFromPath = path.match(/\/(\d+)-/);
-  const id = Number(meta.id ?? idFromPath?.[1]);
-  if (!Number.isFinite(id)) return null;
+  const slugFromPath = path.match(/\/([^/]+)\.md$/)?.[1] ?? null;
+  const slug = (typeof meta.slug === "string" && meta.slug.trim()) || slugFromPath;
+  if (!slug) return null;
 
   // Treat empty placeholder files (no frontmatter, no sections) as if no
   // resource has been authored yet — the UI then shows the "coming soon"
@@ -491,7 +493,7 @@ function buildResource(raw, path) {
   });
 
   return {
-    id,
+    slug,
     intro: generic.overview || null,
     concepts,
     approach: generic.approach || null,
@@ -505,14 +507,14 @@ export const PROBLEM_RESOURCES = (() => {
   const out = {};
   for (const [path, raw] of Object.entries(rawModules)) {
     const entry = buildResource(raw, path);
-    if (entry) out[entry.id] = entry;
+    if (entry) out[entry.slug] = entry;
   }
   return out;
 })();
 
-/** Look up the raw resource entry for a given problem id (or `null`). */
-export function getProblemResource(id) {
-  return PROBLEM_RESOURCES[id] ?? null;
+/** Look up the raw resource entry for a given problem slug (or `null`). */
+export function getProblemResource(slug) {
+  return PROBLEM_RESOURCES[slug] ?? null;
 }
 
 /**
@@ -520,8 +522,8 @@ export function getProblemResource(id) {
  * per-language overrides declared in the markdown source. Returns a flat
  * shape that the UI can render without having to reason about fallbacks.
  */
-export function resolveProblemResource(id, language) {
-  const resource = getProblemResource(id);
+export function resolveProblemResource(slug, language) {
+  const resource = getProblemResource(slug);
   if (!resource) return null;
   const override = resource.languages?.[language] ?? {};
   const solutions = (resource.solutions ?? []).map((entry) => ({
@@ -533,7 +535,7 @@ export function resolveProblemResource(id, language) {
     new Set((resource.solutions ?? []).flatMap((entry) => Object.keys(entry.code ?? {}))),
   );
   return {
-    id: resource.id,
+    slug: resource.slug,
     intro: override.intro ?? resource.intro,
     concepts: override.concepts ?? resource.concepts,
     approach: override.approach ?? resource.approach,

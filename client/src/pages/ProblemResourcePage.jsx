@@ -79,15 +79,14 @@ export default function ProblemResourcePage() {
   }
 
   const { problem, step, sub } = match;
-  const resource = getProblemResource(problem.id);
-  const resolved = resolveProblemResource(problem.id, language);
+  const resource = getProblemResource(slug);
+  const resolved = resolveProblemResource(slug, language);
   const solutions = resolved?.solutions ?? [];
   const hasAnySolution = solutions.length > 0 && (resolved?.availableLanguages?.length ?? 0) > 0;
   const showSolutionTitles = solutions.length > 1;
   // If every solution declares its own complexity, the top-level Complexity
   // section becomes redundant — hide it to avoid duplication.
-  const everySolutionHasComplexity =
-    solutions.length > 0 && solutions.every((s) => s.complexity);
+  const everySolutionHasComplexity = solutions.length > 0 && solutions.every((s) => s.complexity);
   const showGlobalComplexity =
     !!resolved?.complexity &&
     (resolved.complexity.time || resolved.complexity.space) &&

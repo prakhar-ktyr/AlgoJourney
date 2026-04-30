@@ -4,10 +4,6 @@ import { __buildResource } from "./problemResources";
 describe("buildResource — multi-solution support", () => {
   it("collects multiple ## Solution sections into an ordered array", () => {
     const md = [
-      "---",
-      "id: 9991",
-      "---",
-      "",
       "## Solution: Brute Force",
       "",
       "```cpp",
@@ -26,7 +22,7 @@ describe("buildResource — multi-solution support", () => {
       "",
     ].join("\n");
 
-    const resource = __buildResource(md, "./resources/9991-multi.md");
+    const resource = __buildResource(md, "./resources/multi.md");
     expect(resource).not.toBeNull();
     expect(resource.solutions).toHaveLength(2);
     expect(resource.solutions[0].title).toBe("Brute Force");
@@ -37,20 +33,9 @@ describe("buildResource — multi-solution support", () => {
   });
 
   it("preserves the legacy single ## Solution shape (title null)", () => {
-    const md = [
-      "---",
-      "id: 9992",
-      "---",
-      "",
-      "## Solution",
-      "",
-      "```cpp",
-      "// only one",
-      "```",
-      "",
-    ].join("\n");
+    const md = ["## Solution", "", "```cpp", "// only one", "```", ""].join("\n");
 
-    const resource = __buildResource(md, "./resources/9992-legacy.md");
+    const resource = __buildResource(md, "./resources/legacy.md");
     expect(resource.solutions).toHaveLength(1);
     expect(resource.solutions[0].title).toBeNull();
     expect(resource.solutions[0].code["C++"]).toContain("only one");
@@ -58,10 +43,6 @@ describe("buildResource — multi-solution support", () => {
 
   it("accepts `:` and `-` separators for solution labels", () => {
     const md = [
-      "---",
-      "id: 9993",
-      "---",
-      "",
       "## Solution - Two Pointers",
       "",
       "```cpp",
@@ -76,16 +57,12 @@ describe("buildResource — multi-solution support", () => {
       "",
     ].join("\n");
 
-    const resource = __buildResource(md, "./resources/9993-sep.md");
+    const resource = __buildResource(md, "./resources/sep.md");
     expect(resource.solutions.map((s) => s.title)).toEqual(["Two Pointers", "Hash Map"]);
   });
 
   it("parses per-solution Time/Space declared above the code fence", () => {
     const md = [
-      "---",
-      "id: 9994",
-      "---",
-      "",
       "## Solution: Brute Force",
       "Time: O(n^2)",
       "Space: O(1)",
@@ -109,7 +86,7 @@ describe("buildResource — multi-solution support", () => {
       "",
     ].join("\n");
 
-    const resource = __buildResource(md, "./resources/9994-complexity.md");
+    const resource = __buildResource(md, "./resources/complexity.md");
     expect(resource.solutions[0].complexity).toEqual({ time: "O(n^2)", space: "O(1)" });
     expect(resource.solutions[0].code["C++"]).toBe("// brute");
     expect(resource.solutions[1].complexity).toEqual({ time: "O(n log n)" });

@@ -9,9 +9,10 @@ export function slugify(text) {
 }
 
 /**
- * Build the canonical slug for a DSA problem. Includes the id to guarantee
- * uniqueness even if two problems share a title.
+ * Build the canonical slug for a DSA problem. The slug is derived from the
+ * title, so problems can be reordered or inserted without breaking links,
+ * resource filenames, or saved progress.
  */
 export function problemSlug(problem) {
-  return `${problem.id}-${slugify(problem.title)}`;
+  return slugify(problem.title);
 }
