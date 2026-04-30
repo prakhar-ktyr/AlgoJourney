@@ -175,7 +175,8 @@ const STRIVERS_SHEET = [
             title: "Sum of first N numbers",
             difficulty: "Easy",
             lcLink: null,
-            gfgLink: "https://practice.geeksforgeeks.org/problems/sum-of-first-n-terms5843/1",
+            // gfgLink: "https://practice.geeksforgeeks.org/problems/sum-of-first-n-terms5843/1",
+            gfgLink: "https://www.geeksforgeeks.org/problems/sum-of-series2811/1",
           },
           {
             title: "Factorial of N numbers",

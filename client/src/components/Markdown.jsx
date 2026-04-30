@@ -91,12 +91,7 @@ function parseBlocks(text) {
         const m = lines[i].match(/^(\s*)([-*]|\d+\.)\s+(.*)$/);
         if (!m) {
           // Continuation line (indented or non-blank, non-marker) belongs to current item.
-          if (
-            items.length &&
-            lines[i].trim() &&
-            !/^```/.test(lines[i]) &&
-            /^\s+/.test(lines[i])
-          ) {
+          if (items.length && lines[i].trim() && !/^```/.test(lines[i]) && /^\s+/.test(lines[i])) {
             items[items.length - 1] += "\n" + lines[i].trim();
             i++;
             continue;
@@ -134,13 +129,7 @@ function parseBlocks(text) {
 
 function renderBlock(block, key) {
   if (block.type === "code") {
-    return (
-      <CodeBlock
-        key={key}
-        code={block.code}
-        language={normalizeFenceLang(block.lang)}
-      />
-    );
+    return <CodeBlock key={key} code={block.code} language={normalizeFenceLang(block.lang)} />;
   }
   if (block.type === "hr") {
     return <hr key={key} className="border-t border-gray-700 my-2" />;
@@ -184,6 +173,7 @@ function renderBlock(block, key) {
 }
 
 const FENCE_LANG_LABEL = {
+  c: "C",
   cpp: "C++",
   "c++": "C++",
   cxx: "C++",
@@ -397,10 +387,7 @@ function renderMath(source, display) {
     });
   } catch {
     // Fall back to the literal source so authors can spot the broken formula.
-    const escaped = source
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+    const escaped = source.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     return display ? `$$${escaped}$$` : `$${escaped}$`;
   }
 }

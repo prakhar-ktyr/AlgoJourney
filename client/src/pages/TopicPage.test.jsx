@@ -3,45 +3,59 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import TopicPage from "./TopicPage";
 
-const renderPage = (slug) =>
+const renderPage = (path) =>
   render(
-    <MemoryRouter initialEntries={[`/tutorials/${slug}`]}>
+    <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/tutorials/:slug" element={<TopicPage />} />
+        <Route path="/tutorials/:slug/:lessonSlug" element={<TopicPage />} />
       </Routes>
     </MemoryRouter>,
   );
 
-describe("TopicPage", () => {
+describe("TopicPage — coming-soon topic", () => {
   it("renders topic name for a valid slug", () => {
-    renderPage("python");
+    renderPage("/tutorials/python");
     expect(screen.getByRole("heading", { name: "Python" })).toBeInTheDocument();
     expect(screen.getByText("Programming Languages")).toBeInTheDocument();
   });
 
-  it("shows coming soon message", () => {
-    renderPage("python");
+  it("shows coming soon message when no course exists", () => {
+    renderPage("/tutorials/python");
     expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
   });
 
   it("has a back link to tutorials", () => {
-    renderPage("python");
-    expect(screen.getByText("← All tutorials")).toHaveAttribute(
-      "href",
-      "/tutorials",
-    );
+    renderPage("/tutorials/python");
+    expect(screen.getByText("← All tutorials")).toHaveAttribute("href", "/tutorials");
   });
 
   it("renders 404-like message for unknown slug", () => {
-    renderPage("nonexistent-xyz");
+    renderPage("/tutorials/nonexistent-xyz");
     expect(screen.getByText("Topic Not Found")).toBeInTheDocument();
   });
 
   it("shows link to browse all tutorials on 404", () => {
-    renderPage("nonexistent-xyz");
-    expect(screen.getByText("Browse all tutorials")).toHaveAttribute(
-      "href",
-      "/tutorials",
-    );
+    renderPage("/tutorials/nonexistent-xyz");
+    expect(screen.getByText("Browse all tutorials")).toHaveAttribute("href", "/tutorials");
+  });
+});
+
+describe("TopicPage — C course", () => {
+  it("renders the course landing page (first lesson) at /tutorials/c", () => {
+    renderPage("/tutorials/c");
+    expect(screen.getByRole("heading", { level: 1, name: "C Tutorial" })).toBeInTheDocument();
+    const navItems = screen.getAllByRole("link");
+    expect(navItems.length).toBeGreaterThan(10);
+  });
+
+  it("renders a specific lesson by slug", () => {
+    renderPage("/tutorials/c/c-pointers");
+    expect(screen.getByRole("heading", { name: /C Pointers/ })).toBeInTheDocument();
+  });
+
+  it("shows a Lesson Not Found page for an unknown lesson slug", () => {
+    renderPage("/tutorials/c/no-such-lesson");
+    expect(screen.getByText("Lesson Not Found")).toBeInTheDocument();
   });
 });

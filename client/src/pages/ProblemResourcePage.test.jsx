@@ -19,7 +19,7 @@ describe("ProblemResourcePage", () => {
   });
 
   it("renders course material for a known problem", () => {
-    renderAt("user-input-output");
+    renderAt("1-user-input-output");
     expect(screen.getByRole("heading", { name: "User Input / Output" })).toBeInTheDocument();
     expect(screen.getByTestId("language-selector")).toBeInTheDocument();
     expect(screen.getByTestId("solution-code")).toHaveTextContent(
@@ -29,7 +29,7 @@ describe("ProblemResourcePage", () => {
 
   it("switches code snippet when language changes", async () => {
     const user = userEvent.setup();
-    renderAt("user-input-output");
+    renderAt("1-user-input-output");
     const select = screen.getByLabelText("Select code snippet language");
     await user.selectOptions(select, "Python");
     const code = screen.getByTestId("solution-code");
@@ -39,10 +39,13 @@ describe("ProblemResourcePage", () => {
 
   it("swaps per-language prose sections when the language changes", async () => {
     const user = userEvent.setup();
-    renderAt("user-input-output");
+    renderAt("1-user-input-output");
     // C++ approach override mentions the iostream library.
     expect(screen.getAllByText(/iostream/i).length).toBeGreaterThan(0);
-    await user.selectOptions(screen.getByLabelText("Select code snippet language"), "Python");
+    await user.selectOptions(
+      screen.getByLabelText("Select code snippet language"),
+      "Python",
+    );
     // Python override replaces the approach copy.
     expect(screen.getAllByText(/arbitrary precision/i).length).toBeGreaterThan(0);
     expect(screen.queryAllByText(/iostream/i)).toHaveLength(0);
@@ -50,27 +53,27 @@ describe("ProblemResourcePage", () => {
 
   it("persists the selected language across mounts", async () => {
     const user = userEvent.setup();
-    const { unmount } = renderAt("user-input-output");
+    const { unmount } = renderAt("1-user-input-output");
     await user.selectOptions(screen.getByLabelText("Select code snippet language"), "Java");
     unmount();
-    renderAt("user-input-output");
+    renderAt("1-user-input-output");
     expect(screen.getByLabelText("Select code snippet language")).toHaveValue("Java");
   });
 
   it("shows a coming-soon placeholder for problems without resources yet", () => {
-    renderAt("time-complexity-learn-basics-and-then-analyse-in-next-steps");
+    renderAt("7-while-loops");
     expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
     expect(screen.getByTestId("language-selector")).toBeInTheDocument();
   });
 
   it("treats complexity and solution as optional when absent", () => {
-    renderAt("what-are-arrays-strings");
+    renderAt("5-what-are-arrays-strings");
     expect(screen.queryByRole("heading", { name: "Complexity" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Solution" })).not.toBeInTheDocument();
   });
 
   it("shows a not-found message for unknown slugs", () => {
-    renderAt("this-problem-does-not-exist");
+    renderAt("999999-does-not-exist");
     expect(screen.getByText("Problem Not Found")).toBeInTheDocument();
   });
 
@@ -81,7 +84,7 @@ describe("ProblemResourcePage", () => {
       configurable: true,
       value: { writeText },
     });
-    renderAt("user-input-output");
+    renderAt("1-user-input-output");
     // The C++ approach section also renders an inline code block, so there are
     // multiple "Copy C++ code" buttons — scope to the solution block via its testId.
     const solutionBlock = screen.getByTestId("solution-code").closest(".rounded-lg");
@@ -95,7 +98,7 @@ describe("ProblemResourcePage", () => {
   });
 
   it("renders concept bullets with inline markdown formatting (bold + code)", () => {
-    renderAt("user-input-output");
+    renderAt("1-user-input-output");
     // Per-language Concepts section for the default language (C++) uses
     // **bold** terms and `inline code` — both should render as elements,
     // not as raw markdown characters.
@@ -105,7 +108,7 @@ describe("ProblemResourcePage", () => {
   });
 
   it("renders bold labels in approach as strong elements with no raw ** markers", () => {
-    renderAt("user-input-output");
+    renderAt("1-user-input-output");
     // C++ Approach uses **Input:** and **Output:** — these must become <strong>,
     // not leak the literal ** characters into the DOM.
     expect(screen.queryByText(/\*\*/)).not.toBeInTheDocument();

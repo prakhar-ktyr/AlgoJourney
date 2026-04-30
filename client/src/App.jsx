@@ -18,6 +18,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/tutorials" element={<TutorialsPage />} />
           <Route path="/tutorials/:slug" element={<TopicPage />} />
+          <Route path="/tutorials/:slug/:lessonSlug" element={<TopicPage />} />
           <Route path="/dsa-sheet" element={<DSASheetPage />} />
           <Route path="/dsa-sheet/problem/:slug" element={<ProblemResourcePage />} />
           <Route path="/about" element={<AboutPage />} />
