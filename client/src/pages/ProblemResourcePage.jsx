@@ -8,7 +8,7 @@ import {
 } from "../data/problemResources";
 import { problemSlug } from "../lib/slugify";
 import CodeBlock from "../components/CodeBlock";
-import Markdown from "../components/Markdown";
+import Markdown, { MarkdownInline } from "../components/Markdown";
 
 const LANG_STORAGE_KEY = "preferred-language";
 const DIFF_COLORS = {
@@ -81,8 +81,17 @@ export default function ProblemResourcePage() {
   const { problem, step, sub } = match;
   const resource = getProblemResource(problem.id);
   const resolved = resolveProblemResource(problem.id, language);
-  const solution = resolved?.solution;
-  const hasAnySolution = (resolved?.availableLanguages?.length ?? 0) > 0;
+  const solutions = resolved?.solutions ?? [];
+  const hasAnySolution = solutions.length > 0 && (resolved?.availableLanguages?.length ?? 0) > 0;
+  const showSolutionTitles = solutions.length > 1;
+  // If every solution declares its own complexity, the top-level Complexity
+  // section becomes redundant — hide it to avoid duplication.
+  const everySolutionHasComplexity =
+    solutions.length > 0 && solutions.every((s) => s.complexity);
+  const showGlobalComplexity =
+    !!resolved?.complexity &&
+    (resolved.complexity.time || resolved.complexity.space) &&
+    !everySolutionHasComplexity;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
@@ -152,36 +161,73 @@ export default function ProblemResourcePage() {
             </section>
           )}
 
-          {resolved.complexity &&
-            (resolved.complexity.time || resolved.complexity.space) && (
-              <section>
-                <h2 className="text-xl font-semibold text-white mb-3">Complexity</h2>
-                <ul className="text-gray-300 space-y-1">
-                  {resolved.complexity.time && (
-                    <li>
-                      <span className="text-gray-500">Time:</span> {resolved.complexity.time}
-                    </li>
-                  )}
-                  {resolved.complexity.space && (
-                    <li>
-                      <span className="text-gray-500">Space:</span> {resolved.complexity.space}
-                    </li>
-                  )}
-                </ul>
-              </section>
-            )}
+          {showGlobalComplexity && (
+            <section>
+              <h2 className="text-xl font-semibold text-white mb-3">Complexity</h2>
+              <ul className="text-gray-300 space-y-1">
+                {resolved.complexity.time && (
+                  <li>
+                    <span className="text-gray-500">Time:</span>{" "}
+                    <MarkdownInline source={resolved.complexity.time} />
+                  </li>
+                )}
+                {resolved.complexity.space && (
+                  <li>
+                    <span className="text-gray-500">Space:</span>{" "}
+                    <MarkdownInline source={resolved.complexity.space} />
+                  </li>
+                )}
+              </ul>
+            </section>
+          )}
 
           {hasAnySolution && (
             <section>
               <h2 className="text-xl font-semibold text-white mb-3">Solution</h2>
-              {solution ? (
-                <CodeBlock code={solution} language={language} testId="solution-code" />
-              ) : (
-                <p className="text-gray-400 italic">
-                  A {language} solution for this problem hasn&apos;t been written yet. Try another
-                  language above.
-                </p>
-              )}
+              <div className="space-y-6">
+                {solutions.map((entry, index) => {
+                  const heading =
+                    entry.title || (showSolutionTitles ? `Approach ${index + 1}` : null);
+                  const testId = index === 0 ? "solution-code" : `solution-code-${index}`;
+                  const complexity = entry.complexity;
+                  return (
+                    <div key={index}>
+                      {heading && (
+                        <h3 className="text-lg font-semibold text-gray-100 mb-2">{heading}</h3>
+                      )}
+                      {complexity && (complexity.time || complexity.space) && (
+                        <p
+                          className="text-sm text-gray-300 mb-3 flex flex-wrap gap-x-5 gap-y-1"
+                          data-testid={
+                            index === 0 ? "solution-complexity" : `solution-complexity-${index}`
+                          }
+                        >
+                          {complexity.time && (
+                            <span>
+                              <span className="text-gray-500">Time:</span>{" "}
+                              <MarkdownInline source={complexity.time} />
+                            </span>
+                          )}
+                          {complexity.space && (
+                            <span>
+                              <span className="text-gray-500">Space:</span>{" "}
+                              <MarkdownInline source={complexity.space} />
+                            </span>
+                          )}
+                        </p>
+                      )}
+                      {entry.code ? (
+                        <CodeBlock code={entry.code} language={language} testId={testId} />
+                      ) : (
+                        <p className="text-gray-400 italic">
+                          A {language} version of this approach hasn&apos;t been written yet. Try
+                          another language above.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </section>
           )}
         </article>

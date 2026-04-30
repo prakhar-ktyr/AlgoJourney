@@ -1,4 +1,6 @@
 import { Fragment } from "react";
+import katex from "katex";
+import "katex/dist/katex.min.css";
 import CodeBlock from "./CodeBlock";
 
 /**
@@ -21,6 +23,16 @@ export default function Markdown({ source, className = "" }) {
       {blocks.map((block, i) => renderBlock(block, i))}
     </div>
   );
+}
+
+/**
+ * Render a single line of inline markdown (no block parsing). Useful for
+ * places that want `$math$`, `**bold**`, and `` `code` `` formatting but
+ * cannot host a wrapping `<div>` (e.g. inside captions or table cells).
+ */
+export function MarkdownInline({ source }) {
+  if (!source) return null;
+  return <>{renderInline(String(source))}</>;
 }
 
 function parseBlocks(text) {
@@ -201,6 +213,36 @@ function renderInline(text) {
       }
     }
 
+    // Block math: $$...$$ (rendered inline with display style).
+    if (ch === "$" && text[i + 1] === "$") {
+      const end = text.indexOf("$$", i + 2);
+      if (end !== -1) {
+        nodes.push({
+          type: "math",
+          display: true,
+          value: text.slice(i + 2, end).trim(),
+        });
+        i = end + 2;
+        continue;
+      }
+    }
+
+    // Inline math: $...$  (LaTeX). To avoid eating stray currency-style
+    // dollar signs, require the closing `$` on the same line and no whitespace
+    // immediately after the opening `$`.
+    if (ch === "$" && text[i + 1] && text[i + 1] !== " " && text[i + 1] !== "$") {
+      const end = findClosingDollar(text, i + 1);
+      if (end !== -1) {
+        nodes.push({
+          type: "math",
+          display: false,
+          value: text.slice(i + 1, end).trim(),
+        });
+        i = end + 1;
+        continue;
+      }
+    }
+
     // Bold: **...**
     if (ch === "*" && text[i + 1] === "*") {
       const end = text.indexOf("**", i + 2);
@@ -263,12 +305,24 @@ function renderInline(text) {
         </em>
       );
     }
+    if (n.type === "math") {
+      const html = renderMath(n.value, n.display);
+      const Tag = n.display ? "span" : "span";
+      return (
+        <Tag
+          key={idx}
+          className={n.display ? "katex-display-inline" : ""}
+          // KaTeX produces sanitised HTML; safe to inject.
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      );
+    }
     return <Fragment key={idx}>{n.value}</Fragment>;
   });
 }
 
 function isInlineSpecial(ch) {
-  return ch === "`" || ch === "*" || ch === "_";
+  return ch === "`" || ch === "*" || ch === "_" || ch === "$";
 }
 
 /** Find the next standalone closing marker (skipping inline code spans). */
@@ -293,4 +347,49 @@ function findClosing(text, start, marker) {
     i++;
   }
   return -1;
+}
+
+/**
+ * Find the matching closing `$` for inline math. Skips over inline code spans
+ * (`` ` ``) so dollar signs inside code don't terminate the math span. Returns
+ * -1 if no closing `$` is found on the rest of the text or if the candidate
+ * looks like the start of a `$$` block delimiter.
+ */
+function findClosingDollar(text, start) {
+  let i = start;
+  while (i < text.length) {
+    const ch = text[i];
+    if (ch === "`") {
+      const end = text.indexOf("`", i + 1);
+      if (end === -1) return -1;
+      i = end + 1;
+      continue;
+    }
+    if (ch === "$") {
+      // `$$` is a display-math delimiter, not a closer for inline `$`.
+      if (text[i + 1] === "$") return -1;
+      // Don't allow whitespace just before the closing `$` (typical LaTeX rule).
+      if (i > start && text[i - 1] === " ") return -1;
+      return i;
+    }
+    i++;
+  }
+  return -1;
+}
+
+function renderMath(source, display) {
+  try {
+    return katex.renderToString(source, {
+      displayMode: display,
+      throwOnError: false,
+      output: "html",
+    });
+  } catch {
+    // Fall back to the literal source so authors can spot the broken formula.
+    const escaped = source
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    return display ? `$$${escaped}$$` : `$${escaped}$`;
+  }
 }

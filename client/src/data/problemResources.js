@@ -117,6 +117,50 @@
  *   hides the Solution heading completely — no fallback message is shown.
  *
  * -----------------------------------------------------------------------------
+ * MULTIPLE SOLUTIONS  (alternate approaches)
+ * -----------------------------------------------------------------------------
+ *
+ *   You can author more than one ## Solution section per problem. Each one
+ *   becomes its own block under the "Solution" heading on the page. Add a
+ *   label after `Solution` (separated by `:`, `-`, or whitespace) to title
+ *   each approach:
+ *
+ *     ## Solution: Brute Force
+ *     ```cpp
+ *     // O(n^2) version
+ *     ```
+ *
+ *     ## Solution: Optimized
+ *     ```cpp
+ *     // O(n log n) version
+ *     ```
+ *
+ *   Untitled `## Solution` headings get auto-numbered ("Approach 1",
+ *   "Approach 2", …) when more than one is present. A single untitled
+ *   `## Solution` continues to render exactly as before — no subheading.
+ *
+ *   Each solution section parses its own code fences per language. A solution
+ *   that lacks code for the currently-selected language shows a small
+ *   "not written yet" note inline so other approaches stay visible.
+ *
+ *   Per-solution complexity (optional) — add `Time:` / `Space:` lines at the
+ *   very top of a `## Solution` body, before the first code fence:
+ *
+ *     ## Solution: Brute Force
+ *     Time: O(n^2)
+ *     Space: O(1)
+ *
+ *     ```cpp
+ *     // ...
+ *     ```
+ *
+ *   They render as a small caption under the approach heading. If EVERY
+ *   solution declares its own complexity, the top-level Complexity section
+ *   is hidden to avoid duplication. Mixing — some solutions with their own
+ *   complexity, others without — keeps the global section visible as the
+ *   default for the unannotated ones.
+ *
+ * -----------------------------------------------------------------------------
  * INLINE MARKDOWN (supported in Overview, Approach, Concepts body text)
  * -----------------------------------------------------------------------------
  *
@@ -272,10 +316,17 @@ function parseFrontmatter(text) {
 /**
  * Split the markdown body at `##` headings, separating generic sections from
  * per-language ones (identified by a `(Lang)` suffix on the heading).
+ *
+ * `## Solution` headings are special: they may appear multiple times, each
+ * representing an alternate approach. The text after `Solution` (optionally
+ * separated by `:` or `-`) is treated as the solution's label. They are
+ * collected into an ordered `solutionSections` array rather than being
+ * deduplicated into the `generic` map.
  */
 function parseSections(body) {
   const generic = {};
   const byLang = {};
+  const solutionSections = [];
   const headings = [...body.matchAll(/^##\s+(.+)$/gm)];
   for (let i = 0; i < headings.length; i++) {
     const h = headings[i];
@@ -293,6 +344,14 @@ function parseSections(body) {
     const start = h.index + h[0].length;
     const end = i + 1 < headings.length ? headings[i + 1].index : body.length;
     const content = body.slice(start, end).trim();
+    const solutionMatch = name.match(/^solution\b\s*[:-]?\s*(.*)$/);
+    if (solutionMatch && !lang) {
+      // Preserve original-case label from the heading text (after "Solution").
+      const labelMatch = title.match(/^solution\b\s*[:-]?\s*(.*)$/i);
+      const label = labelMatch ? labelMatch[1].trim() : "";
+      solutionSections.push({ title: label || null, content });
+      continue;
+    }
     if (lang) {
       if (!byLang[lang]) byLang[lang] = {};
       byLang[lang][name] = content;
@@ -300,7 +359,7 @@ function parseSections(body) {
       generic[name] = content;
     }
   }
-  return { generic, byLang };
+  return { generic, byLang, solutionSections };
 }
 
 function parseSolutions(text) {
@@ -336,9 +395,50 @@ function parseComplexitySection(text) {
   return out.time || out.space ? out : null;
 }
 
+/**
+ * Pull leading `Time:` / `Space:` annotation lines off the top of a solution
+ * body and return both the parsed complexity (or `null`) and the remaining
+ * body for code-fence parsing. Only contiguous lines BEFORE the first code
+ * fence are considered — any complexity inside or after code is left alone.
+ */
+function extractSolutionComplexity(text) {
+  if (!text) return { complexity: null, rest: text };
+  const lines = text.split(/\r?\n/);
+  const meta = {};
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.trim() === "") {
+      i++;
+      continue;
+    }
+    const time = line.match(/^\s*time\s*:\s*(.+?)\s*$/i);
+    const space = line.match(/^\s*space\s*:\s*(.+?)\s*$/i);
+    if (time && !meta.time) {
+      meta.time = time[1].trim();
+      i++;
+      continue;
+    }
+    if (space && !meta.space) {
+      meta.space = space[1].trim();
+      i++;
+      continue;
+    }
+    break;
+  }
+  const rest = lines.slice(i).join("\n");
+  const complexity = meta.time || meta.space ? meta : null;
+  return { complexity, rest };
+}
+
+// Exported for unit tests. Not part of the public API.
+export function __buildResource(raw, path) {
+  return buildResource(raw, path);
+}
+
 function buildResource(raw, path) {
   const { meta, body } = parseFrontmatter(raw);
-  const { generic, byLang } = parseSections(body);
+  const { generic, byLang, solutionSections } = parseSections(body);
   const idFromPath = path.match(/\/(\d+)-/);
   const id = Number(meta.id ?? idFromPath?.[1]);
   if (!Number.isFinite(id)) return null;
@@ -348,14 +448,15 @@ function buildResource(raw, path) {
   // state instead of a blank page.
   const hasMeta = Object.keys(meta).length > 0;
   const hasSections =
-    Object.keys(generic).length > 0 || Object.keys(byLang).length > 0;
+    Object.keys(generic).length > 0 ||
+    Object.keys(byLang).length > 0 ||
+    solutionSections.length > 0;
   if (!hasMeta && !hasSections) return null;
 
   const fallbackComplexity = parseComplexitySection(generic.complexity) || {};
   const complexity = {
     time: (typeof meta.time === "string" ? meta.time : null) || fallbackComplexity.time || null,
-    space:
-      (typeof meta.space === "string" ? meta.space : null) || fallbackComplexity.space || null,
+    space: (typeof meta.space === "string" ? meta.space : null) || fallbackComplexity.space || null,
   };
   const concepts =
     Array.isArray(meta.concepts) && meta.concepts.length
@@ -376,13 +477,26 @@ function buildResource(raw, path) {
     if (Object.keys(override).length) languages[lang] = override;
   }
 
+  // Each `## Solution` heading becomes its own solution entry. Code fences
+  // inside that section are mapped per language. A solution body may begin
+  // with `Time:` / `Space:` lines to declare per-approach complexity — those
+  // are stripped from the body before code fences are parsed.
+  const solutions = solutionSections.map((section) => {
+    const { complexity: solComplexity, rest } = extractSolutionComplexity(section.content);
+    return {
+      title: section.title,
+      complexity: solComplexity,
+      code: parseSolutions(rest),
+    };
+  });
+
   return {
     id,
     intro: generic.overview || null,
     concepts,
     approach: generic.approach || null,
     complexity,
-    solutions: parseSolutions(generic.solution || ""),
+    solutions,
     languages,
   };
 }
@@ -410,13 +524,21 @@ export function resolveProblemResource(id, language) {
   const resource = getProblemResource(id);
   if (!resource) return null;
   const override = resource.languages?.[language] ?? {};
+  const solutions = (resource.solutions ?? []).map((entry) => ({
+    title: entry.title,
+    complexity: entry.complexity ?? null,
+    code: entry.code?.[language] ?? null,
+  }));
+  const availableLanguages = Array.from(
+    new Set((resource.solutions ?? []).flatMap((entry) => Object.keys(entry.code ?? {}))),
+  );
   return {
     id: resource.id,
     intro: override.intro ?? resource.intro,
     concepts: override.concepts ?? resource.concepts,
     approach: override.approach ?? resource.approach,
     complexity: override.complexity ?? resource.complexity,
-    solution: resource.solutions?.[language] ?? null,
-    availableLanguages: Object.keys(resource.solutions ?? {}),
+    solutions,
+    availableLanguages,
   };
 }
