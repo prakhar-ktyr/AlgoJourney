@@ -61,7 +61,7 @@ describe("ProblemResourcePage", () => {
   });
 
   it("shows a coming-soon placeholder for problems without resources yet", () => {
-    renderAt("7-while-loops");
+    renderAt("9-time-complexity-learn-basics-and-then-analyse-in-next-steps");
     expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
     expect(screen.getByTestId("language-selector")).toBeInTheDocument();
   });

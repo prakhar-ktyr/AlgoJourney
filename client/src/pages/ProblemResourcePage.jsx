@@ -48,7 +48,9 @@ export default function ProblemResourcePage() {
 
   // Always start the resource page from the top when navigating in.
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window.scrollTo === "function") {
+      window.scrollTo(0, 0);
+    }
   }, [slug]);
 
   useEffect(() => {
