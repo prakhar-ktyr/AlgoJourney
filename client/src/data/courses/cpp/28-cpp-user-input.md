@@ -120,5 +120,3 @@ int main() {
     std::cout << "Hi " << name << ", you'll be " << age + 1 << " next year.\n";
 }
 ```
-
-Next: [C++ Files](#).

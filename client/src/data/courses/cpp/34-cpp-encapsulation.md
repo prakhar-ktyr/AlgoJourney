@@ -143,5 +143,3 @@ int main() {
     while (!s.empty()) std::cout << s.pop() << ' ';   // 3 2 1
 }
 ```
-
-Next: [C++ Inheritance](#).

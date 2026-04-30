@@ -115,7 +115,7 @@ auto arr = std::make_unique<int[]>(5);           // owns an int[5]
 auto sp  = std::make_shared<std::string>("hi");  // shared ownership
 ```
 
-`std::unique_ptr` and `std::shared_ptr` automatically `delete` for you when they go out of scope — RAII at work. We cover them in [C++ Memory Management](#).
+`std::unique_ptr` and `std::shared_ptr` automatically `delete` for you when they go out of scope — RAII at work. We cover them in [C++ Memory Management](/tutorials/cpp/cpp-memory-management).
 
 ## Pointer to struct / class
 
@@ -167,5 +167,3 @@ int main() {
     return 0;
 }
 ```
-
-Next: [C++ Functions](#).

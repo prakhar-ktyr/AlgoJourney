@@ -7,7 +7,7 @@ title: C++ Polymorphism
 **Polymorphism** lets the same code work with objects of different types. C++ has two main flavours:
 
 - **Run-time (dynamic) polymorphism** through virtual functions and inheritance.
-- **Compile-time (static) polymorphism** through templates and overloading (covered in [C++ Templates](#)).
+- **Compile-time (static) polymorphism** through templates and overloading (covered in [C++ Templates](/tutorials/cpp/cpp-templates)).
 
 ## Virtual functions in action
 
@@ -167,5 +167,3 @@ int main() {
     broadcast(channels, "build passed");
 }
 ```
-
-Next: [C++ Operator Overloading](#).

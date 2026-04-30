@@ -146,5 +146,3 @@ int main() {
               std::ostream_iterator<int>(std::cout, " "));
 }
 ```
-
-Next: [C++ STL Algorithms](#).

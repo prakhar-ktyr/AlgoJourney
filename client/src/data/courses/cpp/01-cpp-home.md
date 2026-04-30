@@ -38,5 +38,3 @@ By the end of this course you will be comfortable with:
 Each lesson builds on the previous one. Read the explanation, run the example yourself, then experiment by changing values. The "Putting it together" example at the end of every chapter ties the new concept back into a small program.
 
 Use the sidebar to jump to any lesson, or click **Next** to move forward in order.
-
-Let's begin with [C++ Intro](#).

@@ -143,5 +143,3 @@ int main() {
         std::cout << it->second << " " << it->first << '\n';
 }
 ```
-
-Next: [C++ STL Iterators](#).

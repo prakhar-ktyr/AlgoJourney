@@ -167,5 +167,3 @@ int main() {
     std::cout << total << '\n';        // $13.49
 }
 ```
-
-Next: [C++ Templates](#).

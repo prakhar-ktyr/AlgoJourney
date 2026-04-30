@@ -134,5 +134,3 @@ int main() {
     }
 }
 ```
-
-Next: [C++ Memory Management](#).

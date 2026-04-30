@@ -46,7 +46,7 @@ bool teenager  = (age >= 13 && age < 20);
 bool letter    = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 ```
 
-Logical operators `&&`, `||`, `!` combine booleans (see [C++ Operators](#)).
+Logical operators `&&`, `||`, `!` combine booleans (see [C++ Operators](/tutorials/cpp/cpp-operators)).
 
 ## Booleans in conditions
 
@@ -117,5 +117,3 @@ int main() {
     return 0;
 }
 ```
-
-Next: [C++ If...Else](#).

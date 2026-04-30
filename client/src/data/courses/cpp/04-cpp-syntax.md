@@ -122,5 +122,3 @@ Line one.
 Line two on a new line.
 1 + 2 = 3
 ```
-
-Next: [C++ Output](#).

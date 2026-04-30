@@ -80,12 +80,12 @@ Breakdown:
 
 Useful flags to add early:
 
-| Flag             | Purpose                                            |
-| ---------------- | -------------------------------------------------- |
-| `-std=c++17`     | Use the C++17 standard.                            |
-| `-Wall -Wextra`  | Enable common and extra warnings.                  |
-| `-O2`            | Optimize for release builds.                       |
-| `-g`             | Include debug info for `gdb`/`lldb`.               |
+| Flag            | Purpose                              |
+| --------------- | ------------------------------------ |
+| `-std=c++17`    | Use the C++17 standard.              |
+| `-Wall -Wextra` | Enable common and extra warnings.    |
+| `-O2`           | Optimize for release builds.         |
+| `-g`            | Include debug info for `gdb`/`lldb`. |
 
 A solid default during learning:
 
@@ -124,5 +124,3 @@ int main() {
     return 0;
 }
 ```
-
-You're ready. Continue to [C++ Syntax](#).

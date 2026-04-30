@@ -154,5 +154,3 @@ int main() {
     std::cout << "\nsum   = " << sum << "\nevens = " << evens << '\n';
 }
 ```
-
-Next: [C++ Modern C++](#).

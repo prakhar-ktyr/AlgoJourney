@@ -121,5 +121,3 @@ int main() {
     for (const auto& n : names) std::cout << n << '\n';
 }
 ```
-
-Next: [C++ User Input](#).

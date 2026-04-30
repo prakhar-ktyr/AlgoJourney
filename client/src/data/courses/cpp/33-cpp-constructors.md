@@ -61,7 +61,7 @@ Buffer b;
 Buffer c = b;       // calls copy constructor
 ```
 
-If you don't need a deep copy, the compiler-generated one is fine. When your class manages a resource, follow the **Rule of Five** ([C++ Memory Management](#)).
+If you don't need a deep copy, the compiler-generated one is fine. When your class manages a resource, follow the **Rule of Five** ([C++ Memory Management](/tutorials/cpp/cpp-memory-management)).
 
 ## Move constructor (C++11)
 
@@ -167,5 +167,3 @@ int main() {
     // ~ScopedTimer prints elapsed time when t goes out of scope
 }
 ```
-
-Next: [C++ Encapsulation](#).

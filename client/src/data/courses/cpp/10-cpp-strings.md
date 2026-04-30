@@ -161,5 +161,3 @@ int main() {
     return 0;
 }
 ```
-
-Next: [C++ Math](#).

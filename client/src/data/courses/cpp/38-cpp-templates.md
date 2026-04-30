@@ -167,5 +167,3 @@ int main() {
     std::cout << "size = " << arraySize(xs) << '\n';
 }
 ```
-
-Next: [C++ Namespaces](#).

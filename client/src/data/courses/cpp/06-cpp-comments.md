@@ -122,5 +122,3 @@ int main() {
     return 0;
 }
 ```
-
-Now move on to [C++ Variables](#).

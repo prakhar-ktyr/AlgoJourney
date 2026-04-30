@@ -8,13 +8,13 @@ Operators are symbols that perform actions on values. C++ has a rich set: arithm
 
 ## Arithmetic operators
 
-| Op  | Meaning            | Example   | Result |
-| --- | ------------------ | --------- | ------ |
-| `+` | Addition           | `5 + 3`   | `8`    |
-| `-` | Subtraction        | `5 - 3`   | `2`    |
-| `*` | Multiplication     | `5 * 3`   | `15`   |
-| `/` | Division           | `7 / 2`   | `3` (integer) / `3.5` (double) |
-| `%` | Modulus (remainder)| `7 % 2`   | `1`    |
+| Op  | Meaning             | Example | Result                         |
+| --- | ------------------- | ------- | ------------------------------ |
+| `+` | Addition            | `5 + 3` | `8`                            |
+| `-` | Subtraction         | `5 - 3` | `2`                            |
+| `*` | Multiplication      | `5 * 3` | `15`                           |
+| `/` | Division            | `7 / 2` | `3` (integer) / `3.5` (double) |
+| `%` | Modulus (remainder) | `7 % 2` | `1`                            |
 
 Integer division **truncates** toward zero. Use a floating-point operand to keep the fractional part:
 
@@ -52,14 +52,14 @@ x  &= 3;   // 0 (bitwise AND)
 
 ## Comparison operators
 
-| Op   | Meaning                  |
-| ---- | ------------------------ |
-| `==` | Equal                    |
-| `!=` | Not equal                |
-| `<`  | Less than                |
-| `>`  | Greater than             |
-| `<=` | Less than or equal       |
-| `>=` | Greater than or equal    |
+| Op   | Meaning               |
+| ---- | --------------------- |
+| `==` | Equal                 |
+| `!=` | Not equal             |
+| `<`  | Less than             |
+| `>`  | Greater than          |
+| `<=` | Less than or equal    |
+| `>=` | Greater than or equal |
 
 They produce a `bool`:
 
@@ -71,11 +71,11 @@ C++20 added the **three-way comparison** `<=>` (the "spaceship operator"), usefu
 
 ## Logical operators
 
-| Op   | Meaning      | Example                   |
-| ---- | ------------ | ------------------------- |
-| `&&` | Logical AND  | `(age >= 18) && hasCard`  |
-| `\|\|` | Logical OR | `isAdmin \|\| isOwner`    |
-| `!`  | Logical NOT  | `!isReady`                |
+| Op     | Meaning     | Example                  |
+| ------ | ----------- | ------------------------ |
+| `&&`   | Logical AND | `(age >= 18) && hasCard` |
+| `\|\|` | Logical OR  | `isAdmin \|\| isOwner`   |
+| `!`    | Logical NOT | `!isReady`               |
 
 `&&` and `||` **short-circuit**: if the left operand decides the result, the right operand is not evaluated.
 
@@ -87,14 +87,14 @@ if (p != nullptr && p->ready()) { ... } // safe: p is checked first
 
 For integer types, operating on individual bits:
 
-| Op   | Meaning         |
-| ---- | --------------- |
-| `&`  | bitwise AND     |
-| `\|` | bitwise OR      |
-| `^`  | bitwise XOR     |
-| `~`  | bitwise NOT     |
-| `<<` | left shift      |
-| `>>` | right shift     |
+| Op   | Meaning     |
+| ---- | ----------- |
+| `&`  | bitwise AND |
+| `\|` | bitwise OR  |
+| `^`  | bitwise XOR |
+| `~`  | bitwise NOT |
+| `<<` | left shift  |
+| `>>` | right shift |
 
 ```cpp
 unsigned flags = 0b0000;
@@ -168,5 +168,3 @@ int main() {
     return 0;
 }
 ```
-
-Next: [C++ Strings](#).

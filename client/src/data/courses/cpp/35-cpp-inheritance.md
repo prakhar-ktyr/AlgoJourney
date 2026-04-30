@@ -166,5 +166,3 @@ int main() {
         std::cout << s->name() << " area = " << s->area() << '\n';
 }
 ```
-
-Next: [C++ Polymorphism](#).

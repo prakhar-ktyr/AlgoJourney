@@ -161,5 +161,3 @@ Sample run:
 Enter a non-negative integer: 9875
 Digital root: 2          (9+8+7+5=29 → 2+9=11 → 1+1=2)
 ```
-
-Next: [C++ For Loop](#).

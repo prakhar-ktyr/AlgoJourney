@@ -135,5 +135,3 @@ int main() {
         std::cout << "first 5 at index " << (it - v.begin()) << '\n';
 }
 ```
-
-Next: [C++ STL Containers](#).

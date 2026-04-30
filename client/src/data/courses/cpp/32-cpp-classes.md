@@ -139,5 +139,3 @@ int main() {
     std::cout << a.getOwner() << " has $" << a.getBalance() << '\n';
 }
 ```
-
-Next: [C++ Constructors and Destructors](#).

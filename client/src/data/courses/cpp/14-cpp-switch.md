@@ -163,5 +163,3 @@ int main() {
     return 0;
 }
 ```
-
-Next: [C++ While Loop](#).

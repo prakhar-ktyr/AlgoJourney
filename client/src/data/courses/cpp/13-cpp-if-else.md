@@ -158,5 +158,3 @@ Output:
 50 → F
 105 → Invalid
 ```
-
-Next: [C++ Switch](#).

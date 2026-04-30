@@ -110,5 +110,3 @@ int main() {
     }
 }
 ```
-
-Next: [C++ Lambdas](#).

@@ -145,5 +145,3 @@ int main() {
     }
 }
 ```
-
-Next: [C++ Classes](#).

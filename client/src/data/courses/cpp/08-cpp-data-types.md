@@ -24,13 +24,13 @@ fundamental
 
 ## Integers
 
-| Type            | Typical size | Approx. range                     |
-| --------------- | ------------ | --------------------------------- |
-| `short`         | 2 bytes      | -32,768 … 32,767                  |
-| `int`           | 4 bytes      | ±2 × 10⁹                          |
-| `long`          | 4–8 bytes    | platform-dependent                |
-| `long long`     | 8 bytes      | ±9 × 10¹⁸                         |
-| `unsigned int`  | 4 bytes      | 0 … 4 × 10⁹                       |
+| Type           | Typical size | Approx. range      |
+| -------------- | ------------ | ------------------ |
+| `short`        | 2 bytes      | -32,768 … 32,767   |
+| `int`          | 4 bytes      | ±2 × 10⁹           |
+| `long`         | 4–8 bytes    | platform-dependent |
+| `long long`    | 8 bytes      | ±9 × 10¹⁸          |
+| `unsigned int` | 4 bytes      | 0 … 4 × 10⁹        |
 
 Sizes are **at least** these values; the standard guarantees minimums, not exact widths. For exact widths use `<cstdint>`:
 
@@ -45,11 +45,11 @@ The single quote `'` in `1'000'000` is a **digit separator** (C++14) — purely 
 
 ## Floating-point
 
-| Type          | Size    | Precision         |
-| ------------- | ------- | ----------------- |
-| `float`       | 4 bytes | ~7 decimal digits |
-| `double`      | 8 bytes | ~15 digits        |
-| `long double` | ≥8 bytes| ≥`double`         |
+| Type          | Size     | Precision         |
+| ------------- | -------- | ----------------- |
+| `float`       | 4 bytes  | ~7 decimal digits |
+| `double`      | 8 bytes  | ~15 digits        |
+| `long double` | ≥8 bytes | ≥`double`         |
 
 Use `double` by default; use `float` only when memory matters (e.g. graphics, audio).
 
@@ -163,5 +163,3 @@ int main() {
     return 0;
 }
 ```
-
-Next: [C++ Operators](#).

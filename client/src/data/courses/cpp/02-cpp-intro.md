@@ -98,4 +98,4 @@ C++ is powerful.
 C++ is fun!
 ```
 
-Continue to [C++ Get Started](#) to install a compiler and run your first program.
+Continue to [C++ Get Started](/tutorials/cpp/cpp-get-started) to install a compiler and run your first program.

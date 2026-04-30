@@ -139,11 +139,11 @@ mat[r * cols + c] = value;
 
 ## When to use which?
 
-| Use            | When                                                 |
-| -------------- | ---------------------------------------------------- |
-| C-style array  | Interop with C, very low-level / embedded code       |
-| `std::array`   | Size is known at compile time                        |
-| `std::vector`  | Size is dynamic or large; default for most cases     |
+| Use           | When                                             |
+| ------------- | ------------------------------------------------ |
+| C-style array | Interop with C, very low-level / embedded code   |
+| `std::array`  | Size is known at compile time                    |
+| `std::vector` | Size is dynamic or large; default for most cases |
 
 ## Putting it together
 
@@ -167,5 +167,3 @@ int main() {
     return 0;
 }
 ```
-
-Next: [C++ Structures](#).

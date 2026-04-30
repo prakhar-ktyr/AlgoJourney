@@ -62,7 +62,7 @@ std::vector<int> a = makeBigVector();
 std::vector<int> b = std::move(a);   // b takes a's storage; a is empty
 ```
 
-For your own classes, follow the **Rule of Zero** ([C++ Memory Management](#)) — let RAII members handle moves.
+For your own classes, follow the **Rule of Zero** ([C++ Memory Management](/tutorials/cpp/cpp-memory-management)) — let RAII members handle moves.
 
 ## Smart pointers
 
@@ -81,7 +81,7 @@ consteval int onlyAtCompileTime(int x) { return x + 1; }   // C++20
 
 ## Lambdas (C++11/14/17/20)
 
-See the dedicated lesson on [C++ Lambdas](#). Highlights:
+See the dedicated lesson on [C++ Lambdas](/tutorials/cpp/cpp-lambdas). Highlights:
 
 - Generic lambdas (`auto` parameters) since C++14.
 - Init capture (`[v = std::move(x)]`) since C++14.
@@ -208,5 +208,3 @@ int main() {
         std::cout << std::format("{} ", x);
 }
 ```
-
-Next: [C++ Concurrency](#).

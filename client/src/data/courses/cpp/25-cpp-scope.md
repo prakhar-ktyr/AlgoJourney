@@ -55,7 +55,7 @@ int main() {
 
 ## Class scope
 
-Members live within the class; access them through an object, a reference, or via `ClassName::` for static members. Covered in [C++ Classes](#).
+Members live within the class; access them through an object, a reference, or via `ClassName::` for static members. Covered in [C++ Classes](/tutorials/cpp/cpp-classes).
 
 ## Storage duration vs scope
 
@@ -137,5 +137,3 @@ int main() {
     }
 }
 ```
-
-Next: [C++ Recursion](#).

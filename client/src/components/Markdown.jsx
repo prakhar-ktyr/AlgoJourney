@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { Link } from "react-router-dom";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import CodeBlock from "./CodeBlock";
@@ -6,14 +7,14 @@ import CodeBlock from "./CodeBlock";
 /**
  * Lightweight markdown renderer for the small subset of markdown we author
  * inside problem resource files: paragraphs, unordered/ordered lists, inline
- * `code`, **bold**, *emphasis*, markdown headings, and fenced ```code blocks.
- * Fenced blocks are
- * rendered through the shared CodeBlock component so they look consistent
- * with the dedicated reference-solution snippet.
+ * `code`, **bold**, *emphasis*, markdown headings, GitHub-style tables, and
+ * fenced ```code blocks. Fenced blocks are rendered through the shared
+ * CodeBlock component so they look consistent with the dedicated
+ * reference-solution snippet.
  *
- * This is intentionally minimal — no link/image/table support — to
- * keep the bundle small and the parser predictable. If we need richer
- * formatting later we can swap this out for `react-markdown`.
+ * This is intentionally minimal — no link/image support — to keep the
+ * bundle small and the parser predictable. If we need richer formatting
+ * later we can swap this out for `react-markdown`.
  */
 export default function Markdown({ source, className = "" }) {
   if (!source) return null;
@@ -82,6 +83,25 @@ function parseBlocks(text) {
       continue;
     }
 
+    // GitHub-style table:
+    //   | Col A | Col B |
+    //   |-------|------:|
+    //   | a1    | b1    |
+    // Outer pipes are optional. The separator row controls column alignment
+    // (`:---`, `---:`, `:---:`).
+    if (line.includes("|") && i + 1 < lines.length && isTableSeparator(lines[i + 1])) {
+      const header = splitTableRow(line);
+      const align = parseTableAlignment(lines[i + 1]);
+      i += 2;
+      const rows = [];
+      while (i < lines.length && lines[i].trim() && lines[i].includes("|")) {
+        rows.push(splitTableRow(lines[i]));
+        i++;
+      }
+      blocks.push({ type: "table", header, align, rows });
+      continue;
+    }
+
     // List (- or * or 1.) — collect contiguous list items.
     const listMarker = line.match(/^(\s*)([-*]|\d+\.)\s+(.*)$/);
     if (listMarker) {
@@ -105,7 +125,7 @@ function parseBlocks(text) {
       continue;
     }
 
-    // Paragraph — collect until blank line / fence / list.
+    // Paragraph — collect until blank line / fence / list / table.
     const buf = [line];
     i++;
     while (i < lines.length) {
@@ -115,7 +135,8 @@ function parseBlocks(text) {
         /^```/.test(next) ||
         /^(#{1,6})\s+/.test(next) ||
         /^\s{0,3}([-*_])(\s*\1){2,}\s*$/.test(next) ||
-        /^(\s*)([-*]|\d+\.)\s+/.test(next)
+        /^(\s*)([-*]|\d+\.)\s+/.test(next) ||
+        (next.includes("|") && i + 1 < lines.length && isTableSeparator(lines[i + 1]))
       ) {
         break;
       }
@@ -165,6 +186,42 @@ function renderBlock(block, key) {
       </HeadingTag>
     );
   }
+  if (block.type === "table") {
+    const alignClass = (a) =>
+      a === "right" ? "text-right" : a === "center" ? "text-center" : "text-left";
+    return (
+      <div key={key} className="overflow-x-auto">
+        <table className="min-w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-b border-gray-700">
+              {block.header.map((cell, idx) => (
+                <th
+                  key={idx}
+                  className={`px-3 py-2 font-semibold text-white ${alignClass(block.align[idx])}`}
+                >
+                  {renderInline(cell)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {block.rows.map((row, rIdx) => (
+              <tr key={rIdx} className="border-b border-gray-800/60">
+                {row.map((cell, cIdx) => (
+                  <td
+                    key={cIdx}
+                    className={`px-3 py-2 align-top text-gray-300 ${alignClass(block.align[cIdx])}`}
+                  >
+                    {renderInline(cell)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
   return (
     <p key={key} className="whitespace-pre-line">
       {renderInline(block.text)}
@@ -192,6 +249,34 @@ const FENCE_LANG_LABEL = {
 function normalizeFenceLang(raw) {
   if (!raw) return "";
   return FENCE_LANG_LABEL[raw.toLowerCase()] || raw;
+}
+
+/** True for a markdown table separator row like `|---|:--:|---:|`. */
+function isTableSeparator(line) {
+  if (!line || !line.includes("|")) return false;
+  const cells = splitTableRow(line);
+  if (!cells.length) return false;
+  return cells.every((c) => /^:?-{3,}:?$/.test(c.trim()));
+}
+
+/** Split a markdown table row into cell strings, ignoring optional outer pipes. */
+function splitTableRow(line) {
+  let s = line.trim();
+  if (s.startsWith("|")) s = s.slice(1);
+  if (s.endsWith("|")) s = s.slice(0, -1);
+  return s.split("|").map((c) => c.trim());
+}
+
+/** Parse a separator row into per-column alignments: 'left' | 'center' | 'right'. */
+function parseTableAlignment(line) {
+  return splitTableRow(line).map((cell) => {
+    const t = cell.trim();
+    const left = t.startsWith(":");
+    const right = t.endsWith(":");
+    if (left && right) return "center";
+    if (right) return "right";
+    return "left";
+  });
 }
 
 /**
@@ -274,6 +359,30 @@ function renderInline(text) {
       }
     }
 
+    // Link: [text](url) — `text` may contain inline code/emphasis but not
+    // nested `]`. Skip placeholder hrefs of `#` so they render as plain text.
+    if (ch === "[") {
+      const closeBracket = text.indexOf("]", i + 1);
+      if (closeBracket !== -1 && text[closeBracket + 1] === "(") {
+        const closeParen = text.indexOf(")", closeBracket + 2);
+        if (closeParen !== -1) {
+          const label = text.slice(i + 1, closeBracket);
+          const href = text.slice(closeBracket + 2, closeParen).trim();
+          if (href && href !== "#") {
+            nodes.push({ type: "link", href, children: renderInline(label) });
+            i = closeParen + 1;
+            continue;
+          }
+          if (href === "#") {
+            // Strip placeholder links entirely — render only the label text.
+            nodes.push(...renderInline(label).map((c) => ({ type: "node", value: c })));
+            i = closeParen + 1;
+            continue;
+          }
+        }
+      }
+    }
+
     // Plain text — accumulate until next special char.
     let j = i + 1;
     while (j < text.length && !isInlineSpecial(text[j])) j++;
@@ -318,12 +427,41 @@ function renderInline(text) {
         />
       );
     }
+    if (n.type === "link") {
+      const linkClass = "text-indigo-300 hover:text-indigo-200 underline underline-offset-2";
+      if (isExternalHref(n.href)) {
+        return (
+          <a
+            key={idx}
+            href={n.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            {n.children}
+          </a>
+        );
+      }
+      return (
+        <Link key={idx} to={n.href} className={linkClass}>
+          {n.children}
+        </Link>
+      );
+    }
+    if (n.type === "node") {
+      return <Fragment key={idx}>{n.value}</Fragment>;
+    }
     return <Fragment key={idx}>{n.value}</Fragment>;
   });
 }
 
 function isInlineSpecial(ch) {
-  return ch === "`" || ch === "*" || ch === "_" || ch === "$";
+  return ch === "`" || ch === "*" || ch === "_" || ch === "$" || ch === "[";
+}
+
+/** External link if it has a scheme (`http:`, `https:`, `mailto:`, …) or starts with `//`. */
+function isExternalHref(href) {
+  return /^([a-z][a-z0-9+.-]*:|\/\/)/i.test(href);
 }
 
 /** Find the next standalone closing marker (skipping inline code spans). */

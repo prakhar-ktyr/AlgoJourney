@@ -87,15 +87,15 @@ int main() {
 
 Common ones:
 
-| Manipulator         | Effect                                      |
-| ------------------- | ------------------------------------------- |
-| `std::endl`         | Newline + flush                             |
-| `std::boolalpha`    | Show `bool` as `true`/`false`               |
-| `std::fixed`        | Force fixed-point notation                  |
-| `std::setprecision` | Number of digits after the decimal point    |
-| `std::setw(n)`      | Field width for the next output             |
-| `std::hex`/`oct`    | Print integers in hex/octal                 |
-| `std::left`/`right` | Alignment within a field                    |
+| Manipulator         | Effect                                   |
+| ------------------- | ---------------------------------------- |
+| `std::endl`         | Newline + flush                          |
+| `std::boolalpha`    | Show `bool` as `true`/`false`            |
+| `std::fixed`        | Force fixed-point notation               |
+| `std::setprecision` | Number of digits after the decimal point |
+| `std::setw(n)`      | Field width for the next output          |
+| `std::hex`/`oct`    | Print integers in hex/octal              |
+| `std::left`/`right` | Alignment within a field                 |
 
 ## Printing multiple lines compactly
 
@@ -146,5 +146,3 @@ Pi  ≈ 3.1416
 Hex(255) = ff
 Is 3 < 5? true
 ```
-
-Next: [C++ Comments](#).

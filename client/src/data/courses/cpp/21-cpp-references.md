@@ -34,13 +34,13 @@ std::cout << x << '\n'; // 20
 
 ## References vs pointers
 
-| Feature                      | Reference (`T&`) | Pointer (`T*`)        |
-| ---------------------------- | ---------------- | --------------------- |
-| Must be initialized          | Yes              | No                    |
-| Can be null                  | No               | Yes (`nullptr`)       |
-| Can be rebound               | No               | Yes                   |
-| Syntax to access value       | `r`              | `*p`                  |
-| Member access                | `r.x`            | `p->x`                |
+| Feature                | Reference (`T&`) | Pointer (`T*`)  |
+| ---------------------- | ---------------- | --------------- |
+| Must be initialized    | Yes              | No              |
+| Can be null            | No               | Yes (`nullptr`) |
+| Can be rebound         | No               | Yes             |
+| Syntax to access value | `r`              | `*p`            |
+| Member access          | `r.x`            | `p->x`          |
 
 References are typically the right choice when:
 
@@ -110,12 +110,12 @@ for (const auto& v : container)  std::cout << v;         // read-only, no copy
 
 ## Reference vs value parameters — quick guide
 
-| Pass by      | When                                                       |
-| ------------ | ---------------------------------------------------------- |
-| `T`          | Cheap to copy (`int`, `double`, small POD), or you need a copy you can mutate locally |
-| `const T&`   | Non-trivial type, read-only access                         |
-| `T&`         | You need to modify the caller's object                     |
-| `T*`         | Object may be null, or you need pointer arithmetic / rebinding |
+| Pass by    | When                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------- |
+| `T`        | Cheap to copy (`int`, `double`, small POD), or you need a copy you can mutate locally |
+| `const T&` | Non-trivial type, read-only access                                                    |
+| `T&`       | You need to modify the caller's object                                                |
+| `T*`       | Object may be null, or you need pointer arithmetic / rebinding                        |
 
 ## Putting it together
 
@@ -138,5 +138,3 @@ int main() {
     return 0;
 }
 ```
-
-Next: [C++ Pointers](#).

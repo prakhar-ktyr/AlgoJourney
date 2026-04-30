@@ -98,7 +98,7 @@ Return values are usually clearer than output parameters, but when you really ne
 void minMax(const std::vector<int>& v, int& lo, int& hi);
 ```
 
-…or return a struct / `std::tuple` and use structured bindings (see [C++ Functions](#)).
+…or return a struct / `std::tuple` and use structured bindings (see [C++ Functions](/tutorials/cpp/cpp-functions)).
 
 ## Putting it together
 
@@ -126,5 +126,3 @@ int main() {
     describe(msg);                       // len=6 value=hello!
 }
 ```
-
-Next: [C++ Scope](#).

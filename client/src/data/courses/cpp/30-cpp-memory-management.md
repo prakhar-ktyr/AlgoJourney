@@ -130,5 +130,3 @@ int main() {
     // when 'assets' goes out of scope, every Texture is freed automatically
 }
 ```
-
-Next: [C++ Exceptions](#).

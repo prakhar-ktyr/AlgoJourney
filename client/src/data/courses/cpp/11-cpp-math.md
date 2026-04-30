@@ -13,24 +13,24 @@ C++ provides a large set of math utilities through the `<cmath>` header (the C++
 
 ## Common math functions
 
-| Function           | Meaning                         |
-| ------------------ | ------------------------------- |
-| `std::abs(x)`      | Absolute value                  |
-| `std::sqrt(x)`     | Square root                     |
-| `std::cbrt(x)`     | Cube root                       |
-| `std::pow(x, y)`   | x raised to the power y         |
-| `std::exp(x)`      | e^x                             |
-| `std::log(x)`      | Natural log                     |
-| `std::log10(x)`    | Log base 10                     |
-| `std::log2(x)`     | Log base 2                      |
-| `std::sin/cos/tan` | Trigonometry (radians)          |
-| `std::asin`...     | Inverse trig                    |
-| `std::floor(x)`    | Round down                      |
-| `std::ceil(x)`     | Round up                        |
-| `std::round(x)`    | Round to nearest                |
-| `std::trunc(x)`    | Truncate toward zero            |
-| `std::fmod(x, y)`  | Floating-point remainder        |
-| `std::hypot(a,b)`  | √(a²+b²) without overflow       |
+| Function           | Meaning                   |
+| ------------------ | ------------------------- |
+| `std::abs(x)`      | Absolute value            |
+| `std::sqrt(x)`     | Square root               |
+| `std::cbrt(x)`     | Cube root                 |
+| `std::pow(x, y)`   | x raised to the power y   |
+| `std::exp(x)`      | e^x                       |
+| `std::log(x)`      | Natural log               |
+| `std::log10(x)`    | Log base 10               |
+| `std::log2(x)`     | Log base 2                |
+| `std::sin/cos/tan` | Trigonometry (radians)    |
+| `std::asin`...     | Inverse trig              |
+| `std::floor(x)`    | Round down                |
+| `std::ceil(x)`     | Round up                  |
+| `std::round(x)`    | Round to nearest          |
+| `std::trunc(x)`    | Truncate toward zero      |
+| `std::fmod(x, y)`  | Floating-point remainder  |
+| `std::hypot(a,b)`  | √(a²+b²) without overflow |
 
 ```cpp
 std::cout << std::sqrt(16.0)     << '\n'; // 4
@@ -154,5 +154,3 @@ int main() {
     return 0;
 }
 ```
-
-Next: [C++ Booleans](#).

@@ -147,5 +147,3 @@ int main() {
     return 0;
 }
 ```
-
-Next: [C++ Data Types](#).

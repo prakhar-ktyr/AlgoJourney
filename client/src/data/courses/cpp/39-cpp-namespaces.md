@@ -131,5 +131,3 @@ int main() {
     std::cout << company::strings::upper("hello") << '\n';
 }
 ```
-
-Next: [C++ STL Vectors](#).
