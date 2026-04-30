@@ -35,6 +35,8 @@ By the end of this course you will be comfortable with:
 
 ## How to use this course
 
-Each lesson builds on the previous one. Read the explanation, run the example yourself, then experiment by changing values. The "Putting it together" example at the end of every chapter ties the new concept back into a small program.
+Each lesson builds on the previous one. Read the explanation first, then once we've installed a compiler in **C++ Get Started**, run the example yourself and experiment by changing values. The "Putting it together" example at the end of every chapter ties the new concept back into a small program.
+
+> New to programming? Don't worry about running anything yet — the next two lessons walk you through installing a C++ compiler and compiling your first program from scratch.
 
 Use the sidebar to jump to any lesson, or click **Next** to move forward in order.

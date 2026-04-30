@@ -7,13 +7,7 @@ import { useEffect, useRef, useState } from "react";
  * behind a hover state. Falls back to a hidden textarea + execCommand when the
  * async clipboard API is unavailable.
  */
-export default function CodeBlock({
-  code,
-  language,
-  testId,
-  showHeader = true,
-  className = "",
-}) {
+export default function CodeBlock({ code, language, testId, showHeader = true, className = "" }) {
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef(null);
 
@@ -55,9 +49,7 @@ export default function CodeBlock({
     }
   };
 
-  const copyLabel = language
-    ? `Copy ${language} code to clipboard`
-    : "Copy code to clipboard";
+  const copyLabel = language ? `Copy ${language} code to clipboard` : "Copy code to clipboard";
 
   return (
     <div

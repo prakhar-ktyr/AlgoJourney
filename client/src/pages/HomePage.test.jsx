@@ -14,7 +14,9 @@ describe("HomePage", () => {
   it("renders the hero heading", () => {
     renderPage();
     expect(screen.getByText("Computer Science")).toBeInTheDocument();
-    expect(screen.getByText("AI")).toBeInTheDocument();
+    // "AI" appears in the hero copy and as a topic-card monogram badge,
+    // so just assert at least one occurrence rather than uniqueness.
+    expect(screen.getAllByText("AI").length).toBeGreaterThanOrEqual(1);
   });
 
   it("renders the search bar", () => {
@@ -47,16 +49,16 @@ describe("HomePage", () => {
       expect(screen.getByText(group)).toBeInTheDocument();
     }
     // "Software Engineering" appears as both group name and topic card
-    expect(
-      screen.getAllByText("Software Engineering").length,
-    ).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("Software Engineering").length).toBeGreaterThanOrEqual(1);
   });
 
   it("renders topic cards (e.g. Python, React, SQL)", () => {
     renderPage();
     expect(screen.getByText("Python")).toBeInTheDocument();
     expect(screen.getByText("React")).toBeInTheDocument();
-    expect(screen.getByText("SQL")).toBeInTheDocument();
+    // "SQL" is both the topic name and the monogram label on its logo,
+    // so multiple matches are expected — assert presence, not uniqueness.
+    expect(screen.getAllByText("SQL").length).toBeGreaterThanOrEqual(1);
   });
 
   it("topic cards are links to /tutorials/:slug", () => {

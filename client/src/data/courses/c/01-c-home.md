@@ -4,7 +4,7 @@ title: C Home
 
 # Welcome to the C Tutorial
 
-C is one of the most influential programming languages ever created. Operating systems (Linux, Windows kernels, macOS internals), embedded firmware, databases, compilers, and even the runtimes of higher-level languages like Python and JavaScript are written largely in C. Learning C teaches you how computers *actually work* — memory, pointers, the stack, the heap — knowledge that pays off in every other language you'll ever use.
+C is one of the most influential programming languages ever created. Operating systems (Linux, Windows kernels, macOS internals), embedded firmware, databases, compilers, and even the runtimes of higher-level languages like Python and JavaScript are written largely in C. Learning C teaches you how computers _actually work_ — memory, pointers, the stack, the heap — knowledge that pays off in every other language you'll ever use.
 
 ## What you will learn
 
@@ -27,7 +27,7 @@ None! You don't need any prior programming experience. If you can use a text edi
 
 ## Try It Yourself
 
-Throughout the course you'll see code blocks like the one below. Copy them into a file called `hello.c` and run them — actually typing the code is how it sticks.
+Throughout the course you'll see code blocks like the one below. Don't worry if it looks unfamiliar — the very next lessons walk you through installing a C compiler, creating your first file, and running it from the terminal step by step.
 
 ```c
 #include <stdio.h>
@@ -37,5 +37,7 @@ int main(void) {
     return 0;
 }
 ```
+
+For now, just read the example to get a feel for the syntax. By the end of the **Get Started** lesson you'll be running this exact program on your own machine.
 
 Ready? Click **C Introduction →** to begin.

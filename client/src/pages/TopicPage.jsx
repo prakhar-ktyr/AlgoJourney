@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { ALL_TOPICS } from "../data/topics";
 import { getCourse, getLesson, getAdjacentLessons } from "../data/courses";
 import CourseLayout from "../components/CourseLayout";
+import TopicLogo from "../components/TopicLogo";
 
 export default function TopicPage() {
   const { slug, lessonSlug } = useParams();
@@ -67,7 +68,7 @@ export default function TopicPage() {
       </Link>
 
       <div className="flex items-center gap-3 mb-6">
-        <span className="text-4xl">{topic.icon}</span>
+        <TopicLogo topic={topic} size="lg" />
         <div>
           <h1 className="text-3xl font-bold text-white">{topic.name}</h1>
           <span className="text-sm text-gray-500">{topic.group}</span>

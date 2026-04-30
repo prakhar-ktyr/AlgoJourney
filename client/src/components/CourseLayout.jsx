@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Markdown from "./Markdown";
+import TopicLogo from "./TopicLogo";
 
 /**
  * Two-column course layout inspired by w3schools: a sticky sidebar listing
@@ -24,9 +25,7 @@ export default function CourseLayout({ topic, course, lesson, prev, next, basePa
       </Link>
 
       <div className="flex items-center gap-3 mb-6">
-        <span className="text-4xl" aria-hidden="true">
-          {topic.icon}
-        </span>
+        <TopicLogo topic={topic} size="lg" />
         <div>
           <h1 className="text-3xl font-bold text-white">{topic.name} Tutorial</h1>
           <span className="text-sm text-gray-500">{topic.group}</span>
