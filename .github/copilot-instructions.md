@@ -36,12 +36,6 @@ Before declaring a task done:
 2. **Run the linter** for the touched workspace (`cd client && npm run lint`).
 3. **Update documentation in the same change**: keep [README.md](README.md) accurate (env vars, scripts, API endpoints, features), update this file when conventions change, and refresh `server/.env.example` whenever a new env var is introduced.
 4. **Format with Prettier**: a repo config at [.prettierrc.json](.prettierrc.json) governs style; run `npx prettier --write <files>` before committing if your editor doesn't format on save.
-5. **Commit and push automatically** when the changes are commit-worthy (a self-contained feature, fix, content addition, or refactor) and tests + lint pass:
-   - Group related changes into one or more focused commits — never lump unrelated work together.
-   - Use [Conventional Commits](https://www.conventionalcommits.org/) prefixes: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `content` (custom, for DSA notes / static data updates).
-   - Write a descriptive subject (≤72 chars) plus a short body explaining the **why**, not just the **what**.
-   - Run `git push` from the repo root once committed. The default branch is `main` and pushes go directly there in this workspace.
-   - **Do NOT auto-push** if any of these are true: tests/lint failed, the work is exploratory or WIP, secrets/credentials were touched, the change spans destructive operations (force-push, history rewrite), or the user explicitly asked you to hold off. When in doubt, commit locally and ask before pushing.
 
 ## Build & Test Commands
 
