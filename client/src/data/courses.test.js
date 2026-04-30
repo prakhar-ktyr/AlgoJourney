@@ -31,7 +31,7 @@ describe("courses loader", () => {
   it("returns null for an unknown course or lesson", () => {
     expect(getCourse("not-a-real-course")).toBeNull();
     expect(getLesson("c", "no-such-lesson")).toBeNull();
-    expect(hasCourse("python")).toBe(false);
+    expect(hasCourse("javascript")).toBe(false);
   });
 
   it("computes prev/next correctly", () => {
@@ -53,5 +53,41 @@ describe("courses loader", () => {
   it("exposes COURSES as a slug-keyed object", () => {
     expect(COURSES.c).toBeDefined();
     expect(COURSES.c.slug).toBe("c");
+  });
+
+  it("registers the Python course with substantive content", () => {
+    expect(hasCourse("python")).toBe(true);
+    const py = getCourse("python");
+    expect(py.lessons.length).toBeGreaterThanOrEqual(30);
+
+    const orders = py.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("python");
+    expect(home.title.toLowerCase()).toContain("python");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const oop = getLesson("python", "python-classes-objects");
+    expect(oop).not.toBeNull();
+    expect(oop.body.toLowerCase()).toContain("class");
+  });
+
+  it("registers the Java course with substantive content", () => {
+    expect(hasCourse("java")).toBe(true);
+    const java = getCourse("java");
+    expect(java.lessons.length).toBeGreaterThanOrEqual(40);
+
+    const orders = java.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("java");
+    expect(home.title.toLowerCase()).toContain("java");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const oop = getLesson("java", "java-classes-objects");
+    expect(oop).not.toBeNull();
+    expect(oop.body.toLowerCase()).toContain("class");
   });
 });

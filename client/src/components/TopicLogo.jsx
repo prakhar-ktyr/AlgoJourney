@@ -282,13 +282,7 @@ export default function TopicLogo({ topic, size = "md", className = "" }) {
     >
       {brand.kind === "si" && svgEl}
       {brand.kind === "img" && (
-        <img
-          src={brand.src}
-          alt=""
-          aria-hidden="true"
-          className={sizing.img}
-          loading="lazy"
-        />
+        <img src={brand.src} alt="" aria-hidden="true" className={sizing.img} loading="lazy" />
       )}
       {brand.kind === "mono" && brand.label}
     </span>
