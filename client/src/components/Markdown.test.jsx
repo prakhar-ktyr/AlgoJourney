@@ -39,4 +39,16 @@ describe("Markdown", () => {
     expect(container.querySelector(".katex")).not.toBeNull();
     expect(container.textContent).not.toContain("$$");
   });
+
+  it("renders --- as a horizontal rule, not literal text", () => {
+    const { container } = render(
+      <Markdown
+        source={["Before the break.", "", "---", "", "After the break."].join(
+          "\n",
+        )}
+      />,
+    );
+    expect(container.querySelector("hr")).not.toBeNull();
+    expect(container.textContent).not.toContain("---");
+  });
 });

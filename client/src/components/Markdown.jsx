@@ -63,6 +63,13 @@ function parseBlocks(text) {
       continue;
     }
 
+    // Thematic break / horizontal rule (---, ***, ___).
+    if (/^\s{0,3}([-*_])(\s*\1){2,}\s*$/.test(line)) {
+      blocks.push({ type: "hr" });
+      i++;
+      continue;
+    }
+
     // Markdown heading (### Title).
     const heading = line.match(/^(#{1,6})\s+(.*)$/);
     if (heading) {
@@ -112,6 +119,7 @@ function parseBlocks(text) {
         !next.trim() ||
         /^```/.test(next) ||
         /^(#{1,6})\s+/.test(next) ||
+        /^\s{0,3}([-*_])(\s*\1){2,}\s*$/.test(next) ||
         /^(\s*)([-*]|\d+\.)\s+/.test(next)
       ) {
         break;
@@ -133,6 +141,9 @@ function renderBlock(block, key) {
         language={normalizeFenceLang(block.lang)}
       />
     );
+  }
+  if (block.type === "hr") {
+    return <hr key={key} className="border-t border-gray-700 my-2" />;
   }
   if (block.type === "list") {
     const Tag = block.ordered ? "ol" : "ul";
