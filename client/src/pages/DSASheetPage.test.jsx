@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -199,6 +199,34 @@ describe("DSASheetPage", () => {
         "href",
         "https://www.geeksforgeeks.org/problems/c-input-output2432/1",
       );
+    });
+  });
+
+  describe("Scroll restoration on back-navigation", () => {
+    it("restores the saved scroll position from sessionStorage on mount", () => {
+      sessionStorage.setItem(
+        "dsa-sheet-view-state",
+        JSON.stringify({ openSteps: [], openSubSteps: [], scrollY: 1234 }),
+      );
+      const scrollSpy = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+      renderPage();
+      expect(scrollSpy).toHaveBeenCalledWith(0, 1234);
+      scrollSpy.mockRestore();
+    });
+
+    it("switches history.scrollRestoration to manual to prevent the browser from snapping to top", () => {
+      const original = window.history.scrollRestoration;
+      window.history.scrollRestoration = "auto";
+      renderPage();
+      expect(window.history.scrollRestoration).toBe("manual");
+      window.history.scrollRestoration = original;
+    });
+
+    it("does not call scrollTo when no saved scroll position exists", () => {
+      const scrollSpy = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+      renderPage();
+      expect(scrollSpy).not.toHaveBeenCalled();
+      scrollSpy.mockRestore();
     });
   });
 });

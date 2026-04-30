@@ -164,9 +164,7 @@ function countStepProblems(step) {
 const ALL_PROBLEMS = flattenProblems(STRIVERS_SHEET);
 
 export default function DSASheetPage() {
-  const [openSteps, setOpenSteps] = useState(
-    () => new Set(loadViewState()?.openSteps ?? []),
-  );
+  const [openSteps, setOpenSteps] = useState(() => new Set(loadViewState()?.openSteps ?? []));
   const [openSubSteps, setOpenSubSteps] = useState(
     () => new Set(loadViewState()?.openSubSteps ?? []),
   );
@@ -219,12 +217,29 @@ export default function DSASheetPage() {
   }, []);
 
   // Restore scroll position after the accordion content has been rendered.
+  // The browser's default `history.scrollRestoration = 'auto'` will otherwise
+  // race with (and clobber) our manual scrollTo on back-nav, snapping the page
+  // to the top. Switch to manual restoration so our `scrollTo` sticks, and
+  // re-apply on the next animation frame to handle async layout shifts.
   useLayoutEffect(() => {
-    const saved = loadViewState();
-    if (saved && typeof saved.scrollY === "number") {
-      window.scrollTo(0, saved.scrollY);
+    if (typeof window === "undefined") return;
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
     }
-    // Only run on mount; open state is restored synchronously above.
+
+    const saved = loadViewState();
+    if (!saved || typeof saved.scrollY !== "number") return;
+
+    const targetY = saved.scrollY;
+    window.scrollTo(0, targetY);
+
+    if (typeof window.requestAnimationFrame !== "function") return;
+    const raf = window.requestAnimationFrame(() => window.scrollTo(0, targetY));
+    return () => {
+      if (typeof window.cancelAnimationFrame === "function") {
+        window.cancelAnimationFrame(raf);
+      }
+    };
   }, []);
 
   const toggleStep = (stepNo) => {
