@@ -31,7 +31,7 @@ describe("courses loader", () => {
   it("returns null for an unknown course or lesson", () => {
     expect(getCourse("not-a-real-course")).toBeNull();
     expect(getLesson("c", "no-such-lesson")).toBeNull();
-    expect(hasCourse("javascript")).toBe(false);
+    expect(hasCourse("typescript")).toBe(false);
   });
 
   it("computes prev/next correctly", () => {

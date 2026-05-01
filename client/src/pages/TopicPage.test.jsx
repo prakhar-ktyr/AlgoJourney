@@ -15,18 +15,18 @@ const renderPage = (path) =>
 
 describe("TopicPage — coming-soon topic", () => {
   it("renders topic name for a valid slug", () => {
-    renderPage("/tutorials/javascript");
-    expect(screen.getByRole("heading", { name: "JavaScript" })).toBeInTheDocument();
+    renderPage("/tutorials/typescript");
+    expect(screen.getByRole("heading", { name: "TypeScript" })).toBeInTheDocument();
     expect(screen.getByText("Programming Languages")).toBeInTheDocument();
   });
 
   it("shows coming soon message when no course exists", () => {
-    renderPage("/tutorials/javascript");
+    renderPage("/tutorials/typescript");
     expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
   });
 
   it("has a back link to tutorials", () => {
-    renderPage("/tutorials/javascript");
+    renderPage("/tutorials/typescript");
     expect(screen.getByText("← All tutorials")).toHaveAttribute("href", "/tutorials");
   });
 
