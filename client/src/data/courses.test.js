@@ -253,4 +253,22 @@ describe("courses loader", () => {
     expect(xss).not.toBeNull();
     expect(xss.body.toLowerCase()).toContain("xss");
   });
+
+  it("registers the Blockchain course with substantive content", () => {
+    expect(hasCourse("blockchain")).toBe(true);
+    const course = getCourse("blockchain");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(55);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("blockchain");
+    expect(home.title.toLowerCase()).toContain("blockchain");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const solidity = getLesson("blockchain", "blockchain-solidity-basics");
+    expect(solidity).not.toBeNull();
+    expect(solidity.body.toLowerCase()).toContain("solidity");
+  });
 });
