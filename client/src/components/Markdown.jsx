@@ -125,7 +125,44 @@ function parseBlocks(text) {
       continue;
     }
 
-    // Paragraph — collect until blank line / fence / list / table.
+    // Blockquote and GFM Alerts (> [!NOTE], etc.)
+    const blockquoteMatch = line.match(/^>\s?(.*)$/);
+    if (blockquoteMatch) {
+      const buf = [blockquoteMatch[1]];
+      i++;
+      while (i < lines.length) {
+        const next = lines[i];
+        if (!next.trim()) break;
+
+        const nextMatch = next.match(/^>\s?(.*)$/);
+        if (nextMatch) {
+          buf.push(nextMatch[1]);
+          i++;
+        } else if (
+          /^```/.test(next) ||
+          /^(#{1,6})\s+/.test(next) ||
+          /^\s{0,3}([-*_])(\s*\1){2,}\s*$/.test(next) ||
+          /^(\s*)([-*]|\d+\.)\s+/.test(next) ||
+          (next.includes("|") && i + 1 < lines.length && isTableSeparator(lines[i + 1]))
+        ) {
+          break;
+        } else {
+          // Lazy continuation
+          buf.push(next);
+          i++;
+        }
+      }
+      const bqText = buf.join("\n");
+      const alertMatch = bqText.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:\s*\n|\s+)([\s\S]*)$/i);
+      if (alertMatch) {
+        blocks.push({ type: "alert", alertType: alertMatch[1].toUpperCase(), text: alertMatch[2].trim() });
+      } else {
+        blocks.push({ type: "blockquote", text: bqText.trim() });
+      }
+      continue;
+    }
+
+    // Paragraph — collect until blank line / fence / list / table / blockquote.
     const buf = [line];
     i++;
     while (i < lines.length) {
@@ -136,6 +173,7 @@ function parseBlocks(text) {
         /^(#{1,6})\s+/.test(next) ||
         /^\s{0,3}([-*_])(\s*\1){2,}\s*$/.test(next) ||
         /^(\s*)([-*]|\d+\.)\s+/.test(next) ||
+        /^>/.test(next) ||
         (next.includes("|") && i + 1 < lines.length && isTableSeparator(lines[i + 1]))
       ) {
         break;
@@ -156,17 +194,41 @@ function renderBlock(block, key) {
     return <hr key={key} className="border-t border-gray-700 my-2" />;
   }
   if (block.type === "list") {
+    const hasTaskItems = block.items.some((item) => /^\[[ x]\]\s/i.test(item));
     const Tag = block.ordered ? "ol" : "ul";
-    const listClass = block.ordered
-      ? "list-decimal list-outside ml-6 space-y-2"
-      : "list-disc list-outside ml-6 space-y-2";
+    const listClass = hasTaskItems
+      ? "list-none ml-1 space-y-2"
+      : block.ordered
+        ? "list-decimal list-outside ml-6 space-y-2"
+        : "list-disc list-outside ml-6 space-y-2";
     return (
       <Tag key={key} className={listClass}>
-        {block.items.map((item, idx) => (
-          <li key={idx} className="text-gray-300 leading-relaxed">
-            {renderInline(item)}
-          </li>
-        ))}
+        {block.items.map((item, idx) => {
+          const taskMatch = item.match(/^\[([ x])\]\s([\s\S]*)$/i);
+          if (taskMatch) {
+            const checked = taskMatch[1].toLowerCase() === "x";
+            return (
+              <li key={idx} className="text-gray-300 leading-relaxed flex items-start gap-2">
+                <span
+                  className={`inline-flex items-center justify-center w-5 h-5 mt-0.5 rounded border flex-shrink-0 ${checked ? "bg-indigo-500 border-indigo-500 text-white" : "border-gray-600 text-transparent"}`}
+                  aria-hidden="true"
+                >
+                  {checked && (
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </span>
+                <span>{renderInline(taskMatch[2])}</span>
+              </li>
+            );
+          }
+          return (
+            <li key={idx} className="text-gray-300 leading-relaxed">
+              {renderInline(item)}
+            </li>
+          );
+        })}
       </Tag>
     );
   }
@@ -222,6 +284,50 @@ function renderBlock(block, key) {
       </div>
     );
   }
+  if (block.type === "blockquote") {
+    return (
+      <blockquote key={key} className="border-l-4 border-gray-600 pl-4 py-2 italic text-gray-400 bg-gray-800/20 rounded-r-md">
+        <p className="whitespace-pre-line">{renderInline(block.text)}</p>
+      </blockquote>
+    );
+  }
+
+  if (block.type === "alert") {
+    const ALERT_STYLES = {
+      NOTE: "border-blue-500 bg-blue-500/10",
+      TIP: "border-green-500 bg-green-500/10",
+      IMPORTANT: "border-purple-500 bg-purple-500/10",
+      WARNING: "border-yellow-500 bg-yellow-500/10",
+      CAUTION: "border-red-500 bg-red-500/10",
+    };
+    const TITLE_COLORS = {
+      NOTE: "text-blue-400",
+      TIP: "text-green-400",
+      IMPORTANT: "text-purple-400",
+      WARNING: "text-yellow-400",
+      CAUTION: "text-red-400",
+    };
+    const TITLE_ICONS = {
+      NOTE: "ℹ️",
+      TIP: "💡",
+      IMPORTANT: "✨",
+      WARNING: "⚠️",
+      CAUTION: "🛑",
+    };
+
+    return (
+      <div key={key} className={`border-l-4 pl-4 py-3 rounded-r-md ${ALERT_STYLES[block.alertType]}`}>
+        <div className={`font-semibold mb-2 flex items-center gap-2 ${TITLE_COLORS[block.alertType]}`}>
+          <span>{TITLE_ICONS[block.alertType]}</span>
+          <span className="capitalize">{block.alertType.toLowerCase()}</span>
+        </div>
+        <div className="text-gray-300 whitespace-pre-line">
+          {renderInline(block.text)}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <p key={key} className="whitespace-pre-line">
       {renderInline(block.text)}

@@ -105,4 +105,39 @@ describe("Markdown", () => {
     expect(container.textContent).toContain("Coming soon: Lambdas.");
     expect(container.textContent).not.toContain("](");
   });
+
+  it("renders blockquotes", () => {
+    const { container } = renderMd("> This is a blockquote\n> spanning multiple lines.");
+    const bq = container.querySelector("blockquote");
+    expect(bq).not.toBeNull();
+    expect(bq.textContent).toContain("This is a blockquote\nspanning multiple lines.");
+    expect(bq.textContent).not.toContain(">");
+  });
+
+  it("renders GFM alerts", () => {
+    const { container } = renderMd("> [!NOTE]\n> This is an important note.");
+    const alertDiv = container.querySelector(".border-blue-500");
+    expect(alertDiv).not.toBeNull();
+    expect(screen.getByText("note")).toBeInTheDocument();
+    expect(screen.getByText("This is an important note.")).toBeInTheDocument();
+  });
+
+  it("renders task list items with checkboxes", () => {
+    const { container } = renderMd(
+      ["- [x] Completed task", "- [ ] Pending task"].join("\n"),
+    );
+    const items = container.querySelectorAll("li");
+    expect(items).toHaveLength(2);
+    // No bullet markers for task lists
+    expect(container.querySelector("ul").className).toContain("list-none");
+    // Checked item has filled checkbox
+    expect(items[0].querySelector(".bg-indigo-500")).not.toBeNull();
+    expect(items[0].textContent).toContain("Completed task");
+    // Unchecked item has empty checkbox
+    expect(items[1].querySelector(".bg-indigo-500")).toBeNull();
+    expect(items[1].textContent).toContain("Pending task");
+    // Raw brackets should not appear
+    expect(container.textContent).not.toContain("[x]");
+    expect(container.textContent).not.toContain("[ ]");
+  });
 });

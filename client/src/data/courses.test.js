@@ -163,4 +163,94 @@ describe("courses loader", () => {
     expect(hooks).not.toBeNull();
     expect(hooks.body.toLowerCase()).toContain("hook");
   });
+
+  it("registers the Node.js course with substantive content", () => {
+    expect(hasCourse("nodejs")).toBe(true);
+    const nodejs = getCourse("nodejs");
+    expect(nodejs.lessons.length).toBeGreaterThanOrEqual(50);
+
+    const orders = nodejs.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("nodejs");
+    expect(home.title.toLowerCase()).toContain("node");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const modules = getLesson("nodejs", "nodejs-modules");
+    expect(modules).not.toBeNull();
+    expect(modules.body.toLowerCase()).toContain("module");
+  });
+
+  it("registers the Next.js course with substantive content", () => {
+    expect(hasCourse("nextjs")).toBe(true);
+    const nextjs = getCourse("nextjs");
+    expect(nextjs.lessons.length).toBeGreaterThanOrEqual(55);
+
+    const orders = nextjs.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("nextjs");
+    expect(home.title.toLowerCase()).toContain("next");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const routing = getLesson("nextjs", "nextjs-pages-routing");
+    expect(routing).not.toBeNull();
+    expect(routing.body.toLowerCase()).toContain("route");
+  });
+
+  it("registers the Web APIs & REST course with substantive content", () => {
+    expect(hasCourse("web-apis-rest")).toBe(true);
+    const course = getCourse("web-apis-rest");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(55);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("web-apis-rest");
+    expect(home.title.toLowerCase()).toContain("api");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const rest = getLesson("web-apis-rest", "web-apis-rest-what-is-rest");
+    expect(rest).not.toBeNull();
+    expect(rest.body.toLowerCase()).toContain("rest");
+  });
+
+  it("registers the GraphQL course with substantive content", () => {
+    expect(hasCourse("graphql")).toBe(true);
+    const course = getCourse("graphql");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(55);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("graphql");
+    expect(home.title.toLowerCase()).toContain("graphql");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const resolvers = getLesson("graphql", "graphql-resolvers");
+    expect(resolvers).not.toBeNull();
+    expect(resolvers.body.toLowerCase()).toContain("resolver");
+  });
+
+  it("registers the Cybersecurity course with substantive content", () => {
+    expect(hasCourse("cybersecurity")).toBe(true);
+    const course = getCourse("cybersecurity");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(55);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("cybersecurity");
+    expect(home.title.toLowerCase()).toContain("cybersecurity");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const xss = getLesson("cybersecurity", "cybersecurity-xss");
+    expect(xss).not.toBeNull();
+    expect(xss.body.toLowerCase()).toContain("xss");
+  });
 });
