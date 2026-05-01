@@ -31,7 +31,7 @@ describe("courses loader", () => {
   it("returns null for an unknown course or lesson", () => {
     expect(getCourse("not-a-real-course")).toBeNull();
     expect(getLesson("c", "no-such-lesson")).toBeNull();
-    expect(hasCourse("typescript")).toBe(false);
+    expect(hasCourse("not-a-real-course-xyz")).toBe(false);
   });
 
   it("computes prev/next correctly", () => {
@@ -89,5 +89,44 @@ describe("courses loader", () => {
     const oop = getLesson("java", "java-classes-objects");
     expect(oop).not.toBeNull();
     expect(oop.body.toLowerCase()).toContain("class");
+  });
+
+  it("registers the TypeScript course with substantive content", () => {
+    expect(hasCourse("typescript")).toBe(true);
+    const ts = getCourse("typescript");
+    expect(ts.lessons.length).toBeGreaterThanOrEqual(40);
+
+    const orders = ts.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("typescript");
+    expect(home.title.toLowerCase()).toContain("typescript");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const types = getLesson("typescript", "typescript-types");
+    // 'typescript-types' is not guaranteed, but let's check a file we know exists:
+    // e.g. 'typescript-syntax' or 'typescript-interfaces'
+    const syntax = getLesson("typescript", "typescript-syntax");
+    expect(syntax).not.toBeNull();
+    expect(syntax.body.toLowerCase()).toContain("syntax");
+  });
+
+  it("registers the Rust course with substantive content", () => {
+    expect(hasCourse("rust")).toBe(true);
+    const rust = getCourse("rust");
+    expect(rust.lessons.length).toBeGreaterThanOrEqual(55);
+
+    const orders = rust.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("rust");
+    expect(home.title.toLowerCase()).toContain("rust");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const ownership = getLesson("rust", "rust-ownership");
+    expect(ownership).not.toBeNull();
+    expect(ownership.body.toLowerCase()).toContain("ownership");
   });
 });

@@ -13,23 +13,7 @@ const renderPage = (path) =>
     </MemoryRouter>,
   );
 
-describe("TopicPage — coming-soon topic", () => {
-  it("renders topic name for a valid slug", () => {
-    renderPage("/tutorials/typescript");
-    expect(screen.getByRole("heading", { name: "TypeScript" })).toBeInTheDocument();
-    expect(screen.getByText("Programming Languages")).toBeInTheDocument();
-  });
-
-  it("shows coming soon message when no course exists", () => {
-    renderPage("/tutorials/typescript");
-    expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
-  });
-
-  it("has a back link to tutorials", () => {
-    renderPage("/tutorials/typescript");
-    expect(screen.getByText("← All tutorials")).toHaveAttribute("href", "/tutorials");
-  });
-
+describe("TopicPage — coming-soon / not-found topics", () => {
   it("renders 404-like message for unknown slug", () => {
     renderPage("/tutorials/nonexistent-xyz");
     expect(screen.getByText("Topic Not Found")).toBeInTheDocument();
@@ -38,6 +22,26 @@ describe("TopicPage — coming-soon topic", () => {
   it("shows link to browse all tutorials on 404", () => {
     renderPage("/tutorials/nonexistent-xyz");
     expect(screen.getByText("Browse all tutorials")).toHaveAttribute("href", "/tutorials");
+  });
+});
+
+describe("TopicPage — Rust course", () => {
+  it("renders the course landing page (first lesson) at /tutorials/rust", () => {
+    renderPage("/tutorials/rust");
+    const headings = screen.getAllByRole("heading", { name: /Rust Tutorial/ });
+    expect(headings.length).toBeGreaterThanOrEqual(1);
+    const navItems = screen.getAllByRole("link");
+    expect(navItems.length).toBeGreaterThan(10);
+  });
+
+  it("renders a specific lesson by slug", () => {
+    renderPage("/tutorials/rust/rust-ownership");
+    expect(screen.getByRole("heading", { name: /Rust Ownership/ })).toBeInTheDocument();
+  });
+
+  it("shows a Lesson Not Found page for an unknown lesson slug", () => {
+    renderPage("/tutorials/rust/no-such-lesson");
+    expect(screen.getByText("Lesson Not Found")).toBeInTheDocument();
   });
 });
 
