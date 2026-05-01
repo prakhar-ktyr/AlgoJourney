@@ -104,9 +104,7 @@ describe("courses loader", () => {
     expect(home.title.toLowerCase()).toContain("typescript");
     expect(home.body.length).toBeGreaterThan(50);
 
-    const types = getLesson("typescript", "typescript-types");
-    // 'typescript-types' is not guaranteed, but let's check a file we know exists:
-    // e.g. 'typescript-syntax' or 'typescript-interfaces'
+    // Check a file we know exists:
     const syntax = getLesson("typescript", "typescript-syntax");
     expect(syntax).not.toBeNull();
     expect(syntax.body.toLowerCase()).toContain("syntax");
