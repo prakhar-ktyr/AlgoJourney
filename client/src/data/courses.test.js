@@ -127,4 +127,40 @@ describe("courses loader", () => {
     expect(ownership).not.toBeNull();
     expect(ownership.body.toLowerCase()).toContain("ownership");
   });
+
+  it("registers the HTML course with substantive content", () => {
+    expect(hasCourse("html")).toBe(true);
+    const html = getCourse("html");
+    expect(html.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = html.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("html");
+    expect(home.title.toLowerCase()).toContain("html");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const forms = getLesson("html", "html-forms");
+    expect(forms).not.toBeNull();
+    expect(forms.body.toLowerCase()).toContain("form");
+  });
+
+  it("registers the React course with substantive content", () => {
+    expect(hasCourse("react")).toBe(true);
+    const react = getCourse("react");
+    expect(react.lessons.length).toBeGreaterThanOrEqual(50);
+
+    const orders = react.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("react");
+    expect(home.title.toLowerCase()).toContain("react");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const hooks = getLesson("react", "react-hooks");
+    expect(hooks).not.toBeNull();
+    expect(hooks.body.toLowerCase()).toContain("hook");
+  });
 });
