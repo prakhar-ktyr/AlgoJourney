@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { ALL_TOPICS } from "../data/topics";
-import { getCourse, getLesson, getAdjacentLessons } from "../data/courses";
+import { getCourse, getLesson, getAdjacentLessons, hasLanguageSupport } from "../data/courses";
 import CourseLayout from "../components/CourseLayout";
 import TopicLogo from "../components/TopicLogo";
 
@@ -54,6 +54,7 @@ export default function TopicPage() {
         prev={prev}
         next={next}
         basePath={`/tutorials/${slug}`}
+        languageSupport={hasLanguageSupport(slug)}
       />
     );
   }

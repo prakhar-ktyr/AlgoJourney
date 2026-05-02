@@ -1,7 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Markdown from "./Markdown";
 import TopicLogo from "./TopicLogo";
+import { COURSE_LANGUAGES, filterLessonBody } from "../data/courses";
+
+const LANG_STORAGE_KEY = "dsa-course-language";
+
+function readStoredLanguage() {
+  try {
+    const stored = localStorage.getItem(LANG_STORAGE_KEY);
+    if (stored && COURSE_LANGUAGES.includes(stored)) return stored;
+  } catch {
+    /* ignore */
+  }
+  return COURSE_LANGUAGES[0];
+}
 
 /**
  * Two-column course layout inspired by w3schools: a sticky sidebar listing
@@ -9,8 +22,33 @@ import TopicLogo from "./TopicLogo";
  * Previous / Next pagination at the bottom. The sidebar collapses behind a
  * toggle on small screens.
  */
-export default function CourseLayout({ topic, course, lesson, prev, next, basePath }) {
+export default function CourseLayout({
+  topic,
+  course,
+  lesson,
+  prev,
+  next,
+  basePath,
+  languageSupport = false,
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [language, setLanguage] = useState(readStoredLanguage);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, language);
+    } catch {
+      /* ignore */
+    }
+  }, [language]);
+
+  const filteredBody = useMemo(
+    () =>
+      languageSupport
+        ? filterLessonBody(lesson.body, language)
+        : lesson.body,
+    [lesson.body, language, languageSupport],
+  );
 
   const lessonHref = (l) =>
     l.order === course.lessons[0].order ? basePath : `${basePath}/${l.slug}`;
@@ -74,7 +112,29 @@ export default function CourseLayout({ topic, course, lesson, prev, next, basePa
         </aside>
 
         <article className="min-w-0 rounded-xl border border-gray-800 bg-gray-900/60 p-6 sm:p-8">
-          <Markdown source={lesson.body} />
+          {languageSupport && (
+            <div className="mb-6 flex items-center gap-3">
+              <label
+                htmlFor="course-lang-select"
+                className="text-sm font-medium text-gray-400"
+              >
+                Language
+              </label>
+              <select
+                id="course-lang-select"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm text-gray-200 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
+              >
+                {COURSE_LANGUAGES.map((lang) => (
+                  <option key={lang} value={lang}>
+                    {lang}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <Markdown source={filteredBody} />
 
           <div className="mt-10 flex flex-col sm:flex-row gap-3 sm:justify-between border-t border-gray-800 pt-6">
             {prev ? (

@@ -86,6 +86,125 @@ function buildCourses() {
 
 export const COURSES = buildCourses();
 
+/** Courses that show a language selector (C++, Java, Python, JavaScript). */
+export const LANGUAGE_COURSES = new Set(["dsa"]);
+
+export const COURSE_LANGUAGES = ["C++", "Java", "Python", "JavaScript"];
+
+const LANG_MAP = {
+  cpp: "C++",
+  "c++": "C++",
+  cxx: "C++",
+  java: "Java",
+  python: "Python",
+  py: "Python",
+  javascript: "JavaScript",
+  js: "JavaScript",
+};
+
+function normalizeLang(tag) {
+  if (!tag) return null;
+  const key = tag.trim().toLowerCase();
+  if (LANG_MAP[key]) return LANG_MAP[key];
+  return COURSE_LANGUAGES.find((l) => l.toLowerCase() === key) ?? null;
+}
+
+/**
+ * Filter a lesson body for the selected language:
+ * 1. Per-language sections: `## Heading (Python)` replaces the generic `## Heading`.
+ * 2. Code fences: only fences matching `language` (or with no tag) are kept.
+ */
+export function filterLessonBody(body, language) {
+  if (!body || !language) return body;
+
+  // --- Step 1: resolve per-language section overrides ---
+  const lines = body.split("\n");
+  const sections = [];
+  let current = { heading: null, lang: null, lines: [] };
+
+  for (const line of lines) {
+    const hMatch = line.match(/^(#{1,6})\s+(.+)$/);
+    if (hMatch) {
+      sections.push(current);
+      let title = hMatch[2].trim();
+      let lang = null;
+      const langMatch = title.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+      if (langMatch) {
+        const normalized = normalizeLang(langMatch[2]);
+        if (normalized) {
+          title = langMatch[1].trim();
+          lang = normalized;
+        }
+      }
+      current = {
+        heading: title,
+        headingRaw: lang ? `${hMatch[1]} ${title}` : line,
+        level: hMatch[1].length,
+        lang,
+        lines: [],
+      };
+      continue;
+    }
+    current.lines.push(line);
+  }
+  sections.push(current);
+
+  // Group sections by heading name; pick language-specific over generic.
+  const resolved = [];
+  const overrides = new Map();
+  for (const sec of sections) {
+    if (sec.lang) {
+      const key = `${sec.level}:${sec.heading.toLowerCase()}`;
+      if (!overrides.has(key)) overrides.set(key, new Map());
+      overrides.get(key).set(sec.lang, sec);
+    }
+  }
+
+  for (const sec of sections) {
+    if (sec.lang) continue; // skip language-specific; we merge below
+    if (sec.heading) {
+      const key = `${sec.level}:${sec.heading.toLowerCase()}`;
+      const langVersions = overrides.get(key);
+      if (langVersions?.has(language)) {
+        const override = langVersions.get(language);
+        resolved.push(override.headingRaw);
+        resolved.push(...override.lines);
+        continue;
+      }
+    }
+    if (sec.headingRaw) resolved.push(sec.headingRaw);
+    resolved.push(...sec.lines);
+  }
+
+  let filtered = resolved.join("\n");
+
+  // --- Step 2: keep only code fences matching the selected language ---
+  const validTags = new Set(
+    Object.entries(LANG_MAP)
+      .filter(([, v]) => v === language)
+      .map(([k]) => k),
+  );
+  validTags.add(language.toLowerCase());
+
+  filtered = filtered.replace(
+    /```([A-Za-z+]*)\r?\n([\s\S]*?)```/g,
+    (match, tag) => {
+      if (!tag) return match; // untagged fences stay
+      return validTags.has(tag.toLowerCase()) ? match : "";
+    },
+  );
+
+  // Collapse runs of 3+ blank lines into 2.
+  filtered = filtered.replace(/\n{3,}/g, "\n\n");
+
+  return filtered.trim();
+}
+
+/** Return `true` when a course supports language selection. */
+export function hasLanguageSupport(courseSlug) {
+  return LANGUAGE_COURSES.has(courseSlug);
+}
+
 /** Return the course object for a topic slug, or `null` if none. */
 export function getCourse(courseSlug) {
   return COURSES[courseSlug] ?? null;

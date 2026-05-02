@@ -1,5 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { COURSES, getCourse, hasCourse, getLesson, getAdjacentLessons } from "./courses";
+import {
+  COURSES,
+  getCourse,
+  hasCourse,
+  getLesson,
+  getAdjacentLessons,
+  hasLanguageSupport,
+  LANGUAGE_COURSES,
+  COURSE_LANGUAGES,
+  filterLessonBody,
+} from "./courses";
 
 describe("courses loader", () => {
   it("registers the C course", () => {
@@ -270,5 +280,106 @@ describe("courses loader", () => {
     const solidity = getLesson("blockchain", "blockchain-solidity-basics");
     expect(solidity).not.toBeNull();
     expect(solidity.body.toLowerCase()).toContain("solidity");
+  });
+
+  it("registers the Quantum Computing course with substantive content", () => {
+    expect(hasCourse("quantum-computing")).toBe(true);
+    const course = getCourse("quantum-computing");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(55);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("quantum-computing");
+    expect(home.title.toLowerCase()).toContain("quantum");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const grovers = getLesson("quantum-computing", "qc-grovers-algorithm");
+    expect(grovers).not.toBeNull();
+    expect(grovers.body.toLowerCase()).toContain("grover");
+  });
+
+  it("registers the DSA course with substantive content", () => {
+    expect(hasCourse("dsa")).toBe(true);
+    const course = getCourse("dsa");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("dsa");
+    expect(home.title.toLowerCase()).toContain("dsa");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const bigO = getLesson("dsa", "dsa-big-o-notation");
+    expect(bigO).not.toBeNull();
+    expect(bigO.body.toLowerCase()).toContain("big o");
+
+    const mergeSort = getLesson("dsa", "dsa-merge-sort");
+    expect(mergeSort).not.toBeNull();
+    expect(mergeSort.body.toLowerCase()).toContain("merge");
+  });
+
+  it("marks DSA as a language-supported course", () => {
+    expect(hasLanguageSupport("dsa")).toBe(true);
+    expect(hasLanguageSupport("c")).toBe(false);
+    expect(hasLanguageSupport("javascript")).toBe(false);
+    expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
+    expect(COURSE_LANGUAGES).toEqual(["C++", "Java", "Python", "JavaScript"]);
+  });
+
+  it("filters code fences by selected language", () => {
+    const body = [
+      "# Heading",
+      "",
+      "```cpp",
+      "int x = 1;",
+      "```",
+      "",
+      "```python",
+      "x = 1",
+      "```",
+    ].join("\n");
+
+    const forCpp = filterLessonBody(body, "C++");
+    expect(forCpp).toContain("```cpp");
+    expect(forCpp).not.toContain("```python");
+
+    const forPy = filterLessonBody(body, "Python");
+    expect(forPy).toContain("```python");
+    expect(forPy).not.toContain("```cpp");
+  });
+
+  it("resolves per-language section overrides", () => {
+    const body = [
+      "## Overview",
+      "Generic overview.",
+      "",
+      "## Overview (Python)",
+      "Python-specific overview.",
+      "",
+      "## Details",
+      "Shared details.",
+    ].join("\n");
+
+    const pyResult = filterLessonBody(body, "Python");
+    expect(pyResult).toContain("Python-specific overview.");
+    expect(pyResult).not.toContain("Generic overview.");
+    expect(pyResult).toContain("Shared details.");
+
+    const javaResult = filterLessonBody(body, "Java");
+    expect(javaResult).toContain("Generic overview.");
+    expect(javaResult).not.toContain("Python-specific overview.");
+    expect(javaResult).toContain("Shared details.");
+  });
+
+  it("keeps untagged code fences when filtering by language", () => {
+    const body = ["```", "plain code", "```", "", "```java", "int x = 1;", "```"].join("\n");
+
+    const forPy = filterLessonBody(body, "Python");
+    expect(forPy).toContain("plain code");
+    expect(forPy).not.toContain("int x = 1;");
   });
 });
