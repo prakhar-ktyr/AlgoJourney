@@ -429,6 +429,28 @@ describe("courses loader", () => {
     expect(transformers.body.toLowerCase()).toContain("attention");
   });
 
+  it("registers the Deep Learning course with substantive content", () => {
+    expect(hasCourse("deep-learning")).toBe(true);
+    const course = getCourse("deep-learning");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("deep-learning");
+    expect(home.title.toLowerCase()).toContain("deep learning");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const gradientDescent = getLesson("deep-learning", "dl-gradient-descent");
+    expect(gradientDescent).not.toBeNull();
+    expect(gradientDescent.body.toLowerCase()).toContain("gradient");
+
+    const transformers = getLesson("deep-learning", "dl-transformers");
+    expect(transformers).not.toBeNull();
+    expect(transformers.body.toLowerCase()).toContain("attention");
+  });
+
   it("marks DSA, OOP, Discrete Math, and Testing & QA as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
@@ -438,6 +460,7 @@ describe("courses loader", () => {
     expect(hasLanguageSupport("javascript")).toBe(false);
     expect(hasLanguageSupport("linux-shell")).toBe(false);
     expect(hasLanguageSupport("nlp")).toBe(false);
+    expect(hasLanguageSupport("deep-learning")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
     expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
