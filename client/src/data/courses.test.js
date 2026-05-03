@@ -385,6 +385,28 @@ describe("courses loader", () => {
     expect(integration.body.toLowerCase()).toContain("integration");
   });
 
+  it("registers the Linux & Shell Scripting course with substantive content", () => {
+    expect(hasCourse("linux-shell")).toBe(true);
+    const course = getCourse("linux-shell");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("linux-shell");
+    expect(home.title.toLowerCase()).toContain("linux");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const grep = getLesson("linux-shell", "ls-grep");
+    expect(grep).not.toBeNull();
+    expect(grep.body.toLowerCase()).toContain("grep");
+
+    const scripting = getLesson("linux-shell", "ls-intro-scripting");
+    expect(scripting).not.toBeNull();
+    expect(scripting.body.toLowerCase()).toContain("script");
+  });
+
   it("marks DSA, OOP, Discrete Math, and Testing & QA as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
@@ -392,6 +414,7 @@ describe("courses loader", () => {
     expect(hasLanguageSupport("testing-qa")).toBe(true);
     expect(hasLanguageSupport("c")).toBe(false);
     expect(hasLanguageSupport("javascript")).toBe(false);
+    expect(hasLanguageSupport("linux-shell")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
     expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
