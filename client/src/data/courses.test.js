@@ -363,15 +363,39 @@ describe("courses loader", () => {
     expect(mergeSort.body.toLowerCase()).toContain("merge");
   });
 
-  it("marks DSA, OOP, and Discrete Math as language-supported courses", () => {
+  it("registers the Testing & QA course with substantive content", () => {
+    expect(hasCourse("testing-qa")).toBe(true);
+    const course = getCourse("testing-qa");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("testing-qa");
+    expect(home.title.toLowerCase()).toContain("testing");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const unitTest = getLesson("testing-qa", "tqa-unit-testing");
+    expect(unitTest).not.toBeNull();
+    expect(unitTest.body.toLowerCase()).toContain("unit");
+
+    const integration = getLesson("testing-qa", "tqa-integration-testing");
+    expect(integration).not.toBeNull();
+    expect(integration.body.toLowerCase()).toContain("integration");
+  });
+
+  it("marks DSA, OOP, Discrete Math, and Testing & QA as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
     expect(hasLanguageSupport("discrete-mathematics")).toBe(true);
+    expect(hasLanguageSupport("testing-qa")).toBe(true);
     expect(hasLanguageSupport("c")).toBe(false);
     expect(hasLanguageSupport("javascript")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
     expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
+    expect(LANGUAGE_COURSES.has("testing-qa")).toBe(true);
   });
 
   it("provides per-course language lists", () => {
@@ -380,10 +404,15 @@ describe("courses loader", () => {
     expect(getCourseLanguages("discrete-mathematics")).toEqual(
       ["C++", "C#", "Java", "Python", "JavaScript"],
     );
+    expect(getCourseLanguages("testing-qa")).toEqual(
+      ["Python", "JavaScript", "Java", "C#"],
+    );
     expect(getCourseLanguages("c")).toBeNull();
     expect(COURSE_LANGUAGE_MAP.dsa).not.toContain("C#");
     expect(COURSE_LANGUAGE_MAP.oop).toContain("C#");
     expect(COURSE_LANGUAGE_MAP["discrete-mathematics"]).toContain("C#");
+    expect(COURSE_LANGUAGE_MAP["testing-qa"]).toContain("Python");
+    expect(COURSE_LANGUAGE_MAP["testing-qa"]).toContain("C#");
   });
 
   it("filters code fences by selected language", () => {
