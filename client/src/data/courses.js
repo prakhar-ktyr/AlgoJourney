@@ -94,6 +94,7 @@ export const COURSES = buildCourses();
 export const COURSE_LANGUAGE_MAP = {
   dsa: ["C++", "Java", "Python", "JavaScript"],
   oop: ["C++", "C#", "Java", "Python", "JavaScript"],
+  "discrete-mathematics": ["C++", "C#", "Java", "Python", "JavaScript"],
 };
 
 /** Set of course slugs that show a language selector. */
