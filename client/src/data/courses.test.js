@@ -319,6 +319,28 @@ describe("courses loader", () => {
     expect(encapsulation.body.toLowerCase()).toContain("encapsulation");
   });
 
+  it("registers the Discrete Mathematics course with substantive content", () => {
+    expect(hasCourse("discrete-mathematics")).toBe(true);
+    const course = getCourse("discrete-mathematics");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("discrete-mathematics");
+    expect(home.title.toLowerCase()).toContain("discrete");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const induction = getLesson("discrete-mathematics", "dm-mathematical-induction");
+    expect(induction).not.toBeNull();
+    expect(induction.body.toLowerCase()).toContain("induction");
+
+    const graphs = getLesson("discrete-mathematics", "dm-intro-to-graphs");
+    expect(graphs).not.toBeNull();
+    expect(graphs.body.toLowerCase()).toContain("graph");
+  });
+
   it("registers the DSA course with substantive content", () => {
     expect(hasCourse("dsa")).toBe(true);
     const course = getCourse("dsa");
@@ -341,21 +363,27 @@ describe("courses loader", () => {
     expect(mergeSort.body.toLowerCase()).toContain("merge");
   });
 
-  it("marks DSA and OOP as language-supported courses", () => {
+  it("marks DSA, OOP, and Discrete Math as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
+    expect(hasLanguageSupport("discrete-mathematics")).toBe(true);
     expect(hasLanguageSupport("c")).toBe(false);
     expect(hasLanguageSupport("javascript")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
+    expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
   });
 
   it("provides per-course language lists", () => {
     expect(getCourseLanguages("dsa")).toEqual(["C++", "Java", "Python", "JavaScript"]);
     expect(getCourseLanguages("oop")).toEqual(["C++", "C#", "Java", "Python", "JavaScript"]);
+    expect(getCourseLanguages("discrete-mathematics")).toEqual(
+      ["C++", "C#", "Java", "Python", "JavaScript"],
+    );
     expect(getCourseLanguages("c")).toBeNull();
     expect(COURSE_LANGUAGE_MAP.dsa).not.toContain("C#");
     expect(COURSE_LANGUAGE_MAP.oop).toContain("C#");
+    expect(COURSE_LANGUAGE_MAP["discrete-mathematics"]).toContain("C#");
   });
 
   it("filters code fences by selected language", () => {
