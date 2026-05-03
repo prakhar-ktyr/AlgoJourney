@@ -451,6 +451,28 @@ describe("courses loader", () => {
     expect(transformers.body.toLowerCase()).toContain("attention");
   });
 
+  it("registers the Computer Vision course with substantive content", () => {
+    expect(hasCourse("computer-vision")).toBe(true);
+    const course = getCourse("computer-vision");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("computer-vision");
+    expect(home.title.toLowerCase()).toContain("computer vision");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const edges = getLesson("computer-vision", "cv-gradients");
+    expect(edges).not.toBeNull();
+    expect(edges.body.toLowerCase()).toContain("edge");
+
+    const detection = getLesson("computer-vision", "cv-object-detection");
+    expect(detection).not.toBeNull();
+    expect(detection.body.toLowerCase()).toContain("yolo");
+  });
+
   it("marks DSA, OOP, Discrete Math, and Testing & QA as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
@@ -461,6 +483,7 @@ describe("courses loader", () => {
     expect(hasLanguageSupport("linux-shell")).toBe(false);
     expect(hasLanguageSupport("nlp")).toBe(false);
     expect(hasLanguageSupport("deep-learning")).toBe(false);
+    expect(hasLanguageSupport("computer-vision")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
     expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
