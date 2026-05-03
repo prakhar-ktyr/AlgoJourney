@@ -407,6 +407,28 @@ describe("courses loader", () => {
     expect(scripting.body.toLowerCase()).toContain("script");
   });
 
+  it("registers the NLP course with substantive content", () => {
+    expect(hasCourse("nlp")).toBe(true);
+    const course = getCourse("nlp");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("nlp");
+    expect(home.title.toLowerCase()).toContain("natural language");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const tokenization = getLesson("nlp", "nlp-tokenization");
+    expect(tokenization).not.toBeNull();
+    expect(tokenization.body.toLowerCase()).toContain("token");
+
+    const transformers = getLesson("nlp", "nlp-transformers");
+    expect(transformers).not.toBeNull();
+    expect(transformers.body.toLowerCase()).toContain("attention");
+  });
+
   it("marks DSA, OOP, Discrete Math, and Testing & QA as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
@@ -415,6 +437,7 @@ describe("courses loader", () => {
     expect(hasLanguageSupport("c")).toBe(false);
     expect(hasLanguageSupport("javascript")).toBe(false);
     expect(hasLanguageSupport("linux-shell")).toBe(false);
+    expect(hasLanguageSupport("nlp")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
     expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
