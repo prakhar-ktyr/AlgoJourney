@@ -473,6 +473,28 @@ describe("courses loader", () => {
     expect(detection.body.toLowerCase()).toContain("yolo");
   });
 
+  it("registers the Data Science course with substantive content", () => {
+    expect(hasCourse("data-science")).toBe(true);
+    const course = getCourse("data-science");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("data-science");
+    expect(home.title.toLowerCase()).toContain("data science");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const pandas = getLesson("data-science", "ds-pandas-dataframes");
+    expect(pandas).not.toBeNull();
+    expect(pandas.body.toLowerCase()).toContain("dataframe");
+
+    const regression = getLesson("data-science", "ds-linear-regression");
+    expect(regression).not.toBeNull();
+    expect(regression.body.toLowerCase()).toContain("regression");
+  });
+
   it("marks DSA, OOP, Discrete Math, and Testing & QA as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
@@ -484,6 +506,7 @@ describe("courses loader", () => {
     expect(hasLanguageSupport("nlp")).toBe(false);
     expect(hasLanguageSupport("deep-learning")).toBe(false);
     expect(hasLanguageSupport("computer-vision")).toBe(false);
+    expect(hasLanguageSupport("data-science")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
     expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
