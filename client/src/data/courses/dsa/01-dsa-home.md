@@ -18,7 +18,7 @@ This course takes you from absolute beginner to advanced problem-solver. By the 
 
 ## Choose your language
 
-Use the **Language** dropdown above to switch between C++, Java, Python, and JavaScript. All explanations are language-agnostic, but code examples adapt to your selection. Pick whichever language you are most comfortable with — the concepts are the same everywhere.
+Use the **language dropdown** at the top-right of this page to switch between C++, Java, Python, and JavaScript. All explanations are language-agnostic, but code examples adapt to your selection. Pick whichever language you are most comfortable with — the concepts are the same everywhere.
 
 ## How the course is organized
 

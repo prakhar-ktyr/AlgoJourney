@@ -7,7 +7,8 @@ import {
   getAdjacentLessons,
   hasLanguageSupport,
   LANGUAGE_COURSES,
-  COURSE_LANGUAGES,
+  COURSE_LANGUAGE_MAP,
+  getCourseLanguages,
   filterLessonBody,
 } from "./courses";
 
@@ -300,6 +301,24 @@ describe("courses loader", () => {
     expect(grovers.body.toLowerCase()).toContain("grover");
   });
 
+  it("registers the OOP course with substantive content", () => {
+    expect(hasCourse("oop")).toBe(true);
+    const course = getCourse("oop");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(55);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("oop");
+    expect(home.title.toLowerCase()).toContain("oop");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const encapsulation = getLesson("oop", "oop-encapsulation");
+    expect(encapsulation).not.toBeNull();
+    expect(encapsulation.body.toLowerCase()).toContain("encapsulation");
+  });
+
   it("registers the DSA course with substantive content", () => {
     expect(hasCourse("dsa")).toBe(true);
     const course = getCourse("dsa");
@@ -322,12 +341,21 @@ describe("courses loader", () => {
     expect(mergeSort.body.toLowerCase()).toContain("merge");
   });
 
-  it("marks DSA as a language-supported course", () => {
+  it("marks DSA and OOP as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
+    expect(hasLanguageSupport("oop")).toBe(true);
     expect(hasLanguageSupport("c")).toBe(false);
     expect(hasLanguageSupport("javascript")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
-    expect(COURSE_LANGUAGES).toEqual(["C++", "Java", "Python", "JavaScript"]);
+    expect(LANGUAGE_COURSES.has("oop")).toBe(true);
+  });
+
+  it("provides per-course language lists", () => {
+    expect(getCourseLanguages("dsa")).toEqual(["C++", "Java", "Python", "JavaScript"]);
+    expect(getCourseLanguages("oop")).toEqual(["C++", "C#", "Java", "Python", "JavaScript"]);
+    expect(getCourseLanguages("c")).toBeNull();
+    expect(COURSE_LANGUAGE_MAP.dsa).not.toContain("C#");
+    expect(COURSE_LANGUAGE_MAP.oop).toContain("C#");
   });
 
   it("filters code fences by selected language", () => {
@@ -381,5 +409,36 @@ describe("courses loader", () => {
     const forPy = filterLessonBody(body, "Python");
     expect(forPy).toContain("plain code");
     expect(forPy).not.toContain("int x = 1;");
+  });
+
+  it("includes standalone language sections only for the matching language", () => {
+    const body = [
+      "## Intro",
+      "Shared intro.",
+      "",
+      "## Properties (C#)",
+      "C#-specific properties.",
+      "",
+      "## @classmethod (Python)",
+      "Python classmethod.",
+      "",
+      "## Outro",
+      "Shared outro.",
+    ].join("\n");
+
+    const csharpResult = filterLessonBody(body, "C#");
+    expect(csharpResult).toContain("C#-specific properties.");
+    expect(csharpResult).not.toContain("Python classmethod.");
+    expect(csharpResult).toContain("Shared intro.");
+    expect(csharpResult).toContain("Shared outro.");
+
+    const pyResult = filterLessonBody(body, "Python");
+    expect(pyResult).toContain("Python classmethod.");
+    expect(pyResult).not.toContain("C#-specific properties.");
+
+    const javaResult = filterLessonBody(body, "Java");
+    expect(javaResult).not.toContain("C#-specific properties.");
+    expect(javaResult).not.toContain("Python classmethod.");
+    expect(javaResult).toContain("Shared intro.");
   });
 });

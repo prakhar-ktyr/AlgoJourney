@@ -86,15 +86,31 @@ function buildCourses() {
 
 export const COURSES = buildCourses();
 
-/** Courses that show a language selector (C++, Java, Python, JavaScript). */
-export const LANGUAGE_COURSES = new Set(["dsa"]);
+/**
+ * Per-course language configuration.
+ * Keys are course slugs; values are the ordered list of languages for the
+ * language-selector dropdown.
+ */
+export const COURSE_LANGUAGE_MAP = {
+  dsa: ["C++", "Java", "Python", "JavaScript"],
+  oop: ["C++", "C#", "Java", "Python", "JavaScript"],
+};
 
-export const COURSE_LANGUAGES = ["C++", "Java", "Python", "JavaScript"];
+/** Set of course slugs that show a language selector. */
+export const LANGUAGE_COURSES = new Set(Object.keys(COURSE_LANGUAGE_MAP));
+
+/** Return the language list for a course, or `null` if it has no selector. */
+export function getCourseLanguages(courseSlug) {
+  return COURSE_LANGUAGE_MAP[courseSlug] ?? null;
+}
 
 const LANG_MAP = {
   cpp: "C++",
   "c++": "C++",
   cxx: "C++",
+  csharp: "C#",
+  "c#": "C#",
+  cs: "C#",
   java: "Java",
   python: "Python",
   py: "Python",
@@ -102,11 +118,14 @@ const LANG_MAP = {
   js: "JavaScript",
 };
 
+/** All unique languages across every course (for normalization fallback). */
+const ALL_LANGUAGES = [...new Set(Object.values(COURSE_LANGUAGE_MAP).flat())];
+
 function normalizeLang(tag) {
   if (!tag) return null;
   const key = tag.trim().toLowerCase();
   if (LANG_MAP[key]) return LANG_MAP[key];
-  return COURSE_LANGUAGES.find((l) => l.toLowerCase() === key) ?? null;
+  return ALL_LANGUAGES.find((l) => l.toLowerCase() === key) ?? null;
 }
 
 /**
@@ -160,8 +179,25 @@ export function filterLessonBody(body, language) {
     }
   }
 
+  // Pre-compute which headings have a generic (non-language) version.
+  const genericHeadings = new Set();
   for (const sec of sections) {
-    if (sec.lang) continue; // skip language-specific; we merge below
+    if (!sec.lang && sec.heading) {
+      genericHeadings.add(`${sec.level}:${sec.heading.toLowerCase()}`);
+    }
+  }
+
+  for (const sec of sections) {
+    if (sec.lang) {
+      const key = `${sec.level}:${sec.heading.toLowerCase()}`;
+      if (genericHeadings.has(key)) continue; // will be merged via override below
+      // Standalone language section — include only when language matches.
+      if (sec.lang === language) {
+        resolved.push(sec.headingRaw);
+        resolved.push(...sec.lines);
+      }
+      continue;
+    }
     if (sec.heading) {
       const key = `${sec.level}:${sec.heading.toLowerCase()}`;
       const langVersions = overrides.get(key);

@@ -2,18 +2,18 @@ import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Markdown from "./Markdown";
 import TopicLogo from "./TopicLogo";
-import { COURSE_LANGUAGES, filterLessonBody } from "../data/courses";
+import { getCourseLanguages, filterLessonBody } from "../data/courses";
 
-const LANG_STORAGE_KEY = "dsa-course-language";
+const LANG_STORAGE_KEY = "course-language";
 
-function readStoredLanguage() {
+function readStoredLanguage(validLanguages) {
   try {
     const stored = localStorage.getItem(LANG_STORAGE_KEY);
-    if (stored && COURSE_LANGUAGES.includes(stored)) return stored;
+    if (stored && validLanguages.includes(stored)) return stored;
   } catch {
     /* ignore */
   }
-  return COURSE_LANGUAGES[0];
+  return validLanguages[0];
 }
 
 /**
@@ -31,12 +31,15 @@ export default function CourseLayout({
   basePath,
   languageSupport = false,
 }) {
+  const languages = languageSupport ? getCourseLanguages(course.slug) : null;
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [language, setLanguage] = useState(readStoredLanguage);
+  const [language, setLanguage] = useState(() =>
+    languages ? readStoredLanguage(languages) : null,
+  );
 
   useEffect(() => {
     try {
-      localStorage.setItem(LANG_STORAGE_KEY, language);
+      if (language) localStorage.setItem(LANG_STORAGE_KEY, language);
     } catch {
       /* ignore */
     }
@@ -44,10 +47,10 @@ export default function CourseLayout({
 
   const filteredBody = useMemo(
     () =>
-      languageSupport
+      languages
         ? filterLessonBody(lesson.body, language)
         : lesson.body,
-    [lesson.body, language, languageSupport],
+    [lesson.body, language, languages],
   );
 
   const lessonHref = (l) =>
@@ -62,12 +65,27 @@ export default function CourseLayout({
         ← All tutorials
       </Link>
 
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex flex-wrap items-center gap-3 mb-6">
         <TopicLogo topic={topic} size="lg" />
         <div>
           <h1 className="text-3xl font-bold text-white">{topic.name} Tutorial</h1>
           <span className="text-sm text-gray-500">{topic.group}</span>
         </div>
+        {languages && (
+          <select
+            id="course-lang-select"
+            aria-label="Code language"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="ml-auto rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm text-gray-200 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
+          >
+            {languages.map((lang) => (
+              <option key={lang} value={lang}>
+                {lang}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <button
@@ -112,28 +130,6 @@ export default function CourseLayout({
         </aside>
 
         <article className="min-w-0 rounded-xl border border-gray-800 bg-gray-900/60 p-6 sm:p-8">
-          {languageSupport && (
-            <div className="mb-6 flex items-center gap-3">
-              <label
-                htmlFor="course-lang-select"
-                className="text-sm font-medium text-gray-400"
-              >
-                Language
-              </label>
-              <select
-                id="course-lang-select"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm text-gray-200 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
-              >
-                {COURSE_LANGUAGES.map((lang) => (
-                  <option key={lang} value={lang}>
-                    {lang}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
           <Markdown source={filteredBody} />
 
           <div className="mt-10 flex flex-col sm:flex-row gap-3 sm:justify-between border-t border-gray-800 pt-6">
