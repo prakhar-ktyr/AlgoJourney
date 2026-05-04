@@ -1,1 +1,73 @@
 @import "tailwindcss";
+
+/* Reader mode: force text color for light/sepia themes.
+   Code blocks (pre, code, and their containers with bg-[#0d1117]) are excluded
+   so syntax highlighting and dark backgrounds are preserved. */
+
+.reader-mode-light h1,
+.reader-mode-light h2,
+.reader-mode-light h3,
+.reader-mode-light h4,
+.reader-mode-light strong,
+.reader-mode-light b {
+  color: #111827 !important;
+}
+
+.reader-mode-light p,
+.reader-mode-light li,
+.reader-mode-light span:not(pre span):not(code span),
+.reader-mode-light td,
+.reader-mode-light label,
+.reader-mode-light a:not(pre a) {
+  color: #374151 !important;
+}
+
+.reader-mode-sepia h1,
+.reader-mode-sepia h2,
+.reader-mode-sepia h3,
+.reader-mode-sepia h4,
+.reader-mode-sepia strong,
+.reader-mode-sepia b {
+  color: #451a03 !important;
+}
+
+.reader-mode-sepia p,
+.reader-mode-sepia li,
+.reader-mode-sepia span:not(pre span):not(code span),
+.reader-mode-sepia td,
+.reader-mode-sepia label,
+.reader-mode-sepia a:not(pre a) {
+  color: #78350f !important;
+}
+
+/* Ensure links remain distinguishable */
+.reader-mode-light a:not(pre a) {
+  color: #4338ca !important;
+}
+
+.reader-mode-sepia a:not(pre a) {
+  color: #92400e !important;
+}
+
+/* Code blocks must keep their styling intact in all themes */
+.reader-mode-light pre,
+.reader-mode-light pre *,
+.reader-mode-light [class*="bg-[#0d1117]"],
+.reader-mode-light [class*="bg-[#0d1117]"] *,
+.reader-mode-sepia pre,
+.reader-mode-sepia pre *,
+.reader-mode-sepia [class*="bg-[#0d1117]"],
+.reader-mode-sepia [class*="bg-[#0d1117]"] * {
+  color: unset;
+}
+
+/* Inline code needs themed background for visibility */
+.reader-mode-light :not(pre) > code {
+  background-color: #e5e7eb !important;
+  color: #1f2937 !important;
+}
+
+.reader-mode-sepia :not(pre) > code {
+  background-color: #fde68a !important;
+  color: #451a03 !important;
+}
