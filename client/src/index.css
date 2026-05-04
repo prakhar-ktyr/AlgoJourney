@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+/* Shiki syntax highlighting — dual theme via CSS variables */
+.shiki-wrapper .shiki,
+.shiki-wrapper .shiki span {
+  background-color: transparent !important;
+}
+
+.reader-mode-light .shiki-wrapper .shiki,
+.reader-mode-light .shiki-wrapper .shiki span,
+.reader-mode-sepia .shiki-wrapper .shiki,
+.reader-mode-sepia .shiki-wrapper .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: transparent !important;
+}
+
 /* Reader mode: force text color for light/sepia themes.
    Code blocks (pre, code, and their containers with bg-[#0d1117]) are excluded
    so syntax highlighting and dark backgrounds are preserved. */
@@ -15,7 +29,7 @@
 
 .reader-mode-light p,
 .reader-mode-light li,
-.reader-mode-light span:not(pre span):not(code span),
+.reader-mode-light span:not(pre span):not(code span):not(.shiki-wrapper span),
 .reader-mode-light td,
 .reader-mode-light label,
 .reader-mode-light a:not(pre a) {
@@ -33,7 +47,7 @@
 
 .reader-mode-sepia p,
 .reader-mode-sepia li,
-.reader-mode-sepia span:not(pre span):not(code span),
+.reader-mode-sepia span:not(pre span):not(code span):not(.shiki-wrapper span),
 .reader-mode-sepia td,
 .reader-mode-sepia label,
 .reader-mode-sepia a:not(pre a) {
@@ -60,15 +74,14 @@
   border-color: #d1d9e0 !important;
 }
 
-.reader-mode-light pre {
+.reader-mode-light pre:not(.shiki) {
   color: #1f2937 !important;
 }
 
-.reader-mode-light pre code {
+.reader-mode-light pre:not(.shiki) code {
   color: #1f2937 !important;
 }
 
-.reader-mode-light [class*="bg-[#0d1117]"] span,
 .reader-mode-light [class*="bg-[#0d1117]"] button {
   color: #374151 !important;
 }
@@ -87,15 +100,14 @@
   border-color: #d97706 !important;
 }
 
-.reader-mode-sepia pre {
+.reader-mode-sepia pre:not(.shiki) {
   color: #451a03 !important;
 }
 
-.reader-mode-sepia pre code {
+.reader-mode-sepia pre:not(.shiki) code {
   color: #451a03 !important;
 }
 
-.reader-mode-sepia [class*="bg-[#0d1117]"] span,
 .reader-mode-sepia [class*="bg-[#0d1117]"] button {
   color: #78350f !important;
 }

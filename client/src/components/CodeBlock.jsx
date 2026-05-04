@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { highlightCode } from "../lib/highlight.js";
 
 /**
  * Read-only code block styled like the snippet panes used on popular dev sites
@@ -6,9 +7,13 @@ import { useEffect, useRef, useState } from "react";
  * language name and an always-visible copy icon so the affordance never hides
  * behind a hover state. Falls back to a hidden textarea + execCommand when the
  * async clipboard API is unavailable.
+ *
+ * Uses Shiki for syntax highlighting with dual-theme support (dark/light)
+ * via CSS variables, automatically adapting to reader mode theme.
  */
 export default function CodeBlock({ code, language, testId, showHeader = true, className = "" }) {
   const [copied, setCopied] = useState(false);
+  const [highlightedHtml, setHighlightedHtml] = useState(null);
   const timeoutRef = useRef(null);
 
   useEffect(() => {
@@ -16,6 +21,14 @@ export default function CodeBlock({ code, language, testId, showHeader = true, c
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    highlightCode(code, language).then((html) => {
+      if (!cancelled) setHighlightedHtml(html);
+    });
+    return () => { cancelled = true; };
+  }, [code, language]);
 
   const handleCopy = async () => {
     let ok = false;
@@ -91,12 +104,20 @@ export default function CodeBlock({ code, language, testId, showHeader = true, c
           )}
         </button>
       )}
-      <pre
-        data-testid={testId}
-        className="px-4 py-4 overflow-x-auto text-[13px] leading-relaxed text-gray-100 font-mono"
-      >
-        <code>{code}</code>
-      </pre>
+      {highlightedHtml ? (
+        <div
+          data-testid={testId}
+          className="shiki-wrapper px-4 py-4 overflow-x-auto text-[13px] leading-relaxed font-mono [&_pre]:!bg-transparent [&_pre]:!m-0 [&_pre]:!p-0 [&_code]:!bg-transparent"
+          dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+        />
+      ) : (
+        <pre
+          data-testid={testId}
+          className="px-4 py-4 overflow-x-auto text-[13px] leading-relaxed text-gray-100 font-mono"
+        >
+          <code>{code}</code>
+        </pre>
+      )}
     </div>
   );
 }

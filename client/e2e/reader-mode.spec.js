@@ -185,3 +185,47 @@ test.describe("Reader Mode — DSA Problem Resource Page", () => {
     await expect(page.locator("html")).toHaveClass(/reader-mode-sepia/);
   });
 });
+
+test.describe("Reader Mode — Syntax Highlighting", () => {
+  test("code blocks render Shiki syntax highlighting with multiple colors", async ({ page }) => {
+    // Navigate to a lesson with code blocks
+    await page.goto("/tutorials/rust/rust-syntax");
+    await page.waitForLoadState("networkidle");
+
+    // Wait for Shiki to load and render highlighted code
+    const shikiBlock = page.locator(".shiki-wrapper .shiki").first();
+    await expect(shikiBlock).toBeVisible({ timeout: 15000 });
+
+    // Shiki should produce spans with different colors (not monochrome)
+    const spans = shikiBlock.locator("span[style]");
+    const count = await spans.count();
+    expect(count).toBeGreaterThan(2);
+
+    // Collect unique colors to verify multiple token colors exist
+    const colors = new Set();
+    for (let i = 0; i < Math.min(count, 20); i++) {
+      const style = await spans.nth(i).getAttribute("style");
+      if (style) colors.add(style);
+    }
+    expect(colors.size).toBeGreaterThan(1);
+  });
+
+  test("syntax highlighting adapts to light theme", async ({ page }) => {
+    await page.goto("/tutorials/rust/rust-syntax");
+    await page.waitForLoadState("networkidle");
+
+    // Enter reader mode and switch to light theme
+    await page.getByRole("button", { name: /reader mode/i }).click();
+    await page.getByRole("button", { name: /reader settings/i }).click();
+    await page.getByRole("button", { name: "Light" }).click();
+
+    // Shiki wrapper should still be visible with light theme colors
+    const shikiBlock = page.locator(".shiki-wrapper .shiki").first();
+    await expect(shikiBlock).toBeVisible({ timeout: 15000 });
+
+    // Verify spans exist with styling
+    const spans = shikiBlock.locator("span[style]");
+    const count = await spans.count();
+    expect(count).toBeGreaterThan(2);
+  });
+});
