@@ -2,14 +2,17 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { ReaderModeProvider } from "../context/ReaderModeContext";
 import ProblemResourcePage from "./ProblemResourcePage";
 
 const renderAt = (slug) =>
   render(
     <MemoryRouter initialEntries={[`/dsa-sheet/problem/${slug}`]}>
-      <Routes>
-        <Route path="/dsa-sheet/problem/:slug" element={<ProblemResourcePage />} />
-      </Routes>
+      <ReaderModeProvider>
+        <Routes>
+          <Route path="/dsa-sheet/problem/:slug" element={<ProblemResourcePage />} />
+        </Routes>
+      </ReaderModeProvider>
     </MemoryRouter>,
   );
 

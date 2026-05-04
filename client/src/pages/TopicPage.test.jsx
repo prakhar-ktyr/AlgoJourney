@@ -1,15 +1,18 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { ReaderModeProvider } from "../context/ReaderModeContext";
 import TopicPage from "./TopicPage";
 
 const renderPage = (path) =>
   render(
     <MemoryRouter initialEntries={[path]}>
-      <Routes>
-        <Route path="/tutorials/:slug" element={<TopicPage />} />
-        <Route path="/tutorials/:slug/:lessonSlug" element={<TopicPage />} />
-      </Routes>
+      <ReaderModeProvider>
+        <Routes>
+          <Route path="/tutorials/:slug" element={<TopicPage />} />
+          <Route path="/tutorials/:slug/:lessonSlug" element={<TopicPage />} />
+        </Routes>
+      </ReaderModeProvider>
     </MemoryRouter>,
   );
 
