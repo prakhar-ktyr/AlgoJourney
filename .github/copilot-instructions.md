@@ -17,7 +17,8 @@ MERN-stack learning platform (CS, AI, DSA tracker). Two npm workspaces orchestra
 - **Indentation & quotes**: 2 spaces, double quotes, semicolons, trailing commas where valid (matches existing files; no Prettier config — match neighbouring style).
 - **React**: function components only, hooks-based, JSX files use `.jsx`. Tailwind utility classes for styling — no CSS modules or styled-components.
 - **ESLint** ([client/eslint.config.js](client/eslint.config.js)) enforces `no-unused-vars` with `varsIgnorePattern: '^[A-Z_]'` — prefix intentionally-unused identifiers with an uppercase letter or underscore.
-- **Tests are co-located**: client tests live next to the component as `*.test.jsx`; server tests live under [server/**tests**/](server/__tests__/) as `*.test.js`. Vitest is the runner in both packages.
+- **Tests are co-located**: client unit/integration tests live next to the component as `*.test.jsx`; server tests live under [server/**tests**/](server/__tests__/) as `*.test.js`. Vitest is the runner in both packages.
+- **E2E tests** live under [client/e2e/](client/e2e/) using Playwright (Chromium). E2E tests validate real browser behavior — styling, interactions, navigation flows. Run via `cd client && npm run test:e2e`.
 - **Server tests** use `supertest` against the exported `app` and must run with `NODE_ENV=test` so DB/listen are skipped (already wired via [server/vitest.config.js](server/vitest.config.js)).
 - **Client tests** rely on `@testing-library/react` + `jest-dom` matchers loaded from [client/src/test/setup.js](client/src/test/setup.js). Use `jsdom` environment (already configured).
 
@@ -26,6 +27,7 @@ MERN-stack learning platform (CS, AI, DSA tracker). Two npm workspaces orchestra
 - **New API route**: register on `app` inside [server/index.js](server/index.js) (or extract a router under a new `server/routes/` folder and mount it there). Add a matching `*.test.js` under `__tests__/` using `supertest`.
 - **New Mongoose model**: create `server/models/<Name>.js`, export the model as default plus any enum constants, then re-export from [server/models/index.js](server/models/index.js). Add a `*.model.test.js` covering required-field validation (mirror [server/**tests**/user.model.test.js](server/__tests__/user.model.test.js)).
 - **New page**: add component under `client/src/pages/`, register the route in [client/src/App.jsx](client/src/App.jsx), and add a sibling `*.test.jsx`. Update [client/public/404.html](client/public/404.html) handling only if introducing new top-level segments (GitHub Pages SPA fallback).
+- **New UI feature with visual behavior** (themes, animations, responsive layouts, interactive components): add Playwright E2E tests under [client/e2e/](client/e2e/) that validate the feature in a real browser. Unit tests alone cannot catch CSS/styling bugs.
 - **Env vars**: read via `process.env.*` on the server only; never expose secrets to the client. Document any new variable in [README.md](README.md) under "Configure environment".
 
 ## After Making Changes
@@ -33,9 +35,10 @@ MERN-stack learning platform (CS, AI, DSA tracker). Two npm workspaces orchestra
 Before declaring a task done:
 
 1. **Run the relevant test suite** (`npm run test:server`, `npm run test:client`, or `npm test` for both). Add or update tests for any behaviour you changed — never ship code without a passing test that exercises it.
-2. **Run the linter** for the touched workspace (`cd client && npm run lint`).
-3. **Update documentation in the same change**: keep [README.md](README.md) accurate (env vars, scripts, API endpoints, features), update this file when conventions change, and refresh `server/.env.example` whenever a new env var is introduced.
-4. **Format with Prettier**: a repo config at [.prettierrc.json](.prettierrc.json) governs style; run `npx prettier --write <files>` before committing if your editor doesn't format on save.
+2. **Run E2E tests** if you touched UI, styling, or interactions: `cd client && npm run test:e2e`. Add Playwright tests for any visual behavior that unit tests cannot verify (theme rendering, CSS specificity, computed styles, responsive layout, user flows).
+3. **Run the linter** for the touched workspace (`cd client && npm run lint`).
+4. **Update documentation in the same change**: keep [README.md](README.md) accurate (env vars, scripts, API endpoints, features), update this file when conventions change, and refresh `server/.env.example` whenever a new env var is introduced.
+5. **Format with Prettier**: a repo config at [.prettierrc.json](.prettierrc.json) governs style; run `npx prettier --write <files>` before committing if your editor doesn't format on save.
 
 ## Build & Test Commands
 
@@ -49,6 +52,8 @@ npm run test:server      # vitest run (server only)
 npm run test:client      # vitest run (client only)
 npm run build            # production build of client → client/dist/
 cd client && npm run lint
+cd client && npm run test:e2e     # Playwright E2E tests (headless Chromium)
+cd client && npm run test:e2e:ui  # Playwright visual UI (local dev with display)
 ```
 
 ## Gotchas

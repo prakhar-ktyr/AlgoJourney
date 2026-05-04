@@ -144,6 +144,21 @@ cd server && npm test           # or: npm run test:watch
 cd client && npm test           # or: npm run test:watch
 ```
 
+### E2E Tests (Playwright)
+
+End-to-end tests run in a real headless Chromium browser and validate visual rendering, user interactions, and navigation flows:
+
+```bash
+cd client && npm run test:e2e      # headless (CI-friendly)
+cd client && npm run test:e2e:ui   # interactive UI runner (requires display)
+```
+
+E2E tests live in `client/e2e/` and require system browser dependencies. Install them with:
+
+```bash
+npx playwright install --with-deps chromium
+```
+
 ## Tech Stack
 
 ### Server
@@ -206,6 +221,19 @@ Health check endpoint. Returns:
 - **Problem links** — LeetCode and GeeksforGeeks links where available
 - **Resource column** — Per-problem "📘 Notes" link to an in-app course material page (`/dsa-sheet/problem/:slug`) with overview, concepts, approach, complexity, and a reference solution. The page has a language selector at the top (C++ / Java / Python / JavaScript) that swaps every code snippet; the choice persists in `localStorage` under `preferred-language`. Each code snippet has a one-click **Copy** button. Course content lives as Markdown files under [client/src/data/resources/](client/src/data/resources/) — one `<id>-<slug>.md` per problem with YAML frontmatter (`id`, `time`, `space`, `concepts`) and `## Overview` / `## Approach` / `## Solution` sections; solutions are authored as fenced code blocks tagged ` ```cpp `, ` ```java `, ` ```python `, ` ```javascript ` and loaded via Vite's `import.meta.glob`.
 - **Difficulty indicators** — Color-coded Easy / Medium / Hard labels
+
+### Reader Mode (Client)
+
+Available on tutorial lesson pages and DSA problem resource pages — any page with substantial reading content:
+
+- **Distraction-free view** — Hides navbar, footer, and sidebar for focused reading
+- **Floating toolbar** (top-right) — Settings gear + exit button; click outside to dismiss settings panel
+- **4 Themes** — Dark (default), Light, Sepia, Night
+- **3 Font families** — Sans-serif, Serif, Monospace
+- **4 Font sizes** — Small, Medium, Large, Extra-Large
+- **Minimal navigation preserved** — Floating lesson menu (bottom-left) on tutorial pages; language selector on DSA pages; prev/next links always visible
+- **Keyboard shortcut** — Press `Esc` to exit reader mode
+- **Preferences persisted** — Theme, font, and size choices saved to `localStorage`
 
 ### Server
 
