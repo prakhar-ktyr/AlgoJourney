@@ -495,6 +495,28 @@ describe("courses loader", () => {
     expect(regression.body.toLowerCase()).toContain("regression");
   });
 
+  it("registers the Theory of Computation course with substantive content", () => {
+    expect(hasCourse("theory-of-computation")).toBe(true);
+    const course = getCourse("theory-of-computation");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("theory-of-computation");
+    expect(home.title.toLowerCase()).toContain("theory of computation");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const dfa = getLesson("theory-of-computation", "toc-dfa");
+    expect(dfa).not.toBeNull();
+    expect(dfa.body.toLowerCase()).toContain("transition");
+
+    const halting = getLesson("theory-of-computation", "toc-halting");
+    expect(halting).not.toBeNull();
+    expect(halting.body.toLowerCase()).toContain("undecidable");
+  });
+
   it("marks DSA, OOP, Discrete Math, and Testing & QA as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
@@ -507,6 +529,7 @@ describe("courses loader", () => {
     expect(hasLanguageSupport("deep-learning")).toBe(false);
     expect(hasLanguageSupport("computer-vision")).toBe(false);
     expect(hasLanguageSupport("data-science")).toBe(false);
+    expect(hasLanguageSupport("theory-of-computation")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
     expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
