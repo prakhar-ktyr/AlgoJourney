@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useReaderMode } from "../context/ReaderModeContext";
 
 const NARROW_BREAKPOINT = 768; // px — matches Tailwind `md`
@@ -27,7 +27,6 @@ export default function ReaderModeToolbar() {
     () => typeof window !== "undefined" && window.innerWidth < NARROW_BREAKPOINT,
   );
   const toolbarRef = useRef(null);
-  const lastScrollY = useRef(0);
 
   // Close settings panel when clicking outside
   useEffect(() => {
@@ -41,28 +40,26 @@ export default function ReaderModeToolbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [expanded]);
 
-  // Auto-minimize on scroll-down for narrow viewports
-  const handleScroll = useCallback(() => {
-    if (window.innerWidth >= NARROW_BREAKPOINT) {
-      setMinimized(false);
-      return;
-    }
-    const currentY = window.scrollY;
-    if (currentY > lastScrollY.current + 10) {
-      setMinimized(true);
-      setExpanded(false);
-    } else if (currentY < lastScrollY.current - 10) {
-      setMinimized(false);
-    }
-    lastScrollY.current = currentY;
-  }, []);
+  // On narrow viewports, clicking outside the toolbar minimizes it
+  useEffect(() => {
+    if (window.innerWidth >= NARROW_BREAKPOINT) return;
+    if (minimized) return;
+    const handleOutside = (e) => {
+      if (toolbarRef.current && !toolbarRef.current.contains(e.target)) {
+        setMinimized(true);
+        setExpanded(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [minimized]);
 
   // Re-evaluate minimized state on resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= NARROW_BREAKPOINT) {
         setMinimized(false);
-      } else if (window.scrollY > 50) {
+      } else {
         setMinimized(true);
         setExpanded(false);
       }
@@ -70,11 +67,6 @@ export default function ReaderModeToolbar() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
 
   if (!active) return null;
 

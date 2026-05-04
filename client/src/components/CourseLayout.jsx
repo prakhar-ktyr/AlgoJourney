@@ -122,7 +122,7 @@ export default function CourseLayout({
           </article>
 
           {/* Prev / Next navigation */}
-          <div className="mt-12 flex flex-col sm:flex-row gap-3 sm:justify-between border-t border-current/10 pt-6 pb-16 opacity-70">
+          <div className="mt-12 flex flex-wrap justify-between gap-4 border-t border-current/10 pt-6 pb-16 opacity-70">
             {prev ? (
               <Link
                 to={lessonHref(prev)}
@@ -138,7 +138,7 @@ export default function CourseLayout({
               <Link
                 to={lessonHref(next)}
                 rel="next"
-                className="inline-flex items-center gap-2 text-sm hover:opacity-100 transition sm:ml-auto"
+                className="inline-flex items-center gap-2 text-sm hover:opacity-100 transition ml-auto"
               >
                 {next.title} →
               </Link>
