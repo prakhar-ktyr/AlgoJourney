@@ -561,6 +561,28 @@ describe("courses loader", () => {
     expect(iam.body.toLowerCase()).toContain("identity");
   });
 
+  it("registers the Distributed Systems course with substantive content", () => {
+    expect(hasCourse("distributed-systems")).toBe(true);
+    const course = getCourse("distributed-systems");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("distributed-systems");
+    expect(home.title.toLowerCase()).toContain("distributed");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const raft = getLesson("distributed-systems", "ds-raft");
+    expect(raft).not.toBeNull();
+    expect(raft.body.toLowerCase()).toContain("leader");
+
+    const cap = getLesson("distributed-systems", "ds-cap");
+    expect(cap).not.toBeNull();
+    expect(cap.body.toLowerCase()).toContain("partition");
+  });
+
   it("marks DSA, OOP, Discrete Math, and Testing & QA as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
@@ -576,6 +598,7 @@ describe("courses loader", () => {
     expect(hasLanguageSupport("theory-of-computation")).toBe(false);
     expect(hasLanguageSupport("compiler-design")).toBe(false);
     expect(hasLanguageSupport("cloud-computing")).toBe(false);
+    expect(hasLanguageSupport("distributed-systems")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
     expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
