@@ -1,10 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useReaderMode } from "../context/ReaderModeContext";
+
+const NARROW_BREAKPOINT = 768; // px — matches Tailwind `md`
 
 /**
  * Floating toolbar displayed when reader mode is active.
  * Provides: exit button, theme switcher, font family, and font size controls.
- * Collapses to a minimal icon on mobile to avoid blocking content.
+ * On narrow viewports (< 768px), starts minimized and auto-minimizes on
+ * scroll-down to avoid obscuring content. Reappears on scroll-up or tap.
  */
 export default function ReaderModeToolbar() {
   const {
@@ -20,7 +23,11 @@ export default function ReaderModeToolbar() {
     FONT_SIZES,
   } = useReaderMode();
   const [expanded, setExpanded] = useState(false);
+  const [minimized, setMinimized] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < NARROW_BREAKPOINT,
+  );
   const toolbarRef = useRef(null);
+  const lastScrollY = useRef(0);
 
   // Close settings panel when clicking outside
   useEffect(() => {
@@ -34,7 +41,64 @@ export default function ReaderModeToolbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [expanded]);
 
+  // Auto-minimize on scroll-down for narrow viewports
+  const handleScroll = useCallback(() => {
+    if (window.innerWidth >= NARROW_BREAKPOINT) {
+      setMinimized(false);
+      return;
+    }
+    const currentY = window.scrollY;
+    if (currentY > lastScrollY.current + 10) {
+      setMinimized(true);
+      setExpanded(false);
+    } else if (currentY < lastScrollY.current - 10) {
+      setMinimized(false);
+    }
+    lastScrollY.current = currentY;
+  }, []);
+
+  // Re-evaluate minimized state on resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= NARROW_BREAKPOINT) {
+        setMinimized(false);
+      } else if (window.scrollY > 50) {
+        setMinimized(true);
+        setExpanded(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
   if (!active) return null;
+
+  // Minimized state: single small floating icon
+  if (minimized) {
+    return (
+      <button
+        type="button"
+        onClick={() => setMinimized(false)}
+        className={`fixed top-3 right-3 z-[100] p-2 rounded-full border ${theme.toolbar} backdrop-blur shadow-lg opacity-70 hover:opacity-100 transition`}
+        aria-label="Show reader mode controls"
+        title="Show reader mode controls"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          className="w-4 h-4"
+        >
+          <path d="M10.75 16.82A7.462 7.462 0 0115 15.5c.71 0 1.396.098 2.046.282A.75.75 0 0018 15.06V3.44a.75.75 0 00-.556-.723A9.006 9.006 0 0015 2.5a8.99 8.99 0 00-4.25 1.065v13.255zM9.25 4.565A8.99 8.99 0 005 2.5c-.853 0-1.681.118-2.444.34A.75.75 0 002 3.56v11.62a.75.75 0 00.956.723A7.462 7.462 0 015 15.5a7.46 7.46 0 014.25 1.32V4.565z" />
+        </svg>
+      </button>
+    );
+  }
 
   return (
     <div

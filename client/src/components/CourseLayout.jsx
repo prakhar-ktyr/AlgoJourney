@@ -117,7 +117,6 @@ export default function CourseLayout({
         <div
           className={`max-w-3xl mx-auto px-6 sm:px-8 py-12 ${fontFamily.className} ${fontSize.className}`}
         >
-          <h1 className="text-2xl font-bold mb-8 opacity-90">{lesson.title}</h1>
           <article className="leading-relaxed">
             <Markdown source={filteredBody} />
           </article>
@@ -168,6 +167,20 @@ export default function CourseLayout({
           <h1 className="text-3xl font-bold text-white">{topic.name} Tutorial</h1>
           <span className="text-sm text-gray-500">{topic.group}</span>
         </div>
+      </div>
+
+      {/* Action row: sidebar toggle + language + reader mode — all on one line */}
+      <div className="flex flex-wrap items-center gap-2 mb-6">
+        <button
+          type="button"
+          className="md:hidden inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-200 hover:bg-gray-800 transition"
+          onClick={() => setSidebarOpen((v) => !v)}
+          aria-expanded={sidebarOpen}
+          aria-controls="course-sidebar"
+        >
+          <span aria-hidden="true">☰</span>
+          {sidebarOpen ? "Hide" : "Show"} lessons ({course.lessons.length})
+        </button>
         <div className="ml-auto flex items-center gap-2">
           {languages && (
             <select
@@ -187,17 +200,6 @@ export default function CourseLayout({
           <ReaderModeToggle />
         </div>
       </div>
-
-      <button
-        type="button"
-        className="md:hidden mb-4 inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-200 hover:bg-gray-800 transition"
-        onClick={() => setSidebarOpen((v) => !v)}
-        aria-expanded={sidebarOpen}
-        aria-controls="course-sidebar"
-      >
-        <span aria-hidden="true">☰</span>
-        {sidebarOpen ? "Hide" : "Show"} lessons ({course.lessons.length})
-      </button>
 
       <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8">
         <aside id="course-sidebar" className={`${sidebarOpen ? "block" : "hidden"} md:block`}>
