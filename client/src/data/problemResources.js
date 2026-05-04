@@ -78,6 +78,13 @@
  *                          when no ## Concepts section is present in the body.
  *                          Inline markdown is NOT supported in frontmatter
  *                          bullets — use ## Concepts in the body instead.
+ *   tutorials (optional) — YAML list of `course-slug/lesson-slug` references
+ *                          linking to tutorial lessons in the /tutorials route.
+ *                          Each entry may optionally include a `|` followed by
+ *                          a custom display label:
+ *                            tutorials:
+ *                              - dsa/dsa-big-o-notation
+ *                              - dsa/dsa-time-complexity | Time Complexity
  *
  * -----------------------------------------------------------------------------
  * SECTION NAMES  (all optional, order does not matter)
@@ -492,6 +499,24 @@ function buildResource(raw, path) {
     };
   });
 
+  // Parse tutorials list from frontmatter. Each entry is a
+  // "course-slug/lesson-slug" string, optionally followed by " | Label".
+  const tutorials = Array.isArray(meta.tutorials)
+    ? meta.tutorials
+        .map((entry) => {
+          const [ref, ...labelParts] = entry.split("|");
+          const trimmedRef = ref.trim();
+          const slashIdx = trimmedRef.indexOf("/");
+          if (slashIdx < 1) return null;
+          const courseSlug = trimmedRef.slice(0, slashIdx);
+          const lessonSlug = trimmedRef.slice(slashIdx + 1);
+          if (!lessonSlug) return null;
+          const label = labelParts.length ? labelParts.join("|").trim() : null;
+          return { courseSlug, lessonSlug, label };
+        })
+        .filter(Boolean)
+    : [];
+
   return {
     slug,
     intro: generic.overview || null,
@@ -500,6 +525,7 @@ function buildResource(raw, path) {
     complexity,
     solutions,
     languages,
+    tutorials,
   };
 }
 
@@ -542,5 +568,6 @@ export function resolveProblemResource(slug, language) {
     complexity: override.complexity ?? resource.complexity,
     solutions,
     availableLanguages,
+    tutorials: resource.tutorials ?? [],
   };
 }

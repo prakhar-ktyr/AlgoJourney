@@ -6,6 +6,7 @@ import {
   getProblemResource,
   resolveProblemResource,
 } from "../data/problemResources";
+import { COURSES } from "../data/courses";
 import { problemSlug } from "../lib/slugify";
 import CodeBlock from "../components/CodeBlock";
 import Markdown, { MarkdownInline } from "../components/Markdown";
@@ -143,6 +144,33 @@ export default function ProblemResourcePage() {
             <section>
               <h2 className="text-xl font-semibold text-white mb-3">Overview</h2>
               <Markdown source={resolved.intro} />
+            </section>
+          )}
+
+          {resolved.tutorials?.length > 0 && (
+            <section>
+              <h2 className="text-xl font-semibold text-white mb-3">Related Tutorials</h2>
+              <p className="text-gray-400 text-sm mb-3">
+                Study these lessons for a deeper understanding of the concepts covered here:
+              </p>
+              <ul className="space-y-2">
+                {resolved.tutorials.map((tut) => {
+                  const course = COURSES[tut.courseSlug];
+                  const lesson = course?.lessons?.find((l) => l.slug === tut.lessonSlug);
+                  const title = tut.label || lesson?.title || tut.lessonSlug;
+                  return (
+                    <li key={`${tut.courseSlug}/${tut.lessonSlug}`}>
+                      <Link
+                        to={`/tutorials/${tut.courseSlug}/${tut.lessonSlug}`}
+                        className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition"
+                      >
+                        <span className="text-lg">📖</span>
+                        <span className="underline">{title}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
             </section>
           )}
 
