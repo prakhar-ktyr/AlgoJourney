@@ -539,6 +539,28 @@ describe("courses loader", () => {
     expect(lr0.body.toLowerCase()).toContain("item");
   });
 
+  it("registers the Cloud Computing course with substantive content", () => {
+    expect(hasCourse("cloud-computing")).toBe(true);
+    const course = getCourse("cloud-computing");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("cloud-computing");
+    expect(home.title.toLowerCase()).toContain("cloud");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const vpc = getLesson("cloud-computing", "cc-vpc-subnets");
+    expect(vpc).not.toBeNull();
+    expect(vpc.body.toLowerCase()).toContain("subnet");
+
+    const iam = getLesson("cloud-computing", "cc-iam");
+    expect(iam).not.toBeNull();
+    expect(iam.body.toLowerCase()).toContain("identity");
+  });
+
   it("marks DSA, OOP, Discrete Math, and Testing & QA as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
@@ -553,6 +575,7 @@ describe("courses loader", () => {
     expect(hasLanguageSupport("data-science")).toBe(false);
     expect(hasLanguageSupport("theory-of-computation")).toBe(false);
     expect(hasLanguageSupport("compiler-design")).toBe(false);
+    expect(hasLanguageSupport("cloud-computing")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
     expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
