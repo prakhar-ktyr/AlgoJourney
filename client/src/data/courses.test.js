@@ -517,6 +517,28 @@ describe("courses loader", () => {
     expect(halting.body.toLowerCase()).toContain("undecidable");
   });
 
+  it("registers the Compiler Design course with substantive content", () => {
+    expect(hasCourse("compiler-design")).toBe(true);
+    const course = getCourse("compiler-design");
+    expect(course.lessons.length).toBeGreaterThanOrEqual(65);
+
+    const orders = course.lessons.map((l) => l.order);
+    const sorted = [...orders].sort((a, b) => a - b);
+    expect(orders).toEqual(sorted);
+
+    const home = getLesson("compiler-design");
+    expect(home.title.toLowerCase()).toContain("compiler");
+    expect(home.body.length).toBeGreaterThan(50);
+
+    const lexer = getLesson("compiler-design", "cd-hand-lexer");
+    expect(lexer).not.toBeNull();
+    expect(lexer.body.toLowerCase()).toContain("token");
+
+    const lr0 = getLesson("compiler-design", "cd-lr0");
+    expect(lr0).not.toBeNull();
+    expect(lr0.body.toLowerCase()).toContain("item");
+  });
+
   it("marks DSA, OOP, Discrete Math, and Testing & QA as language-supported courses", () => {
     expect(hasLanguageSupport("dsa")).toBe(true);
     expect(hasLanguageSupport("oop")).toBe(true);
@@ -530,6 +552,7 @@ describe("courses loader", () => {
     expect(hasLanguageSupport("computer-vision")).toBe(false);
     expect(hasLanguageSupport("data-science")).toBe(false);
     expect(hasLanguageSupport("theory-of-computation")).toBe(false);
+    expect(hasLanguageSupport("compiler-design")).toBe(false);
     expect(LANGUAGE_COURSES.has("dsa")).toBe(true);
     expect(LANGUAGE_COURSES.has("oop")).toBe(true);
     expect(LANGUAGE_COURSES.has("discrete-mathematics")).toBe(true);
