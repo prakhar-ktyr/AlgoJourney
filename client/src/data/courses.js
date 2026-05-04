@@ -47,7 +47,15 @@ function parseFrontmatter(text) {
   for (const line of match[1].split(/\r?\n/)) {
     const kv = line.match(/^([A-Za-z0-9_]+)\s*:\s*(.*)$/);
     if (!kv) continue;
-    meta[kv[1]] = kv[2].trim();
+    let val = kv[2].trim();
+    // Strip surrounding quotes (YAML allows "..." or '...' for strings)
+    if (
+      (val.startsWith('"') && val.endsWith('"')) ||
+      (val.startsWith("'") && val.endsWith("'"))
+    ) {
+      val = val.slice(1, -1);
+    }
+    meta[kv[1]] = val;
   }
   return { meta, body };
 }

@@ -122,7 +122,7 @@ export default function CourseLayout({
           </article>
 
           {/* Prev / Next navigation */}
-          <div className="mt-12 flex flex-col sm:flex-row gap-3 sm:justify-between border-t border-current/10 pt-6 opacity-70">
+          <div className="mt-12 flex flex-col sm:flex-row gap-3 sm:justify-between border-t border-current/10 pt-6 pb-16 opacity-70">
             {prev ? (
               <Link
                 to={lessonHref(prev)}
