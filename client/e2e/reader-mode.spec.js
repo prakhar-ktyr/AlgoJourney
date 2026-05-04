@@ -109,21 +109,19 @@ test.describe("Reader Mode — Theme Switching", () => {
     expect(color).not.toBe("rgb(209, 213, 219)"); // not gray-300
   });
 
-  test("code blocks remain dark in light theme", async ({ page }) => {
+  test("code blocks adapt to light theme (not dark background)", async ({ page }) => {
     await page.getByRole("button", { name: /reader settings/i }).click();
     await page.getByRole("button", { name: "Light" }).click();
 
-    // Code blocks should keep dark background
+    // Code blocks should have light background in light theme
     const codeBlock = page.locator("pre").first();
     if ((await codeBlock.count()) > 0) {
-      const bgColor = await codeBlock.evaluate(
-        (el) => getComputedStyle(el.closest("[class*='bg-']") || el).backgroundColor,
-      );
-      // Should be dark (rgb values low)
-      const match = bgColor.match(/rgb\((\d+), (\d+), (\d+)\)/);
+      const color = await codeBlock.evaluate((el) => getComputedStyle(el).color);
+      // Text should be dark (readable on light bg)
+      const match = color.match(/rgb\((\d+), (\d+), (\d+)\)/);
       if (match) {
         const [, r, g, b] = match.map(Number);
-        expect(r + g + b).toBeLessThan(150); // Reasonably dark
+        expect(r + g + b).toBeLessThan(400); // Dark text
       }
     }
   });

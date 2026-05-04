@@ -49,16 +49,59 @@
   color: #92400e !important;
 }
 
-/* Code blocks must keep their styling intact in all themes */
-.reader-mode-light pre,
-.reader-mode-light pre *,
-.reader-mode-light [class*="bg-[#0d1117]"],
-.reader-mode-light [class*="bg-[#0d1117]"] *,
-.reader-mode-sepia pre,
-.reader-mode-sepia pre *,
-.reader-mode-sepia [class*="bg-[#0d1117]"],
-.reader-mode-sepia [class*="bg-[#0d1117]"] * {
-  color: unset;
+/* Adaptive code blocks — light/sepia themes get matching code backgrounds */
+.reader-mode-light [class*="bg-[#0d1117]"] {
+  background-color: #f6f8fa !important;
+  border-color: #d1d9e0 !important;
+}
+
+.reader-mode-light [class*="bg-gray-900"] {
+  background-color: #eef1f5 !important;
+  border-color: #d1d9e0 !important;
+}
+
+.reader-mode-light pre {
+  color: #1f2937 !important;
+}
+
+.reader-mode-light pre code {
+  color: #1f2937 !important;
+}
+
+.reader-mode-light [class*="bg-[#0d1117]"] span,
+.reader-mode-light [class*="bg-[#0d1117]"] button {
+  color: #374151 !important;
+}
+
+.reader-mode-light [class*="bg-[#0d1117]"] button:hover {
+  color: #111827 !important;
+}
+
+.reader-mode-sepia [class*="bg-[#0d1117]"] {
+  background-color: #fef3c7 !important;
+  border-color: #d97706 !important;
+}
+
+.reader-mode-sepia [class*="bg-gray-900"] {
+  background-color: #fde68a !important;
+  border-color: #d97706 !important;
+}
+
+.reader-mode-sepia pre {
+  color: #451a03 !important;
+}
+
+.reader-mode-sepia pre code {
+  color: #451a03 !important;
+}
+
+.reader-mode-sepia [class*="bg-[#0d1117]"] span,
+.reader-mode-sepia [class*="bg-[#0d1117]"] button {
+  color: #78350f !important;
+}
+
+.reader-mode-sepia [class*="bg-[#0d1117]"] button:hover {
+  color: #451a03 !important;
 }
 
 /* Inline code needs themed background for visibility */
