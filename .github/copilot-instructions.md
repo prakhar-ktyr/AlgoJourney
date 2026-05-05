@@ -28,6 +28,7 @@ MERN-stack learning platform (CS, AI, DSA tracker). Two npm workspaces orchestra
 - **New Mongoose model**: create `server/models/<Name>.js`, export the model as default plus any enum constants, then re-export from [server/models/index.js](server/models/index.js). Add a `*.model.test.js` covering required-field validation (mirror [server/**tests**/user.model.test.js](server/__tests__/user.model.test.js)).
 - **New page**: add component under `client/src/pages/`, register the route in [client/src/App.jsx](client/src/App.jsx), and add a sibling `*.test.jsx`. Update [client/public/404.html](client/public/404.html) handling only if introducing new top-level segments (GitHub Pages SPA fallback).
 - **New UI feature with visual behavior** (themes, animations, responsive layouts, interactive components): add Playwright E2E tests under [client/e2e/](client/e2e/) that validate the feature in a real browser. Unit tests alone cannot catch CSS/styling bugs.
+- **New lesson content**: follow the authoring guide at [client/src/data/courses/AUTHORING.md](client/src/data/courses/AUTHORING.md) for supported markdown syntax, interactive features, and language-specific content.
 - **Env vars**: read via `process.env.*` on the server only; never expose secrets to the client. Document any new variable in [README.md](README.md) under "Configure environment".
 
 ## After Making Changes
