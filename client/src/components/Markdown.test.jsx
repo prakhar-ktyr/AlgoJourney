@@ -123,9 +123,7 @@ describe("Markdown", () => {
   });
 
   it("renders task list items with checkboxes", () => {
-    const { container } = renderMd(
-      ["- [x] Completed task", "- [ ] Pending task"].join("\n"),
-    );
+    const { container } = renderMd(["- [x] Completed task", "- [ ] Pending task"].join("\n"));
     const items = container.querySelectorAll("li");
     expect(items).toHaveLength(2);
     // No bullet markers for task lists
@@ -139,5 +137,38 @@ describe("Markdown", () => {
     // Raw brackets should not appear
     expect(container.textContent).not.toContain("[x]");
     expect(container.textContent).not.toContain("[ ]");
+  });
+
+  it("renders tooltip terms with {{term||definition}} syntax", () => {
+    renderMd("Python is a {{high-level||Abstracts away hardware details.}} language.");
+    const termButton = screen.getByRole("button", { name: "high-level" });
+    expect(termButton).toBeInTheDocument();
+    expect(termButton.className).toContain("border-dotted");
+    // The definition should not be visible until interaction
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    // The surrounding text renders normally
+    expect(screen.getByText(/Python is a/)).toBeInTheDocument();
+    expect(screen.getByText(/language\./)).toBeInTheDocument();
+  });
+
+  it("shows tooltip definition on click", async () => {
+    const userEvent = (await import("@testing-library/user-event")).default;
+    const user = userEvent.setup();
+    renderMd("A {{compiled||Translated to machine code before execution.}} language.");
+    const termButton = screen.getByRole("button", { name: "compiled" });
+    await user.click(termButton);
+    expect(screen.getByRole("tooltip")).toBeInTheDocument();
+    expect(screen.getByText("Translated to machine code before execution.")).toBeInTheDocument();
+  });
+
+  it("renders collapsible details blocks with :::details syntax", () => {
+    const { container } = renderMd(
+      [":::details Why is the sky blue?", "Because of Rayleigh scattering.", ":::"].join("\n"),
+    );
+    const details = container.querySelector("details");
+    expect(details).not.toBeNull();
+    const summary = details.querySelector("summary");
+    expect(summary.textContent).toContain("Why is the sky blue?");
+    expect(details.textContent).toContain("Because of Rayleigh scattering.");
   });
 });

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import CodeBlock from "./CodeBlock";
+import TooltipTerm from "./TooltipTerm";
 
 /**
  * Lightweight markdown renderer for the small subset of markdown we author
@@ -55,6 +56,21 @@ function parseBlocks(text) {
       }
       i++; // skip closing ```
       blocks.push({ type: "code", lang, code: buf.join("\n") });
+      continue;
+    }
+
+    // Collapsible details block: :::details Title\n...\n:::
+    const detailsMatch = line.match(/^:::details\s+(.+)$/);
+    if (detailsMatch) {
+      const summary = detailsMatch[1].trim();
+      const buf = [];
+      i++;
+      while (i < lines.length && !/^:::\s*$/.test(lines[i])) {
+        buf.push(lines[i]);
+        i++;
+      }
+      i++; // skip closing :::
+      blocks.push({ type: "details", summary, content: buf.join("\n") });
       continue;
     }
 
@@ -153,9 +169,15 @@ function parseBlocks(text) {
         }
       }
       const bqText = buf.join("\n");
-      const alertMatch = bqText.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:\s*\n|\s+)([\s\S]*)$/i);
+      const alertMatch = bqText.match(
+        /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:\s*\n|\s+)([\s\S]*)$/i,
+      );
       if (alertMatch) {
-        blocks.push({ type: "alert", alertType: alertMatch[1].toUpperCase(), text: alertMatch[2].trim() });
+        blocks.push({
+          type: "alert",
+          alertType: alertMatch[1].toUpperCase(),
+          text: alertMatch[2].trim(),
+        });
       } else {
         blocks.push({ type: "blockquote", text: bqText.trim() });
       }
@@ -214,7 +236,13 @@ function renderBlock(block, key) {
                   aria-hidden="true"
                 >
                   {checked && (
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={3}
+                    >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   )}
@@ -286,7 +314,10 @@ function renderBlock(block, key) {
   }
   if (block.type === "blockquote") {
     return (
-      <blockquote key={key} className="border-l-4 border-gray-600 pl-4 py-2 italic text-gray-400 bg-gray-800/20 rounded-r-md">
+      <blockquote
+        key={key}
+        className="border-l-4 border-gray-600 pl-4 py-2 italic text-gray-400 bg-gray-800/20 rounded-r-md"
+      >
         <p className="whitespace-pre-line">{renderInline(block.text)}</p>
       </blockquote>
     );
@@ -316,15 +347,44 @@ function renderBlock(block, key) {
     };
 
     return (
-      <div key={key} className={`border-l-4 pl-4 py-3 rounded-r-md ${ALERT_STYLES[block.alertType]}`}>
-        <div className={`font-semibold mb-2 flex items-center gap-2 ${TITLE_COLORS[block.alertType]}`}>
+      <div
+        key={key}
+        className={`border-l-4 pl-4 py-3 rounded-r-md ${ALERT_STYLES[block.alertType]}`}
+      >
+        <div
+          className={`font-semibold mb-2 flex items-center gap-2 ${TITLE_COLORS[block.alertType]}`}
+        >
           <span>{TITLE_ICONS[block.alertType]}</span>
           <span className="capitalize">{block.alertType.toLowerCase()}</span>
         </div>
-        <div className="text-gray-300 whitespace-pre-line">
-          {renderInline(block.text)}
-        </div>
+        <div className="text-gray-300 whitespace-pre-line">{renderInline(block.text)}</div>
       </div>
+    );
+  }
+
+  if (block.type === "details") {
+    const innerBlocks = parseBlocks(block.content);
+    return (
+      <details
+        key={key}
+        className="group border border-gray-700 rounded-lg bg-gray-800/30 overflow-hidden"
+      >
+        <summary className="cursor-pointer px-4 py-3 font-medium text-blue-300 hover:text-blue-200 hover:bg-gray-800/50 transition-colors select-none list-none flex items-center gap-2">
+          <svg
+            className="w-4 h-4 transition-transform group-open:rotate-90 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+          {block.summary}
+        </summary>
+        <div className="px-4 pb-4 pt-2 space-y-4 text-gray-300 leading-relaxed border-t border-gray-700">
+          {innerBlocks.map((b, i) => renderBlock(b, i))}
+        </div>
+      </details>
     );
   }
 
@@ -465,6 +525,22 @@ function renderInline(text) {
       }
     }
 
+    // Tooltip term: {{term||definition}}
+    if (ch === "{" && text[i + 1] === "{") {
+      const closeIdx = text.indexOf("}}", i + 2);
+      if (closeIdx !== -1) {
+        const inner = text.slice(i + 2, closeIdx);
+        const sepIdx = inner.indexOf("||");
+        if (sepIdx !== -1) {
+          const term = inner.slice(0, sepIdx);
+          const definition = inner.slice(sepIdx + 2);
+          nodes.push({ type: "tooltip", term, definition });
+          i = closeIdx + 2;
+          continue;
+        }
+      }
+    }
+
     // Link: [text](url) — `text` may contain inline code/emphasis but not
     // nested `]`. Skip placeholder hrefs of `#` so they render as plain text.
     if (ch === "[") {
@@ -554,6 +630,9 @@ function renderInline(text) {
         </Link>
       );
     }
+    if (n.type === "tooltip") {
+      return <TooltipTerm key={idx} term={n.term} definition={n.definition} />;
+    }
     if (n.type === "node") {
       return <Fragment key={idx}>{n.value}</Fragment>;
     }
@@ -562,7 +641,7 @@ function renderInline(text) {
 }
 
 function isInlineSpecial(ch) {
-  return ch === "`" || ch === "*" || ch === "_" || ch === "$" || ch === "[";
+  return ch === "`" || ch === "*" || ch === "_" || ch === "$" || ch === "[" || ch === "{";
 }
 
 /** External link if it has a scheme (`http:`, `https:`, `mailto:`, …) or starts with `//`. */
