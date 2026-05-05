@@ -589,6 +589,25 @@ $$T(n) \approx \phi^n \quad \text{where } \phi = \frac{1 + \sqrt{5}}{2} \approx 
 
 Since $\phi^n$ grows exponentially, we simplify to $O(2^n)$ (since $\phi < 2$ and we use it as an upper bound).
 
+:::details Why does the recurrence T(n) = T(n-1) + T(n-2) + 1 lead to exponential growth?
+
+**Step 1 — Ignore the +1.** The dominant behaviour comes from the two recursive calls. For large $n$, the +1 per call is negligible compared to the explosion of calls, so we analyse:
+
+$$T(n) \approx T(n-1) + T(n-2)$$
+
+This is exactly the Fibonacci recurrence! So $T(n)$ grows at the same rate as the Fibonacci numbers.
+
+**Step 2 — The closed-form (Binet's formula).** The Fibonacci sequence has an exact closed-form:
+
+$$F(n) = \frac{\phi^n - \psi^n}{\sqrt{5}} \quad \text{where } \phi = \frac{1+\sqrt{5}}{2} \approx 1.618, \quad \psi = \frac{1-\sqrt{5}}{2} \approx -0.618$$
+
+Since $|\psi| < 1$, the $\psi^n$ term shrinks to zero, leaving $F(n) \approx \phi^n / \sqrt{5}$.
+
+**Step 3 — Why $O(2^n)$?** We know $\phi \approx 1.618 < 2$, so $\phi^n < 2^n$ for all $n \geq 1$. Big-O only requires an upper bound, so we can write $T(n) = O(2^n)$. This is a slight overestimate but is the standard way to express "exponential" without the irrational base.
+
+**Step 4 — Intuition without the math.** Imagine the call tree: every call spawns two more. A perfect binary tree of depth $n$ has $2^n$ leaves. The Fibonacci tree isn't perfectly balanced (one branch is depth $n-1$, the other $n-2$), so it's somewhat smaller — hence $\phi^n$ instead of $2^n$ — but still exponential.
+:::
+
 **How bad is this?**
 
 | n | Approximate calls |

@@ -6,7 +6,7 @@ title: Python Introduction
 
 ## What is Python?
 
-Python is a **high-level, interpreted, dynamically-typed, general-purpose programming language**. It was created by **Guido van Rossum** in the late 1980s and first released in 1991. The name has nothing to do with snakes — Guido was a fan of _Monty Python's Flying Circus_.
+Python is a **{{high-level||A high-level language abstracts away hardware details like memory management and CPU instructions, letting you write code that reads closer to English than machine code.}}, {{interpreted||An interpreted language executes code line by line at runtime through an interpreter, rather than being compiled into machine code beforehand. This makes development faster but execution slower.}}, {{dynamically-typed||In a dynamically-typed language, variable types are determined at runtime — you don't declare types upfront. A variable can hold a string one moment and a number the next.}}, {{general-purpose||A general-purpose language is designed to build any kind of software — web apps, scripts, data pipelines, games — rather than being specialized for one domain.}} programming language**. It was created by **Guido van Rossum** in the late 1980s and first released in 1991. The name has nothing to do with snakes — Guido was a fan of _Monty Python's Flying Circus_.
 
 Python's design philosophy is summed up in **The Zen of Python**, a short poem you can read at any time by typing `import this` in the interpreter:
 
