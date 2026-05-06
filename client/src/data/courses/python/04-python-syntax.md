@@ -27,8 +27,26 @@ is three statements. You _can_ put multiple on one line with semicolons (`x = 1;
 If a statement is too long, break it with a backslash `\` or — preferably — wrap it in parentheses, brackets, or braces:
 
 ```python
+# Parentheses — best for arithmetic or long conditions
 total = (1 + 2 + 3
          + 4 + 5 + 6)
+
+# Square brackets — natural for long lists
+colors = [
+    "red", "green", "blue",
+    "cyan", "magenta", "yellow",
+]
+
+# Curly braces — natural for dicts and sets
+config = {
+    "host": "localhost",
+    "port": 8080,
+    "debug": True,
+}
+
+# Backslash — last resort when no brackets are involved
+path = "/very/long/directory/" \
+       "continued/here"
 ```
 
 ## Indentation defines blocks

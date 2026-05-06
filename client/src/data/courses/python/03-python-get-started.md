@@ -58,7 +58,7 @@ This is the **REPL** — Read, Eval, Print, Loop. Type any expression and Python
 ```python
 >>> 2 + 2
 4
->>> "hello" * 3
+>>> "hello " * 3
 'hello hello hello '
 >>> import this
 ```
@@ -68,6 +68,16 @@ Press `Ctrl+D` (macOS/Linux) or `Ctrl+Z` then `Enter` (Windows) to exit. The REP
 ## Step 4 — Your first script
 
 Real programs live in files. Open any text editor (VS Code with the Python extension is a great default), create a file called **`hello.py`**, and paste:
+
+:::details Setting up VS Code for Python
+1. Download VS Code from [code.visualstudio.com](https://code.visualstudio.com/) if you haven't already.
+2. Open VS Code and go to the Extensions panel (`Ctrl+Shift+X` on Windows/Linux, `Cmd+Shift+X` on macOS).
+3. Search for **"Python"** by Microsoft and click **Install**. This extension gives you syntax highlighting, {{IntelliSense||VS Code's autocomplete system — it suggests function names, parameters, and variable completions as you type.}}, linting, and one-click script execution.
+4. Create a project folder somewhere on your machine (e.g. `~/python-projects/`), then open it in VS Code via **File → Open Folder**.
+5. Inside that folder, create a new file called `hello.py` (use **File → New File** or the Explorer sidebar).
+
+With the Python extension installed, VS Code will automatically detect your interpreter and show a **▶ Run** button in the top-right corner of the editor — you can click that instead of switching to the terminal every time.
+:::
 
 ```python
 print("Hello, World!")
