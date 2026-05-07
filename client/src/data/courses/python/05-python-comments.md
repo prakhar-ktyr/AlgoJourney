@@ -186,6 +186,10 @@ def fetch(url, timeout=10):
 
 Pick one style and stick with it across a project. For most new projects, **Google style** is the most readable choice.
 
+:::details Does the style change what print(__doc__) or help() shows?
+No. Python stores the docstring exactly as you typed it — it's just a plain string. `print(func.__doc__)` and `help(func)` always display the raw string verbatim, regardless of which style you chose. The formatting differences between Google, NumPy, and reST only matter to **external tools** — documentation generators like Sphinx, or IDE plugins — which parse the text to build nice-looking docs. At runtime, all three styles look identical to Python itself.
+:::
+
 ## Module docstrings
 
 You can also put a docstring at the very top of a `.py` file (before any imports). This documents what the entire file is for:
