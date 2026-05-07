@@ -120,7 +120,7 @@ You'll rarely need `complex` unless you're doing scientific work.
 ```python
 abs(-5)          # 5
 round(3.7)       # 4
-round(2.675, 2)  # 2.67  (banker's rounding — see math.fsum, decimal for exact)
+round(2.675, 2)  # 2.67  (floating-point can't store 2.675 exactly — use decimal for precise rounding)
 min(3, 1, 4)     # 1
 max(3, 1, 4)     # 4
 sum([1, 2, 3])   # 6

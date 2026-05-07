@@ -25,7 +25,7 @@ Both the `if` clause and the `EXPRESSION` are optional in different ways:
 
 ```python
 evens = [x for x in range(20) if x % 2 == 0]
-words = ["hello world".split()]   # without comprehension — just a regular expression
+words = "hello world".split()    # returns ['hello', 'world'] — no comprehension needed
 
 # Multiple sources (nested loops)
 pairs = [(r, c) for r in range(3) for c in range(3)]

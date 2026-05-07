@@ -47,7 +47,7 @@ Python lets you chain like math notation:
 
 ```python
 0 <= age <= 120                # True if age in that range
-"a" < ch < "z"                 # True if ch is a lowercase letter
+"a" <= ch <= "z"               # True if ch is a lowercase ASCII letter
 ```
 
 ## Boolean operators: `and`, `or`, `not`

@@ -40,7 +40,26 @@ Python's strengths come with trade-offs you should know about up front:
 - **Not the fastest language.** Pure Python is 10–100× slower than C for CPU-bound work. Libraries like NumPy work around this by calling C under the hood.
 - **Dynamically typed.** Type errors happen at runtime, not compile time. We'll cover **type hints** later, which restore much of the safety.
 - **Whitespace-sensitive.** Indentation isn't decoration — it defines blocks. New programmers love this; some veterans hate it.
-- **The GIL.** The reference interpreter (CPython) has a _Global Interpreter Lock_ that limits true CPU parallelism in threads. For parallel CPU work you use processes or `asyncio`.
+- **The GIL.** The reference interpreter (CPython) has a _Global Interpreter Lock_ that limits true CPU parallelism in threads. For parallel CPU work you use processes (via `multiprocessing`). For concurrent I/O work (network calls, file reads) you can use threads or `asyncio`.
+
+:::details What is the GIL and why does it matter?
+Imagine Python has a single "talking stick." Only the thread holding the stick can run Python code at any given moment. That stick is the **Global Interpreter Lock (GIL)**.
+
+This means even if your computer has 8 CPU cores, a multithreaded Python program can only use **one core at a time** for Python code. Threads still help when your code is waiting around for I/O (like downloading a file or querying a database), because while one thread waits, another can grab the stick and do work.
+
+**When you need true CPU parallelism** (e.g., crunching numbers across all cores), you use the `multiprocessing` module, which launches separate Python processes — each with its own GIL, so they can genuinely run in parallel.
+
+**When you need concurrent I/O** (e.g., fetching 100 web pages at once), you can use `threading` or `asyncio`. Neither gives you more CPU power, but both let you overlap the waiting time so your program finishes faster.
+
+| Scenario | Tool | Why |
+| --- | --- | --- |
+| Heavy math on all cores | `multiprocessing` | Bypasses the GIL with separate processes |
+| Many network requests at once | `asyncio` or `threading` | Overlaps I/O waits, one thread is fine |
+| Simple script, one thing at a time | Just write it normally | No concurrency needed |
+
+> [!NOTE]
+> Python 3.13 introduced an **optional free-threaded build** (no GIL). This is still experimental, but it signals that the GIL may become optional in the future.
+:::
 
 ## Python 2 vs Python 3
 
@@ -48,15 +67,15 @@ You may stumble on old tutorials that mention `print "hello"` (no parentheses) o
 
 ## Versions of Python you may hear about
 
-| Version | Year | Highlights                                            |
-| ------- | ---- | ----------------------------------------------------- | ------------------------------------- |
-| 3.6     | 2016 | f-strings, type hints standardized                    |
-| 3.8     | 2019 | walrus operator `:=`, positional-only params          |
-| 3.9     | 2020 | dict union `                                          | `, built-in generic types `list[int]` |
-| 3.10    | 2021 | structural pattern matching (`match`/`case`)          |
-| 3.11    | 2022 | 10–60 % faster, much better tracebacks                |
-| 3.12    | 2023 | per-interpreter GIL groundwork, f-string improvements |
-| 3.13    | 2024 | optional free-threaded build, JIT preview             |
+| Version | Year | Highlights                                                        |
+| ------- | ---- | ----------------------------------------------------------------- |
+| 3.6     | 2016 | f-strings, type hints standardized                                |
+| 3.8     | 2019 | walrus operator `:=`, positional-only params                      |
+| 3.9     | 2020 | dict union (`d1 \| d2`), built-in generic types `list[int]`      |
+| 3.10    | 2021 | structural pattern matching (`match`/`case`)                      |
+| 3.11    | 2022 | 10–60 % faster, much better tracebacks                            |
+| 3.12    | 2023 | per-interpreter GIL groundwork, f-string improvements             |
+| 3.13    | 2024 | optional free-threaded build, JIT preview                         |
 
 ## Implementations
 

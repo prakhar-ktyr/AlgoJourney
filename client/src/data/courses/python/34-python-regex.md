@@ -114,7 +114,7 @@ re.findall(r"cat|dog|fish", "I have a cat and a dog")
 Pass after the pattern, OR them with `|`:
 
 ```python
-re.findall(r"py", "Python", re.IGNORECASE)         # ['P', 'y'] no — but matches case-insensitively
+re.findall(r"py", "Python", re.IGNORECASE)         # ['Py']
 ```
 
 Common flags:

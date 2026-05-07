@@ -430,7 +430,10 @@ function splitTableRow(line) {
   let s = line.trim();
   if (s.startsWith("|")) s = s.slice(1);
   if (s.endsWith("|")) s = s.slice(0, -1);
-  return s.split("|").map((c) => c.trim());
+  // Handle escaped pipes: split on unescaped | only, then restore \| → |
+  return s
+    .split(/(?<!\\)\|/)
+    .map((c) => c.trim().replace(/\\\|/g, "|"));
 }
 
 /** Parse a separator row into per-column alignments: 'left' | 'center' | 'right'. */
