@@ -135,15 +135,56 @@ Structure:
 
 ### Common docstring styles
 
-Different projects use different formatting conventions for the body:
+All three styles below convey the same information — they just format the body differently. The multi-line example above uses **Google style**.
 
-| Style                | Used by                                  |
-| -------------------- | ---------------------------------------- |
-| **Google** (above)   | Most modern projects, Google itself      |
-| **NumPy**            | Scientific Python (NumPy, SciPy, pandas) |
-| **reStructuredText** | Older Sphinx projects                    |
+**Google style** — plain indented sections, easy to read as plain text:
 
-All three convey the same information — they just look slightly different. Pick one and stick with it across a project.
+```python
+def fetch(url, timeout=10):
+    """Download the content at `url`.
+
+    Args:
+        url: The URL to fetch.
+        timeout: Seconds to wait before giving up.
+
+    Returns:
+        The response body as a string.
+    """
+```
+
+**NumPy style** — uses dashes under each section heading, common in scientific libraries (NumPy, SciPy, pandas):
+
+```python
+def fetch(url, timeout=10):
+    """Download the content at `url`.
+
+    Parameters
+    ----------
+    url : str
+        The URL to fetch.
+    timeout : int
+        Seconds to wait before giving up.
+
+    Returns
+    -------
+    str
+        The response body as a string.
+    """
+```
+
+**reStructuredText (reST) style** — uses `:param:` / `:type:` / `:returns:` tags, found in older Sphinx-based projects:
+
+```python
+def fetch(url, timeout=10):
+    """Download the content at `url`.
+
+    :param url: The URL to fetch.
+    :param timeout: Seconds to wait before giving up.
+    :returns: The response body as a string.
+    """
+```
+
+Pick one style and stick with it across a project. For most new projects, **Google style** is the most readable choice.
 
 ## Module docstrings
 
