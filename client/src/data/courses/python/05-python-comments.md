@@ -56,7 +56,7 @@ Two rules:
 1. It must be a **triple-quoted string** (`"""..."""` or `'''...'''`).
 2. It must be the **very first statement** inside a function, class, method, or module — before any other code.
 
-If both rules are met, Python automatically saves the string so that developers (and tools) can read it later.
+If both rules are met, Python automatically saves the string so that developers (and tools) can read it later. If a triple-quoted string appears anywhere else — say, in the middle of a function or at module level but not as the first statement — it is still valid Python, but it is treated as an ordinary string expression: Python evaluates it and immediately discards it, just like the "multi-line comment" trick above. No error, but no documentation either.
 
 ### A simple example
 
