@@ -73,17 +73,28 @@ The string `"Return the sum of a and b."` is now the docstring for `add`. You di
 Python stores the docstring in a special `__doc__` attribute on the object:
 
 ```python
-print(add.__doc__)   # Return the sum of a and b.
+print(add.__doc__)
+```
+
+Output:
+
+```
+Return the sum of a and b.
 ```
 
 You can also use the built-in `help()` function, which formats the docstring nicely:
 
 ```python
 help(add)
-# Help on function add:
-#
-# add(a, b)
-#     Return the sum of a and b.
+```
+
+Output:
+
+```
+Help on function add:
+
+add(a, b)
+    Return the sum of a and b.
 ```
 
 IDEs, auto-complete tooltips, and documentation generators (like Sphinx) all read `__doc__` — so writing good docstrings means your code documents itself wherever it's used.
