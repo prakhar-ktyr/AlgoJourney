@@ -19,9 +19,16 @@ That's it. No `int x;`, no `var`, no `let`. The `=` is the **assignment** operat
 
 ```python
 x = 5
-print(x)      # 5
+print(x)
 x = "hello"
-print(x)      # hello
+print(x)
+```
+
+Output:
+
+```
+5
+hello
 ```
 
 Python is **dynamically typed**: a variable can hold any kind of value at any time. This is convenient but means type errors only show up when the offending line actually runs.
@@ -54,7 +61,13 @@ Assign several variables at once:
 
 ```python
 x, y, z = 1, 2, 3
-print(x, y, z)   # 1 2 3
+print(x, y, z)
+```
+
+Output:
+
+```
+1 2 3
 ```
 
 This is **tuple unpacking** under the hood — the right side is the tuple `(1, 2, 3)` and the left side has matching slots.
@@ -70,7 +83,13 @@ A famous trick: swap two variables without a temporary.
 ```python
 a, b = 10, 20
 a, b = b, a
-print(a, b)   # 20 10
+print(a, b)
+```
+
+Output:
+
+```
+20 10
 ```
 
 ## Variables are _names_, not boxes
@@ -81,17 +100,50 @@ This is the most important mental model in Python. A variable doesn't _contain_ 
 a = [1, 2, 3]
 b = a            # b now points to the same list
 b.append(4)
-print(a)         # [1, 2, 3, 4]  — surprised?
+print(a)
 ```
 
-`a` and `b` are two names for the same underlying list. Mutating through one is visible through the other. We'll revisit this when we cover lists in detail.
+Output:
+
+```
+[1, 2, 3, 4]
+```
+
+`a` and `b` are two names for the same underlying list. Mutating through one is visible through the other — this surprises many beginners.
+
+**This does not apply to integers, strings, or other immutable types.** With those, "changing" a variable just rebinds the name to a new value — it has no effect on any other name:
+
+```python
+a = 5
+b = a      # b points to the same integer 5
+b = 10     # b is rebound to a new integer — a is untouched
+print(a)
+```
+
+Output:
+
+```
+5
+```
+
+The key distinction:
+- **Rebinding** (`b = 10`) — points `b` at a new object. Never affects `a`.
+- **Mutating** (`b.append(4)`) — changes the object both `a` and `b` point to. Only possible with mutable types like lists, dicts, and sets.
+
+We'll revisit this when we cover lists in detail.
 
 ## `del` removes a name
 
 ```python
 x = 5
 del x
-print(x)   # NameError: name 'x' is not defined
+print(x)
+```
+
+Output:
+
+```
+NameError: name 'x' is not defined
 ```
 
 `del` deletes the _name_, not necessarily the value. Once nothing refers to a value, Python's garbage collector reclaims its memory eventually.
@@ -114,20 +166,38 @@ If you want a real, enforced constant, use [`typing.Final`](https://docs.python.
 ```python
 first = "Ada"
 last = "Lovelace"
-print(first, last)            # Ada Lovelace
+print(first, last)
+```
+
+Output:
+
+```
+Ada Lovelace
 ```
 
 Or use an **f-string** for fine control:
 
 ```python
-print(f"Hello, {first} {last}!")    # Hello, Ada Lovelace!
+print(f"Hello, {first} {last}!")
+```
+
+Output:
+
+```
+Hello, Ada Lovelace!
 ```
 
 You can mix expressions inside `{ }`:
 
 ```python
 x, y = 4, 7
-print(f"{x} + {y} = {x + y}")        # 4 + 7 = 11
+print(f"{x} + {y} = {x + y}")
+```
+
+Output:
+
+```
+4 + 7 = 11
 ```
 
 ## Chained comparisons & global vs local
@@ -142,7 +212,13 @@ def bump():
     counter += 1
 
 bump(); bump(); bump()
-print(counter)   # 3
+print(counter)
+```
+
+Output:
+
+```
+3
 ```
 
 Without `global`, assigning to `counter` inside `bump()` would create a brand-new local variable. Forgetting `global` is a classic beginner trap.
