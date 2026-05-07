@@ -47,18 +47,58 @@ This works, but it's not a real comment — it's a string that gets created and 
 
 ## Docstrings
 
-A **docstring** is a string literal placed as the _first statement_ of a module, function, class, or method. Python stores it in the object's `__doc__` attribute, and tools like `help()`, IDE tooltips, and Sphinx use it to generate documentation.
+Unlike regular comments (which are ignored entirely), a **docstring** is a triple-quoted string that _documents_ your code and stays accessible at runtime. Think of it as a built-in help message attached to whatever you write.
+
+### What makes a string a docstring?
+
+Two rules:
+
+1. It must be a **triple-quoted string** (`"""..."""` or `'''...'''`).
+2. It must be the **very first statement** inside a function, class, method, or module — before any other code.
+
+If both rules are met, Python automatically saves the string so that developers (and tools) can read it later.
+
+### A simple example
 
 ```python
 def add(a, b):
     """Return the sum of a and b."""
     return a + b
-
-print(add.__doc__)   # Return the sum of a and b.
-help(add)            # opens an interactive help screen
 ```
 
-Multi-line docstrings follow [PEP 257](https://peps.python.org/pep-0257/):
+The string `"Return the sum of a and b."` is now the docstring for `add`. You didn't assign it to a variable — Python attached it to the function for you.
+
+### How to access a docstring
+
+Python stores the docstring in a special `__doc__` attribute on the object:
+
+```python
+print(add.__doc__)   # Return the sum of a and b.
+```
+
+You can also use the built-in `help()` function, which formats the docstring nicely:
+
+```python
+help(add)
+# Help on function add:
+#
+# add(a, b)
+#     Return the sum of a and b.
+```
+
+IDEs, auto-complete tooltips, and documentation generators (like Sphinx) all read `__doc__` — so writing good docstrings means your code documents itself wherever it's used.
+
+### Docstrings vs. comments — when to use which
+
+| Use a **comment** (`#`)     | Use a **docstring** (`"""`)                 |
+| --------------------------- | ------------------------------------------- |
+| Explain _why_ code exists   | Describe _what_ a function/class/module does |
+| Internal notes for the team | Public-facing documentation for users       |
+| Ignored by Python entirely  | Stored at runtime and used by tools         |
+
+### Multi-line docstrings
+
+For functions with parameters, a multi-line docstring explains what goes in and what comes out. The standard format is defined by [PEP 257](https://peps.python.org/pep-0257/):
 
 ```python
 def fetch(url, timeout=10):
@@ -77,7 +117,14 @@ def fetch(url, timeout=10):
     ...
 ```
 
-Common docstring styles:
+Structure:
+- **First line** — a short summary (fits on one line, ends with a period).
+- **Blank line** — separates the summary from the body.
+- **Body** — describes parameters, return values, side effects, or exceptions.
+
+### Common docstring styles
+
+Different projects use different formatting conventions for the body:
 
 | Style                | Used by                                  |
 | -------------------- | ---------------------------------------- |
@@ -85,11 +132,11 @@ Common docstring styles:
 | **NumPy**            | Scientific Python (NumPy, SciPy, pandas) |
 | **reStructuredText** | Older Sphinx projects                    |
 
-Pick one and stick with it across a project.
+All three convey the same information — they just look slightly different. Pick one and stick with it across a project.
 
 ## Module docstrings
 
-Put one at the very top of a `.py` file:
+You can also put a docstring at the very top of a `.py` file (before any imports). This documents what the entire file is for:
 
 ```python
 """utilities.py — small string and date helpers used across the project."""
