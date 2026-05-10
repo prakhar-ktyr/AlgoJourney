@@ -157,7 +157,39 @@ MAX_RETRIES = 5
 DATABASE_URL = "postgres://localhost/app"
 ```
 
-If you want a real, enforced constant, use [`typing.Final`](https://docs.python.org/3/library/typing.html#typing.Final) (covered in the typing lesson) or expose values via a frozen dataclass or enum.
+If you want a real, enforced constant, use [`typing.Final`](https://docs.python.org/3/library/typing.html#typing.Final) (covered in the [typing lesson](/tutorials/python/python-typing)) or expose values via a frozen [dataclass](/tutorials/python/python-classes-objects) or `enum` (both covered in later lessons).
+
+:::details Show me a quick example of each
+**Frozen dataclass** — fields cannot be changed after creation:
+
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Config:
+    max_retries: int = 5
+    db_url: str = "postgres://localhost/app"
+
+cfg = Config()
+cfg.max_retries = 10  # raises FrozenInstanceError
+```
+
+**Enum** — a fixed set of named values:
+
+```python
+from enum import Enum
+
+class Color(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+print(Color.RED)        # Color.RED
+print(Color.RED.value)  # 1
+```
+
+Both are covered in depth in later lessons; this is just a preview.
+:::
 
 ## Output multiple variables
 
