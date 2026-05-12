@@ -137,7 +137,7 @@ Run it:
 
 Notes:
 
-- `f"{a} + {b}"` is an **f-string** — variables inside `{ }` are substituted with their values. F-strings are fast, readable, and the modern way to format text.
+- `print(f"...")` here uses an **f-string**. We'll cover string formatting properly in the [strings lesson](/tutorials/python/python-strings), so the main thing to notice here is the shape of the `if`/`else` block.
 - The `if`/`else` block uses indentation; the `print` after it (none here) would be "unindented" back to column 0.
 
 ## The interactive `>>>`

@@ -118,7 +118,7 @@ name = input("What is your name? ")
 print(f"Hello, {name}! Welcome to Python.")
 ```
 
-Run it and you'll be prompted to type your name. The `f"..."` is an **f-string**, a way to embed variables inside text — we'll see them constantly.
+Run it and you'll be prompted to type your name. The `f"..."` is an **f-string** that inserts `name` into the text; we'll cover string formatting properly in the [strings lesson](/tutorials/python/python-strings).
 
 ## What just happened?
 

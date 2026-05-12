@@ -54,6 +54,23 @@ print(f"Hello, {name}! You are {age}.")
 print(f"Next year you'll be {age + 1}.")    # any expression works
 ```
 
+### The same idea without an f-string
+
+You'll still see older formatting styles in real code, so it's worth recognizing them:
+
+```python
+a, b = 10, 32
+total = a + b
+
+print(a, "+", b, "=", total)               # quick console output
+print("{} + {} = {}".format(a, b, total))   # older but still common
+print(f"{a} + {b} = {total}")               # modern preferred style
+```
+
+- `print(a, "+", b, "=", total)` is fine when you're printing directly to the console and don't need to build one string value.
+- `str.format(...)` matters because you'll still meet it in older codebases, blog posts, and docs.
+- For new Python code, prefer **f-strings**: they're usually the clearest option and they work naturally with expressions and format specifiers.
+
 ### Format specifiers
 
 After a `:` inside `{}`, you control how the value is rendered.
