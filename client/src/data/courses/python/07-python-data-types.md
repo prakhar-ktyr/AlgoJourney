@@ -15,7 +15,7 @@ Every value in Python has a **type**. The built-in `type()` function tells you w
 <class 'list'>
 ```
 
-Note "class" — in Python, every type is a class, and every value is an _object_. We'll come back to this when we cover OOP.
+You'll notice the word `class` in the output. For now, just read that as "Python telling you what kind of value this is." We'll connect it to classes and objects later in the OOP lesson.
 
 ## The built-in types at a glance
 
@@ -74,12 +74,12 @@ A type is **mutable** if its value can change in place after creation, **immutab
 
 Why care? Two reasons:
 
-1. **Aliasing.** Mutable values can be modified through any name pointing to them (we saw this in the variables lesson).
-2. **Hashability.** Only immutable values can be used as dictionary keys or set members. `{[1, 2]: "x"}` raises `TypeError: unhashable type: 'list'`.
+1. **Shared references.** If two variables point to the same mutable value, changing it through one name changes what the other name sees.
+2. **Dictionary keys and set items.** Only immutable values can be used as dictionary keys or set members. `{[1, 2]: "x"}` raises `TypeError: unhashable type: 'list'`.
 
 ## Specifying the type explicitly
 
-You can construct any value via its type's _constructor_:
+You can create or convert values by calling a type like a function:
 
 ```python
 n   = int("42")          # str → int
@@ -90,28 +90,44 @@ d   = dict(x=1, y=2)     # → {'x': 1, 'y': 2}
 b   = bool(0)            # → False
 ```
 
-This is **explicit casting** — covered in depth two lessons from now.
+This is usually called **type conversion** or **casting**. We'll cover it in more detail in the casting lesson.
 
 ## Checking the type
 
-Two ways:
+Most of the time, use `isinstance()`:
 
 ```python
 x = 5
 
-# Equality of type — narrow, exact
-type(x) is int           # True
-
-# Subclass-aware — recommended for normal code
-isinstance(x, int)       # True
-isinstance(x, (int, float))    # True for either
+# Good for normal program logic
+isinstance(x, int)              # True
+isinstance(x, (int, float))     # True for either
 ```
 
-`bool` is a subclass of `int`, so `isinstance(True, int)` is `True`. That occasionally surprises people.
+It answers the question, "Can I treat this value like an `int`?" That is usually what you want in real code.
+
+If you need the **exact** type and nothing else, use `type(x) is ...`:
+
+```python
+type(x) is int                  # True
+type(True) is int               # False
+```
+
+One Python quirk: `bool` is a specialized form of `int`, so this is true:
+
+```python
+isinstance(True, int)           # True
+type(True) is bool              # True
+```
+
+Rule of thumb:
+
+- Use `isinstance()` in normal code.
+- Use `type(...) is ...` only when you specifically need an exact type match.
 
 ## The `None` value
 
-`None` is Python's "no value" / "null" sentinel. It is its own type, `NoneType`, and has exactly one instance.
+`None` means "no value here" or "nothing has been set yet". It has its own type, `NoneType`.
 
 ```python
 result = None
@@ -119,7 +135,7 @@ if result is None:
     print("nothing yet")
 ```
 
-Always compare to `None` with `is`, not `==`. It's faster and more correct.
+Always compare to `None` with `is`, not `==`. That's the standard Python style and it avoids surprising behavior from custom equality rules.
 
 ## Type hints (optional, recommended)
 
