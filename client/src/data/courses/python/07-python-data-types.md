@@ -155,6 +155,28 @@ The interpreter ignores these annotations at runtime — but tools like **mypy**
 ```python
 values = [42, 3.14, "hello", True, None, [1, 2], (3, 4), {"k": "v"}]
 for v in values:
+    print(v, "→", type(v))
+```
+
+Output:
+
+```
+42 → <class 'int'>
+3.14 → <class 'float'>
+hello → <class 'str'>
+True → <class 'bool'>
+None → <class 'NoneType'>
+[1, 2] → <class 'list'>
+(3, 4) → <class 'tuple'>
+{'k': 'v'} → <class 'dict'>
+```
+
+<details>
+<summary>Cleaner output with column alignment (uses syntax covered later)</summary>
+
+```python
+values = [42, 3.14, "hello", True, None, [1, 2], (3, 4), {"k": "v"}]
+for v in values:
     print(f"{str(v):<15} → {type(v).__name__}")
 ```
 
@@ -170,5 +192,12 @@ None            → NoneType
 (3, 4)          → tuple
 {'k': 'v'}      → dict
 ```
+
+Two things used here that haven't been introduced yet:
+
+- **`:<15`** — an f-string format specifier that left-aligns the value in a 15-character-wide column. Covered in the [Strings lesson](/tutorials/python/python-strings).
+- **`type(v).__name__`** — every Python class object has a `.__name__` attribute that holds its name as a plain string (e.g. `"int"` instead of `<class 'int'>`). Attribute access with `.` is covered in the [Classes & Objects lesson](/tutorials/python/python-classes-objects).
+
+</details>
 
 Now we'll zoom into the most common ones, starting with numbers.
