@@ -108,6 +108,8 @@ It answers the question, "Can I treat this value like an `int`?" That is usually
 
 If you need the **exact** type and nothing else, use `type(x) is ...`:
 
+`is` is Python's **identity operator** — it checks whether two expressions refer to the _exact same object_ in memory, rather than just equal values. Type objects (`int`, `str`, `bool`, …) are singletons — there is only one `int` type object in the entire program — so `type(x) is int` is a reliable exact-type check. We'll cover `is` fully in the operators lesson; for now just know it means "literally the same object".
+
 ```python
 type(x) is int                  # True
 type(True) is int               # False
