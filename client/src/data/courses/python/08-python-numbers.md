@@ -28,12 +28,42 @@ In C, `2**100` would overflow a 64-bit integer instantly. In Python it just work
 
 ### Integer literals in different bases
 
+By default, Python reads integer literals in **base 10** (the normal counting system most people use every day). You can also write integers in other bases by adding a prefix.
+
 | Prefix      | Base | Example  | Value |
 | ----------- | ---- | -------- | ----- |
 | (none)      | 10   | `255`    | 255   |
 | `0b` / `0B` | 2    | `0b1010` | 10    |
 | `0o` / `0O` | 8    | `0o17`   | 15    |
 | `0x` / `0X` | 16   | `0xff`   | 255   |
+
+These are just different ways to write the **same kind of integer**. Python stores the value as a normal number either way.
+
+:::details How do these values become 10, 15, and 255?
+**Base** means how many digits a number system uses before moving to the next place value.
+
+- Base 10 uses `0` to `9`.
+- Base 2 uses only `0` and `1`.
+- Base 8 uses `0` to `7`.
+- Base 16 uses `0` to `9` and `a` to `f`, where `a = 10`, `b = 11`, ..., `f = 15`.
+
+Each digit's position is worth a power of the base:
+
+```text
+0b1010 = 1×2^3 + 0×2^2 + 1×2^1 + 0×2^0 = 8 + 0 + 2 + 0 = 10
+0o17   = 1×8^1 + 7×8^0                     = 8 + 7         = 15
+0xff   = 15×16^1 + 15×16^0                 = 240 + 15      = 255
+```
+
+So these lines all create the same value:
+
+```python
+a = 10
+b = 0b1010
+
+print(a == b)   # True
+```
+:::
 
 Underscores improve readability (Python ignores them):
 
