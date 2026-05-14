@@ -113,7 +113,7 @@ This is **not a Python bug** — it's how binary floating-point works. Computers
 
 That is similar to how decimal cannot store `1/3` exactly. In decimal, you write `0.333333...`; in binary, numbers like `0.1` end up as a long repeating fraction too.
 
-:::details Why do some sums look normal, but `0.1 + 0.2` looks strange?
+:::details The stored values behind these comparisons
 Two different things are happening:
 
 1. Python stores a nearby binary approximation, not the exact real-number value.
@@ -148,19 +148,39 @@ import math
 math.isclose(0.1 + 0.2, 0.3)   # True
 ```
 
-For exact decimal arithmetic (money!), use `decimal.Decimal`:
+For exact decimal arithmetic — money, prices, taxes — use `decimal.Decimal`. Always pass the number as a **string**; if you pass a float, the precision is already lost before `Decimal` even sees it:
 
 ```python
 from decimal import Decimal
-Decimal("0.1") + Decimal("0.2")     # Decimal('0.3')
+
+total = Decimal("0.1") + Decimal("0.2")
+print(total)                   # 0.3   ← exact, not 0.30000000000000004
+
+price = Decimal("9.99")
+tax   = Decimal("0.08")
+print(price + price * tax)     # 10.7892
+
+# String vs float — the difference:
+print(Decimal("0.1"))          # 0.1   ← exact
+print(Decimal(0.1))            # 0.1000000000000000055511...  ← float imprecision
 ```
 
-For exact ratios, use `fractions.Fraction`:
+`print` shows just the number — no `Decimal(...)` wrapper around it.
+
+For exact fractions, use `fractions.Fraction`. `print` shows the result as a fraction, not a float:
 
 ```python
 from fractions import Fraction
-Fraction(1, 3) + Fraction(1, 6)     # Fraction(1, 2)
+
+result = Fraction(1, 3) + Fraction(1, 6)
+print(result)                              # 1/2
+
+# Compare float vs Fraction on a sum that cannot be exact:
+print(1/3 + 1/7)                           # 0.4761904761904762  ← approximate
+print(Fraction(1, 3) + Fraction(1, 7))     # 10/21  ← exact
 ```
+
+You rarely need `Fraction` in everyday code. It is most useful when exact ratios matter more than speed.
 
 ## `complex` — real + imaginary
 
@@ -172,6 +192,8 @@ z.real        # 2.0
 z.imag        # 3.0
 abs(z)        # 3.605551... (magnitude)
 ```
+
+`abs(z)` gives the **magnitude** — the straight-line distance from zero to the point `(real, imag)` on a 2D plane. It is calculated as $\sqrt{a^2 + b^2}$, so for `2 + 3j` that is $\sqrt{2^2 + 3^2} = \sqrt{13} \approx 3.605551$.
 
 You'll rarely need `complex` unless you're doing scientific work.
 
@@ -194,6 +216,16 @@ You'll rarely need `complex` unless you're doing scientific work.
 7 // 2         # 3
 -7 // 2        # -4   (floors *toward negative infinity*)
 ```
+
+Modulo (`%`) gives the remainder, and the result always has the **same sign as the divisor** (the number on the right):
+
+```python
+7 % 2          # 1
+-7 % 2         # 1    (divisor is positive, so remainder is positive)
+7 % -2         # -1   (divisor is negative, so remainder is negative)
+```
+
+This trips up people coming from C or Java, where `-7 % 2` would be `-1`. Python’s rule is consistent with its floor division: `-7 = (-4 × 2) + 1`, so the remainder is `1`.
 
 ## Useful built-ins
 
@@ -233,7 +265,7 @@ For random numbers, `import random`. For statistics, `import statistics`. We'll 
 ```python
 int(3.9)        # 3   (truncates toward zero)
 int("42")       # 42
-int("0x1f", 16) # 31
+int("0x1f", 16) # 31  (second arg is the base — reads "1f" as hexadecimal)
 float(2)        # 2.0
 float("inf")    # inf
 complex(3, 4)   # (3+4j)
@@ -244,6 +276,8 @@ A non-numeric string raises `ValueError`:
 ```python
 int("abc")      # ValueError: invalid literal for int() with base 10
 ```
+
+The casting lesson covers conversions for all types — strings, booleans, collections — in full.
 
 ## Try it
 
