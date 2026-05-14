@@ -88,7 +88,7 @@ user.popitem()                                # remove & return last (key, value
 user.clear()
 list(user.keys())
 list(user.values())
-list(user.items())
+list(user.items())    # dict views aren't lists — wrap with list() to get an actual list
 ```
 
 ## Dict union (Python 3.9+)

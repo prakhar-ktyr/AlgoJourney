@@ -166,4 +166,4 @@ Enter two numbers separated by a space: 12 34
 12 + 34 = 46
 ```
 
-Now that you can move freely between types, let's dig into the most-used one of all: strings.
+Now that you can move freely between Python's built-in types, you're ready to start putting them together with control flow.

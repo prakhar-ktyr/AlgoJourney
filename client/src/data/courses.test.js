@@ -84,6 +84,13 @@ describe("courses loader", () => {
     expect(oop.body.toLowerCase()).toContain("class");
   });
 
+  it("Python course has consecutive lesson numbering with no gaps", () => {
+    const py = getCourse("python");
+    const orders = py.lessons.map((l) => l.order).sort((a, b) => a - b);
+    const expected = Array.from({ length: orders.length }, (_, i) => orders[0] + i);
+    expect(orders).toEqual(expected);
+  });
+
   it("registers the Java course with substantive content", () => {
     expect(hasCourse("java")).toBe(true);
     const java = getCourse("java");

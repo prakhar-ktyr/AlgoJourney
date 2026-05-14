@@ -79,7 +79,7 @@ sorted(nums)              # returns a new sorted list, original untouched
 sorted(nums, key=lambda x: -x)
 
 nums.reverse()            # in-place
-list(reversed(nums))      # new reversed list
+list(reversed(nums))      # reversed() returns an iterator; list() converts it to a list
 ```
 
 ## Iterating

@@ -134,11 +134,15 @@ for i, v in enumerate(("a", "b", "c")):
 
 ## Converting
 
+Python lets you convert between sequence types by calling the target type like a function:
+
 ```python
 tuple([1, 2, 3])      # (1, 2, 3)
 list((1, 2, 3))       # [1, 2, 3]
 tuple("abc")          # ('a', 'b', 'c')
 ```
+
+The casting lesson covers this pattern in full — for all types, including strings, sets, dicts, and `bool`.
 
 ## Try it
 
