@@ -10,6 +10,18 @@ title: Python Async
 
 The piece coordinating all of this is the **event loop**. Think of it as a scheduler that pauses one coroutine when it has to wait and gives another coroutine a chance to run.
 
+## When should you learn async?
+
+If you are still getting comfortable with ordinary functions, loops, files, and HTTP requests, async can wait. Synchronous Python is completely fine for most beginner programs.
+
+Async becomes useful when one task spends a lot of time **waiting** for I/O and you want other work to keep moving during that wait, such as:
+
+- a web server handling many requests,
+- a scraper fetching many URLs,
+- a tool talking to many APIs or databases.
+
+If your program is simple and readable without async, keep it that way.
+
 ## A first taste
 
 ```python

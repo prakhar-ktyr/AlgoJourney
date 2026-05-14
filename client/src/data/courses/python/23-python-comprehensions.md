@@ -94,6 +94,22 @@ adults = {name: age for name, age in people.items() if age >= 18}
 
 Same as a list comprehension but with `( )` — produces values lazily, one at a time, instead of building a list in memory.
 
+:::details What does "lazily" mean here?
+A list comprehension builds the whole result first.
+
+```python
+[x * x for x in range(5)]
+```
+
+A generator expression does **not** build the whole result up front. It computes each value only when something asks for the next one.
+
+```python
+(x * x for x in range(5))
+```
+
+For small inputs, the difference usually does not matter. For very large inputs, one-pass processing, or even infinite sequences, generators save memory.
+:::
+
 ```python
 gen = (x * x for x in range(10))
 next(gen)         # 0

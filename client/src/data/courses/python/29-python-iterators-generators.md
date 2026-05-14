@@ -10,8 +10,12 @@ An **iterator** is anything you can use in a `for` loop. A **generator** is the 
 
 A class is an iterator if it implements two special double-underscore methods. Here, **protocol** just means "the small set of methods Python looks for":
 
+Think of an iterator as answering one repeated question: "What is the next item?" Python keeps asking until the iterator says it is finished.
+
 - `__iter__(self)` returns the iterator (usually `self`).
 - `__next__(self)` returns the next value, or raises `StopIteration` when there are no more.
+
+`StopIteration` is not a bug here. It is Python's standard signal for "there are no more items."
 
 ```python
 class Countdown:
@@ -132,6 +136,13 @@ The generator version uses a few hundred bytes regardless of size.
 - **Custom iterator class** — rarely. Only when you need state more complex than a single function can express, or you want to support `reset` / multiple independent iterations.
 
 ## `itertools` — the Swiss army knife
+
+Don't try to memorize all of `itertools` at once. A good starting set is:
+
+- `chain` to join iterables,
+- `islice` to take a lazy slice,
+- `count` for an endless counter,
+- `groupby` for consecutive runs of equal items.
 
 The `itertools` standard module provides composable building blocks:
 

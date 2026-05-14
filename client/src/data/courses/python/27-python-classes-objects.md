@@ -96,7 +96,9 @@ class Circle:
 
 ## Dunder ("magic") methods
 
-Methods with leading + trailing double underscores hook into Python's syntax. The most common:
+Methods with leading + trailing double underscores hook into Python's syntax. You do **not** need to memorize all of them at once.
+
+Learn these first:
 
 | Method                   | Triggers                                |
 | ------------------------ | --------------------------------------- |
@@ -104,6 +106,12 @@ Methods with leading + trailing double underscores hook into Python's syntax. Th
 | `__repr__(self)`         | `repr(x)`, REPL display                 |
 | `__str__(self)`          | `str(x)`, `print(x)`                    |
 | `__eq__(self, other)`    | `x == y`                                |
+| `__add__(self, other)`   | `x + y`                                 |
+
+Advanced, learn these when you need them:
+
+| Method                   | Triggers                                |
+| ------------------------ | --------------------------------------- |
 | `__lt__`, `__le__`, …    | `<`, `<=`, …                            |
 | `__hash__(self)`         | `hash(x)`, set/dict membership          |
 | `__len__(self)`          | `len(x)`                                |

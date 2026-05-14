@@ -94,6 +94,26 @@ Three layers of nesting. Read it inside-out:
 - `decorator` takes the function and returns `wrapper`.
 - `retry` takes the parameters and returns `decorator`.
 
+:::details How decorator factories execute
+When Python sees this:
+
+```python
+@retry(times=5, delay=0.5)
+def fetch():
+    ...
+```
+
+it happens in stages:
+
+1. Python calls `retry(times=5, delay=0.5)`.
+2. That returns the inner `decorator` function.
+3. Python then calls `decorator(fetch)`.
+4. That returns `wrapper`.
+5. The name `fetch` is rebound to `wrapper`.
+
+When you later call `fetch()`, you are really calling `wrapper()`, and `wrapper()` still remembers `times`, `delay`, and `func` from the surrounding scopes. That "remembering outer variables" behavior is called a **closure**.
+:::
+
 ## A timing decorator (a useful one to keep)
 
 ```python

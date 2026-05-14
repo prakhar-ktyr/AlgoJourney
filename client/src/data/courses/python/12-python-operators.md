@@ -111,14 +111,14 @@ Works for any **iterable**: strings, lists, tuples, sets, dict keys.
 
 Operate on the binary representation of integers.
 
-| Op   | Meaning                | `0b1100 op 0b1010`              |
-| ---- | ---------------------- | ------------------------------- | ------------- |
-| `&`  | AND                    | `0b1000` (8)                    |
-| `    | `                      | OR                              | `0b1110` (14) |
-| `^`  | XOR                    | `0b0110` (6)                    |
-| `~`  | NOT (one's complement) | `~0b1100` → `-13`               |
-| `<<` | left shift             | `0b1100 << 2` → `0b110000` (48) |
-| `>>` | right shift            | `0b1100 >> 2` → `0b11` (3)      |
+| Op   | Meaning                | Example / Result                 |
+| ---- | ---------------------- | -------------------------------- |
+| `&`  | AND                    | `0b1100 & 0b1010` → `0b1000` (8) |
+| `|`  | OR                     | `0b1100 | 0b1010` → `0b1110` (14) |
+| `^`  | XOR                    | `0b1100 ^ 0b1010` → `0b0110` (6) |
+| `~`  | NOT (one's complement) | `~0b1100` → `-13`                |
+| `<<` | left shift             | `0b1100 << 2` → `0b110000` (48)  |
+| `>>` | right shift            | `0b1100 >> 2` → `0b11` (3)       |
 
 `|` and `&` also work on `set` (union, intersection) and on `dict` (Python 3.9+ merge).
 
@@ -157,6 +157,11 @@ Read it left-to-right: _value if condition else other_value_.
 ## Unpacking operators
 
 `*` and `**` are operators in argument and target positions, not just declarations.
+
+Think of both as meaning **expand** or **unpack**:
+
+- In a function call, they spread a sequence or dict into separate arguments.
+- In assignment, `*` gathers the "rest" of the values.
 
 ```python
 nums = [1, 2, 3]

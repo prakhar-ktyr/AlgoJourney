@@ -42,6 +42,8 @@ re.split(r"[,;]\s*", "a, b; c,d")
 
 ## Pattern syntax cheat sheet
 
+Treat this section as a **reference**, not something you need to memorize in one pass. In real code, most people start with a simple pattern, test it, and look up extra syntax only when needed.
+
 ### Character classes
 
 | Pattern   | Matches                          |

@@ -100,6 +100,9 @@ def loud_print(*args, **kwargs):
 
 The `/` and `*` markers (Python 3.8+) restrict how parameters can be passed:
 
+> [!NOTE]
+> This is mostly for library and API design. For day-to-day Python, you can usually ignore these markers until you actually need them.
+
 ```python
 def f(pos_only, /, both, *, kw_only):
     ...
@@ -109,7 +112,7 @@ f(1, both=2, kw_only=3)  # OK
 f(pos_only=1, both=2, kw_only=3)   # TypeError — pos_only can't be a keyword
 ```
 
-This is mostly relevant when designing libraries, but it's good to recognize.
+These markers help library authors prevent confusing or misleading function calls, but it is enough for now to recognize the syntax when you see it.
 
 ## Returning multiple values
 

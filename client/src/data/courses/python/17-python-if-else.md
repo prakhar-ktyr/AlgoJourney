@@ -115,7 +115,10 @@ if has_permission and (is_owner or is_admin):
 
 Use `and`/`or`/`not`. Use parentheses to make precedence obvious — readers shouldn't have to remember the precedence table.
 
-## `match`/`case` — structural pattern matching (Python 3.10+)
+## `match`/`case` — pattern matching (Python 3.10+)
+
+> [!WARNING]
+> `match` / `case` only works in Python 3.10 and newer. Check your version with `python3 --version`. If you're on Python 3.9 or earlier, use `if` / `elif` / `else` instead.
 
 When you have many shape-based branches, `match` is cleaner than a long `if`/`elif` chain.
 

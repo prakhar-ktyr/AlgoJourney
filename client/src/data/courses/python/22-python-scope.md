@@ -97,6 +97,8 @@ c(); c(); c()           # → 3
 
 `make_counter` returns a function that _closes over_ `count` — a **closure**.
 
+Closures are useful when you want a function to **remember some private state** between calls. `make_counter()` is a classic example: every call creates a separate counter with its own stored `count`.
+
 ## Built-in scope
 
 Names like `print`, `len`, `range`, `dict`, `Exception` live in the built-in module and are always available. Don't shadow them:

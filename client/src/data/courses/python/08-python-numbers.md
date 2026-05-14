@@ -109,7 +109,39 @@ That second line is surprising the first time you see it: `nan` does not compare
 0.30000000000000004
 ```
 
-This is **not a Python bug** — it's how binary floating-point works. `0.1` cannot be represented exactly in binary, just like `1/3` cannot in decimal. Never compare floats with `==`; use `math.isclose`:
+This is **not a Python bug** — it's how binary floating-point works. Computers store normal floats in **base 2** (binary), not base 10. That means many everyday decimal numbers such as `0.1`, `0.2`, and `0.3` cannot be stored exactly; Python stores the **closest available float** instead.
+
+That is similar to how decimal cannot store `1/3` exactly. In decimal, you write `0.333333...`; in binary, numbers like `0.1` end up as a long repeating fraction too.
+
+:::details Why do some sums look normal, but `0.1 + 0.2` looks strange?
+Two different things are happening:
+
+1. Python stores a nearby binary approximation, not the exact real-number value.
+2. The REPL prints a short decimal form that round-trips back to that same stored float.
+
+If you ask for more digits, you can see the stored approximations more clearly:
+
+```python
+format(0.3, ".17f")          # '0.29999999999999999'
+format(0.1 + 0.2, ".17f")    # '0.30000000000000004'
+
+format(0.4, ".17f")          # '0.40000000000000002'
+format(0.1 + 0.3, ".17f")    # '0.40000000000000002'
+
+format(0.5, ".17f")          # '0.50000000000000000'
+format(0.1 + 0.4, ".17f")    # '0.50000000000000000'
+```
+
+So:
+
+- `0.1 + 0.2 == 0.3` is `False` because they land on **different nearby floats**.
+- `0.1 + 0.3 == 0.4` is `True` because both sides land on the **same nearby float**.
+- `0.1 + 0.4 == 0.5` is also `True`, and `0.5` is especially nice because $0.5 = 1/2$, which binary can store exactly.
+
+The lesson: some float results only **look** exact when printed. For computed decimal-style values, compare with `math.isclose()` instead of `==`.
+:::
+
+Never compare computed floats with `==` when you mean "numerically close"; use `math.isclose`:
 
 ```python
 import math
