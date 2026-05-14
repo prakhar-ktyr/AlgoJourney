@@ -12,9 +12,9 @@ x = 3.14      # float    — real number
 z = 2 + 3j    # complex  — real + imaginary part (note `j`, not `i`)
 ```
 
-## `int` — arbitrary precision integers
+## `int` — integers with no fixed size
 
-This is one of Python's superpowers: integers have **no fixed size**. They grow as large as you need.
+This is one of Python's superpowers: integers have **no fixed size**. They grow as large as you need. You may also hear this called **arbitrary precision**, which just means Python keeps expanding the number instead of overflowing at a fixed limit.
 
 ```python
 >>> 2 ** 100
@@ -72,9 +72,9 @@ billion = 1_000_000_000
 mac_addr = 0x_AA_BB_CC_DD_EE_FF
 ```
 
-## `float` — IEEE 754 double precision
+## `float` — decimal numbers (double precision)
 
-Floats are 64-bit doubles, the same as `double` in C. About 15–17 significant decimal digits.
+Python stores floats in a standard 64-bit format called **double precision** (the same basic idea as `double` in C). In practice, think of them as numbers that handle decimal-style values well most of the time, with about 15–17 reliable digits.
 
 ```python
 x = 3.14
@@ -83,6 +83,24 @@ z = 1.5e-4       # 0.00015
 inf = float("inf")
 nan = float("nan")
 ```
+
+`2.5e3` is scientific notation and means $2.5 \times 10^3 = 2500.0$. `1.5e-4` means $1.5 \times 10^{-4} = 0.00015$.
+
+`inf` means **infinity** — a value larger than any normal finite float. `nan` means **not a number** — a special value used when a numeric result is undefined or invalid.
+
+:::details When would you see `inf` or `nan`?
+You will not use these every day, but it is useful to recognize them when they appear.
+
+- `inf` is often used as a starting value or sentinel when you want "bigger than everything else."
+- `nan` can appear when a calculation has no meaningful numeric answer.
+
+```python
+float("inf") > 10**100      # True
+float("nan") == float("nan")   # False
+```
+
+That second line is surprising the first time you see it: `nan` does not compare equal to anything, including itself.
+:::
 
 ### The classic floating-point trap
 

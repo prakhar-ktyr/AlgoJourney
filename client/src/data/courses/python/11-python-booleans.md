@@ -119,9 +119,9 @@ def parse_bool(s):
     return s.strip().lower() in {"1", "true", "yes", "y", "on"}
 ```
 
-## `bool` is a subclass of `int`
+## `bool` behaves like `0` and `1` in arithmetic
 
-A historical quirk:
+For compatibility, Python lets `True` behave like `1` and `False` behave like `0` in numeric expressions:
 
 ```python
 True + 1         # 2
@@ -130,7 +130,7 @@ isinstance(True, int)   # True
 sum([True, True, False, True])    # 3   (handy for counting)
 ```
 
-That last trick is genuinely useful — `sum(x > 0 for x in nums)` counts how many positives.
+Under the hood, Python implements `bool` as a specialized integer type, which is why those examples work. That last trick is genuinely useful — `sum(x > 0 for x in nums)` counts how many positives.
 
 ## `all` and `any`
 
@@ -139,12 +139,14 @@ These take any iterable of booleans (or anything with truthiness) and reduce it.
 ```python
 all([True, True, True])          # True
 all([True, False, True])         # False
-all([])                          # True   (vacuously true!)
+all([])                          # True   (there are no false items in it)
 
 any([False, False, True])        # True
 any([False, False, False])       # False
 any([])                          # False
 ```
+
+`all([])` surprises many beginners. It returns `True` because nothing in the empty list breaks the rule, while `any([])` returns `False` because there is nothing true inside it.
 
 Combined with generator expressions, they're a powerful one-liner pattern:
 

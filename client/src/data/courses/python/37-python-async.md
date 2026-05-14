@@ -8,6 +8,8 @@ title: Python Async
 
 > **Async is for I/O, not CPU.** A pure-Python loop running async code uses one CPU core. For parallel CPU work, use `multiprocessing` or `concurrent.futures`.
 
+The piece coordinating all of this is the **event loop**. Think of it as a scheduler that pauses one coroutine when it has to wait and gives another coroutine a chance to run.
+
 ## A first taste
 
 ```python
@@ -50,7 +52,7 @@ async def fetch():
     return "done"
 ```
 
-While one coroutine is awaiting, the event loop runs other ready ones. That's where the concurrency comes from.
+While one coroutine is awaiting, the event loop can run another ready coroutine instead. That's where the concurrency comes from.
 
 You can only `await` inside an `async def`. The interpreter enforces this.
 
@@ -91,7 +93,7 @@ async def main():
     result = await task          # await it later
 ```
 
-A task is a coroutine that's been scheduled to run.
+A task is a coroutine that's been scheduled to run. You can think of it as the event loop taking responsibility for running that coroutine in the background until you await its result.
 
 ### Timeouts
 

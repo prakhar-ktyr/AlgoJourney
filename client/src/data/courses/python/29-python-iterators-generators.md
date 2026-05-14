@@ -4,11 +4,11 @@ title: Python Iterators & Generators
 
 # Python Iterators & Generators
 
-An **iterator** is anything you can use in a `for` loop. A **generator** is the easiest way to write one yourself. Together they let you process data lazily — one item at a time, without building giant lists in memory.
+An **iterator** is anything you can use in a `for` loop. A **generator** is the easiest way to write one yourself. Together they let you process data **lazily** — meaning one item at a time, only when asked for, without building giant lists in memory.
 
 ## The iterator protocol
 
-A class is an iterator if it implements two dunder methods:
+A class is an iterator if it implements two special double-underscore methods. Here, **protocol** just means "the small set of methods Python looks for":
 
 - `__iter__(self)` returns the iterator (usually `self`).
 - `__next__(self)` returns the next value, or raises `StopIteration` when there are no more.

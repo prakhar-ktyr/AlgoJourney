@@ -40,9 +40,9 @@ x **= 2
 
 Same idea for `&=`, `|=`, `^=`, `<<=`, `>>=`.
 
-### The walrus `:=` (Python 3.8+)
+### The assignment operator `:=` (nicknamed "walrus") (Python 3.8+)
 
-Assigns _and_ returns a value in a single expression — useful in `while` and comprehensions.
+It assigns a value and lets you use that same value immediately inside a larger expression — useful in `while` loops and comprehensions.
 
 ```python
 while (line := input("> ")) != "quit":

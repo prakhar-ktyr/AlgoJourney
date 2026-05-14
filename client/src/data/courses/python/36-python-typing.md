@@ -109,6 +109,8 @@ type JsonDict = dict[str, Json]
 
 ## Generic classes & functions
 
+A `TypeVar` is a placeholder meaning "some type we do not know yet." It lets one function stay generic while still preserving the relationship between the input type and the output type.
+
 ```python
 from typing import TypeVar
 
@@ -154,7 +156,9 @@ def send_email(u: User) -> None:
 
 Type checkers will warn if you pass the wrong shape.
 
-## Protocol — structural typing
+## Protocol — "if it has the right methods, it works"
+
+`Protocol` uses **structural typing**. That means a value is accepted because it has the required methods or attributes, not because it explicitly inherits from one particular base class.
 
 "Anything with a `.read()` method that returns `str`":
 

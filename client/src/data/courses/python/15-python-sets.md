@@ -4,7 +4,7 @@ title: Python Sets
 
 # Python Sets
 
-A `set` is an **unordered collection of unique, hashable items**. Conceptually it's the mathematical set — useful for membership tests, deduplication, and set algebra (union, intersection, difference).
+A `set` is an **unordered collection of unique items**. Conceptually it's the mathematical set — useful for membership tests, deduplication, and set algebra (union, intersection, difference). Set items also must be **hashable**, which in practice means stable values like numbers, strings, bytes, tuples, and frozensets — not mutable values like lists or dicts.
 
 ```python
 colors = {"red", "green", "blue"}
@@ -17,7 +17,7 @@ nums = set([1, 2, 2, 3, 3, 3])     # → {1, 2, 3}
 - **Unique** — duplicates are silently dropped.
 - **Unordered** — no indexing, no slicing. Iteration order is _insertion-related but not guaranteed_.
 - **Mutable** — add and remove items.
-- **Items must be hashable** — so no lists or dicts as members; tuples and frozensets are fine.
+- **Items must be hashable** — so numbers, strings, bytes, tuples, and frozensets are fine; lists, dicts, and sets are not.
 
 ## Adding & removing
 

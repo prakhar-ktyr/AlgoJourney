@@ -51,7 +51,7 @@ c = Car("Toyota")
 print(c.wheels, c.brand)        # 4 Toyota
 ```
 
-`super()` finds the next class in the **method resolution order** (MRO) and forwards the call.
+`super()` finds the next class in the **method resolution order** (MRO) and forwards the call. The MRO is just Python's search order for methods: where it looks first, second, third, and so on.
 
 ## `isinstance` and `issubclass`
 
@@ -97,12 +97,16 @@ d.walk()
 d.swim()
 ```
 
-Useful in moderation. Diamond-shaped inheritance hierarchies get confusing fast — Python uses the **C3 linearization** algorithm to compute a deterministic MRO. Inspect it with `Duck.__mro__`:
+Useful in moderation. Diamond-shaped inheritance hierarchies get confusing fast — Python still follows a consistent method search order, and you can inspect that order with `Duck.__mro__`:
 
 ```python
 print(Duck.__mro__)
 # (<class 'Duck'>, <class 'Walker'>, <class 'Swimmer'>, <class 'object'>)
 ```
+
+:::details Want the formal term?
+Python computes that method order using an algorithm called **C3 linearization**.
+:::
 
 For "horizontal" reuse, **mixins** are a popular pattern: small classes designed to be combined.
 

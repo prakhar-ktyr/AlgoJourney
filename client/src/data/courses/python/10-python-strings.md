@@ -4,7 +4,7 @@ title: Python Strings
 
 # Python Strings
 
-A `str` is an **immutable** sequence of Unicode characters. Strings are everywhere in Python, so this is one of the most important lessons in the course.
+A `str` is a sequence of Unicode characters. Strings are **immutable**, which means once a string is created, you do not change the original characters in place — operations give you a new string instead. Strings are everywhere in Python, so this is one of the most important lessons in the course.
 
 ## String literals
 

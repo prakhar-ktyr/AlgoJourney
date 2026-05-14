@@ -4,7 +4,7 @@ title: Python Lambda
 
 # Python Lambda
 
-A `lambda` is a small, anonymous function defined with an expression. They're perfect for one-off callbacks where naming a `def` would be overkill.
+A `lambda` is a small function you write inline without giving it a name. They're useful for one-off callbacks or tiny transformations where naming a `def` would be overkill.
 
 ```python
 square = lambda x: x * x
@@ -77,21 +77,21 @@ If you need a multi-line function, use `def`. Naming it costs one line and helps
 | It's passed inline to another function | It's reused or has a useful name   |
 | Naming it would just add clutter       | You want a docstring               |
 
-## A common pitfall — closures and late binding
+## A common pitfall — lambdas in loops
 
 ```python
 funcs = [lambda: i for i in range(3)]
 [f() for f in funcs]      # [2, 2, 2] — surprised?
 ```
 
-All three lambdas captured the _variable_ `i`, not its value at the time. By the time you call them, `i` is `2`. Fix it by binding `i` as a default argument:
+Each lambda remembers the variable `i` itself, not a snapshot of its value at the moment the lambda was created. By the time you call them, the loop has finished and `i` is `2`. Fix it by binding `i` as a default argument:
 
 ```python
 funcs = [lambda i=i: i for i in range(3)]
 [f() for f in funcs]      # [0, 1, 2]
 ```
 
-This trap appears anywhere you create closures in a loop, not just with lambdas.
+This trap appears with lambdas and normal nested functions alike when they are created inside a loop.
 
 ## Try it — sort a CSV-like list
 

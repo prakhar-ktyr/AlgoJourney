@@ -4,7 +4,7 @@ title: Python Casting
 
 # Python Casting
 
-**Casting** (or _conversion_) is changing a value from one type to another. Python uses type **constructors** — the type names themselves act as functions.
+**Casting** (or _conversion_) is changing a value from one type to another. In Python, the type names themselves act like conversion functions.
 
 ```python
 int("42")        # 42        — str  → int
@@ -110,8 +110,10 @@ The one place Python does promote types is **mixed arithmetic** between `int` an
 
 ```python
 1 + 2.0          # 3.0    (int promoted to float)
-True + 1         # 2      (bool is a subclass of int)
+True + 1         # 2      (`True` behaves like 1 in arithmetic)
 ```
+
+In numeric expressions, Python lets `True` act like `1` and `False` act like `0`. That's useful to know, but for everyday code you should still think of them as booleans first.
 
 ## Common casting patterns
 
