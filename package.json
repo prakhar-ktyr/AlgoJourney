@@ -17,18 +17,15 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.{json,md,html,css}": [
+    "*.{js,jsx,ts,tsx,json,md,html,css}": [
       "prettier --write"
     ]
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.5"
+    "lint-staged": "^17.0.5",
+    "prettier": "^3.8.3"
   },
   "engines": {
     "node": ">=22.0.0",
