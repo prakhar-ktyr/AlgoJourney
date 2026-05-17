@@ -10,12 +10,25 @@
     "install:all": "cd server && npm install && cd ../client && npm install",
     "build": "cd client && npm run build",
     "test": "cd server && npm test && cd ../client && npm test",
+    "test:coverage": "cd server && npm run test:coverage && cd ../client && npm run test:coverage",
     "test:server": "cd server && npm test",
     "test:client": "cd client && npm test",
-    "test:watch": "concurrently \"cd server && npm run test:watch\" \"cd client && npm run test:watch\""
+    "test:watch": "concurrently \"cd server && npm run test:watch\" \"cd client && npm run test:watch\"",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,html,css}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.5"
   },
   "engines": {
     "node": ">=22.0.0",
