@@ -1,8 +1,10 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./db.js";
 import healthRoutes from "./routes/health.js";
+import authRoutes from "./routes/auth.js";
 
 dotenv.config();
 
@@ -14,9 +16,11 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production" ? process.env.CLIENT_URL : "http://localhost:3000",
+    credentials: true,
   }),
 );
 app.use(express.json());
+app.use(cookieParser());
 
 // MongoDB connection
 if (process.env.NODE_ENV !== "test") {
@@ -25,6 +29,7 @@ if (process.env.NODE_ENV !== "test") {
 
 // Routes
 app.use("/api/health", healthRoutes);
+app.use("/api/auth", authRoutes);
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
