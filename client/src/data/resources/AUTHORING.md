@@ -64,7 +64,7 @@ All sections are optional. Order does not matter. The parser splits on `## ` hea
 | `## Complexity` | Time/Space complexity (see format below)  |
 | `## Solution`   | Fenced code blocks, one per language      |
 
-Any section may also contain arbitrary prose and code blocks — everything is rendered via the Markdown component which supports paragraphs, lists, inline code, bold, and fenced blocks.
+Any section may also contain arbitrary prose and code blocks — everything is rendered via the shared Markdown component used by tutorial lessons, so problem notes support the same core rich-text features such as paragraphs, lists, inline code, bold text, KaTeX math, and fenced blocks.
 
 ---
 
@@ -219,11 +219,25 @@ _italic text_ or _italic text_
 `inline code`
 **`bold + inline code`** ← nesting is supported
 **`fn()` (label):** ← bold wrapping code + plain text
+Inline math: $O(\log n)$
+Block math: $$a = qb + r$$
 ```
 
 Headings inside sections (e.g. `### Sub-heading`) are also supported.
 
 Fenced code blocks inside prose sections (e.g. inside `## Approach`) render as styled code components but are **not** selectable by the language dropdown — they are static illustrations embedded in the explanation text.
+
+### Collapsible Details Blocks
+
+Use `:::details` when you want to tuck away a derivation, proof, or optional deep-dive without breaking the main flow:
+
+````markdown
+:::details Why is this $O(\log n)$?
+Extra explanation, lists, code, and math all work here.
+
+$$T(n) = T(n/2) + O(1)$$
+:::
+````
 
 ---
 
