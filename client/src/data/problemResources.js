@@ -106,6 +106,9 @@
  *     Time: O(n)
  *     Space: O(1)
  *
+ *     Optional prose, math, lists, or details blocks may follow. They render
+ *     below the Time/Space summary on the page.
+ *
  *   Frontmatter `time` / `space` fields are the simpler alternative;
  *   use this section form only when you need a per-language override.
  *
@@ -171,7 +174,7 @@
  *   default for the unannotated ones.
  *
  * -----------------------------------------------------------------------------
- * INLINE MARKDOWN (supported in Overview, Approach, Concepts body text)
+ * INLINE MARKDOWN (supported in Overview, Approach, Concepts, and Complexity body text)
  * -----------------------------------------------------------------------------
  *
  *   **bold text**
@@ -179,6 +182,7 @@
  *   `inline code`
  *   **`bold + inline code`**       ← nesting is supported
  *   **`fn()` (label):**            ← bold wrapping code + plain text
+ *   $O(\log n)$                   ← inline KaTeX math
  *
  *   Markdown headings (rendered as styled <h1>–<h6> elements):
  *
@@ -397,11 +401,23 @@ function conceptsListToMarkdown(items) {
 function parseComplexitySection(text) {
   if (!text) return null;
   const out = {};
-  const time = text.match(/time\s*:\s*(.+)/i);
-  const space = text.match(/space\s*:\s*(.+)/i);
-  if (time) out.time = time[1].trim();
-  if (space) out.space = space[1].trim();
-  return out.time || out.space ? out : null;
+  const bodyLines = [];
+  for (const line of text.split(/\r?\n/)) {
+    const time = line.match(/^\s*time\s*:\s*(.+?)\s*$/i);
+    if (time && !out.time) {
+      out.time = time[1].trim();
+      continue;
+    }
+    const space = line.match(/^\s*space\s*:\s*(.+?)\s*$/i);
+    if (space && !out.space) {
+      out.space = space[1].trim();
+      continue;
+    }
+    bodyLines.push(line);
+  }
+  const body = bodyLines.join("\n").trim();
+  if (body) out.body = body;
+  return out.time || out.space || out.body ? out : null;
 }
 
 /**
@@ -466,6 +482,7 @@ function buildResource(raw, path) {
   const complexity = {
     time: (typeof meta.time === "string" ? meta.time : null) || fallbackComplexity.time || null,
     space: (typeof meta.space === "string" ? meta.space : null) || fallbackComplexity.space || null,
+    body: fallbackComplexity.body || null,
   };
   const concepts =
     Array.isArray(meta.concepts) && meta.concepts.length
