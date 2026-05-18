@@ -66,6 +66,14 @@ describe("ProblemResourcePage", () => {
     expect(screen.queryByRole("heading", { name: "Solution" })).not.toBeInTheDocument();
   });
 
+  it("renders explanatory prose in the global Complexity section", () => {
+    renderAt("gcd-or-hcf");
+    expect(screen.getByRole("heading", { name: "Complexity" })).toBeInTheDocument();
+    expect(
+      screen.getByText(/A beginner-friendly way to understand this is to focus only on the/i),
+    ).toBeInTheDocument();
+  });
+
   it("shows a not-found message for unknown slugs", () => {
     renderAt("999999-does-not-exist");
     expect(screen.getByText("Problem Not Found")).toBeInTheDocument();

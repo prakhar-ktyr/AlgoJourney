@@ -158,9 +158,11 @@ The standalone `## Complexity` section uses this format:
 
 Time: O(n)
 Space: O(1)
+
+Optional explanation shown below the summary.
 ```
 
-Frontmatter `time` / `space` fields are the simpler alternative; use the section form only when you need a per-language override (see below).
+Frontmatter `time` / `space` fields are the simpler alternative; use the section form when you need a per-language override or when you want to add a language-agnostic explanation, proof, or intuition beneath the complexity summary. Any prose after the leading `Time:` / `Space:` lines is rendered below them.
 
 ---
 

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { __buildResource } from "./problemResources";
 
-describe("buildResource — multi-solution support", () => {
+describe("buildResource", () => {
   it("collects multiple ## Solution sections into an ordered array", () => {
     const md = [
       "## Solution: Brute Force",
@@ -95,5 +95,28 @@ describe("buildResource — multi-solution support", () => {
     // code block is unaffected.
     expect(resource.solutions[2].complexity).toBeNull();
     expect(resource.solutions[2].code["C++"]).toBe("// no complexity");
+  });
+
+  it("preserves explanatory prose in a global Complexity section", () => {
+    const md = [
+      "## Complexity",
+      "",
+      "Time: O(log n)",
+      "Space: O(1)",
+      "",
+      "Track the smaller number.",
+      "",
+      "$$m_{t+2} \\le \\frac{m_t}{2}$$",
+      "",
+    ].join("\n");
+
+    const resource = __buildResource(md, "./resources/complexity-body.md");
+    expect(resource.complexity).toEqual({
+      time: "O(log n)",
+      space: "O(1)",
+      body: ["Track the smaller number.", "", "$$m_{t+2} \\le \\frac{m_t}{2}$$"].join(
+        "\n",
+      ),
+    });
   });
 });

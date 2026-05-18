@@ -91,10 +91,13 @@ export default function ProblemResourcePage() {
   // If every solution declares its own complexity, the top-level Complexity
   // section becomes redundant — hide it to avoid duplication.
   const everySolutionHasComplexity = solutions.length > 0 && solutions.every((s) => s.complexity);
+  const hasGlobalComplexitySummary =
+    !!resolved?.complexity && (resolved.complexity.time || resolved.complexity.space);
+  const hasGlobalComplexityBody = !!resolved?.complexity?.body;
   const showGlobalComplexity =
     !!resolved?.complexity &&
-    (resolved.complexity.time || resolved.complexity.space) &&
-    !everySolutionHasComplexity;
+    (hasGlobalComplexitySummary || hasGlobalComplexityBody) &&
+    (!everySolutionHasComplexity || hasGlobalComplexityBody);
 
   return (
     <div
@@ -211,20 +214,28 @@ export default function ProblemResourcePage() {
             {showGlobalComplexity && (
               <section>
                 <h2 className="text-xl font-semibold text-white mb-3">Complexity</h2>
-                <ul className="text-gray-300 space-y-1">
-                  {resolved.complexity.time && (
-                    <li>
-                      <span className="text-gray-500">Time:</span>{" "}
-                      <MarkdownInline source={resolved.complexity.time} />
-                    </li>
-                  )}
-                  {resolved.complexity.space && (
-                    <li>
-                      <span className="text-gray-500">Space:</span>{" "}
-                      <MarkdownInline source={resolved.complexity.space} />
-                    </li>
-                  )}
-                </ul>
+                {hasGlobalComplexitySummary && (
+                  <ul className="text-gray-300 space-y-1">
+                    {resolved.complexity.time && (
+                      <li>
+                        <span className="text-gray-500">Time:</span>{" "}
+                        <MarkdownInline source={resolved.complexity.time} />
+                      </li>
+                    )}
+                    {resolved.complexity.space && (
+                      <li>
+                        <span className="text-gray-500">Space:</span>{" "}
+                        <MarkdownInline source={resolved.complexity.space} />
+                      </li>
+                    )}
+                  </ul>
+                )}
+                {resolved.complexity.body && (
+                  <Markdown
+                    source={resolved.complexity.body}
+                    className={hasGlobalComplexitySummary ? "mt-4" : ""}
+                  />
+                )}
               </section>
             )}
 
