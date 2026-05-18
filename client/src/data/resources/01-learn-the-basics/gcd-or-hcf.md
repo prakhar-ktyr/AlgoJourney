@@ -18,6 +18,37 @@ For example, given `14` and `8`: The largest number that divides both is `2` (GC
 * **LCM-GCD Mathematical Relationship:** There is a beautiful formula connecting the two: `LCM(a, b) * GCD(a, b) = a * b`. 
   * We can rearrange this to find the LCM instantly once we know the GCD: `LCM(a, b) = (a * b) / GCD(a, b)`.
 
+### Why does the optimized approach take $O(\log(\min(a, b)))$ time?
+
+Assume $a \ge b > 0$. One Euclidean step writes
+
+$$a = qb + r, \quad 0 \le r < b$$
+
+and replaces the pair `(a, b)` with `(b, r)`.
+
+Now track only the **smaller** value. Let $m_0 = \min(a, b)$.
+
+1. If $r \le \frac{b}{2}$, then after **one** iteration the smaller value has already dropped to at most half.
+2. If $r > \frac{b}{2}$, then on the **next** iteration we compute `b % r`. Since $r > \frac{b}{2}$, we have $b < 2r$, so the quotient is `1` and:
+
+$$b \bmod r = b - r < \frac{b}{2}$$
+
+So in **at most two iterations**, the smaller number becomes at most half of what it was before.
+
+If $m_t$ is the smaller value after $t$ Euclidean iterations, then:
+
+$$m_{t+2} \le \frac{m_t}{2}$$
+
+After $2k$ iterations:
+
+$$m_{2k} \le \frac{m_0}{2^k}$$
+
+The algorithm stops when the smaller value becomes `0`, so we need:
+
+$$\frac{m_0}{2^k} < 1 \implies 2^k > m_0 \implies k > \log_2(m_0)$$
+
+That means the number of iterations is $O(\log(m_0)) = O(\log(\min(a, b)))$. After the GCD is known, the LCM is computed with one division and one multiplication, which adds only $O(1)$ extra work.
+
 ## Approach
 
 **Approach 1: Brute Force**
@@ -31,7 +62,7 @@ Because checking every number is too slow for large inputs, we use the Euclidean
 2. Assign `a = b` and `b = remainder`.
 3. Stop when `b` becomes 0. The GCD is whatever is left in `a`.
 4. Once we have the GCD, we use the mathematical formula to find the LCM: `(a / GCD) * b`. *(Note: We divide first to prevent the multiplication from creating a massive number that could cause an integer overflow!)*
-* **Time Complexity:** $O(\log(\min(a, b)))$. The Euclidean algorithm is extremely fast because the remainder `a % b` drops to less than half of `a` in at most two steps. This logarithmic halving means even massive numbers take very few steps.
+* **Time Complexity:** $O(\log(\min(a, b)))$. Each loop replaces the pair `(a, b)` with `(b, a \% b)`, so the second value is always strictly smaller than before. In fact, within at most two iterations the smaller value is at least halved, so we can only keep shrinking it about $\log_2(\min(a, b))$ times before it reaches `0`. The final LCM calculation is just one multiplication and one division, so it does not change the overall complexity.
 * **Space Complexity:** $O(1)$. We are only storing the results in standard integer variables, meaning memory usage does not scale with the input size.
 
 ---
@@ -65,7 +96,7 @@ int findGCD(int a, int b) {
     return a;
 }
 ```
-* **Time Complexity:** $O(\log(\min(a, b)))$. The modulo operation shrinks the numbers exponentially.
+* **Time Complexity:** $O(\log(\min(a, b)))$. Each pass turns `(a, b)` into `(b, a % b)`, so the smaller number keeps dropping quickly. Within at most two iterations it is at least halved, which means only about $\log_2(\min(a, b))$ iterations are needed before `b` becomes `0`.
 * **Space Complexity:** $O(1)$. Returning `vector<int>{lcm, gcd}` takes constant space.
 
 ---
@@ -98,7 +129,7 @@ while (b != 0) {
 }
 int gcd = a;
 ```
-* **Time Complexity:** $O(\log(\min(a, b)))$. Finding the remainder rapidly reduces the values.
+* **Time Complexity:** $O(\log(\min(a, b)))$. On every loop we move from `(a, b)` to `(b, a % b)`, and the remainder is always smaller than `b`. Because that smaller value is at least halved within at most two steps, the loop can run only about $\log_2(\min(a, b))$ times.
 * **Space Complexity:** $O(1)$. Creating the `new int[]{lcm, gcd}` takes constant memory.
 
 ---
@@ -127,7 +158,7 @@ while b > 0:
     a, b = b, a % b # Swaps and updates simultaneously
 gcd = a
 ```
-* **Time Complexity:** $O(\log(\min(a, b)))$. The size of `b` decreases logarithmically on each pass.
+* **Time Complexity:** $O(\log(\min(a, b)))$. Every iteration replaces `(a, b)` with `(b, a % b)`, so `b` keeps shrinking. Since the smaller value gets cut by at least half within at most two iterations, only about $\log_2(\min(a, b))$ iterations are needed before `b` becomes `0`.
 * **Space Complexity:** $O(1)$. We just return `[lcm, gcd]`.
 
 ---
@@ -158,7 +189,7 @@ while (b !== 0) {
 }
 let gcd = a;
 ```
-* **Time Complexity:** $O(\log(\min(a, b)))$. The numbers collapse rapidly due to the modulo operator.
+* **Time Complexity:** $O(\log(\min(a, b)))$. Each step changes `(a, b)` to `(b, a % b)`, which guarantees the second value gets smaller. After at most two iterations that smaller value is at least halved, so the loop finishes after only about $\log_2(\min(a, b))$ iterations.
 * **Space Complexity:** $O(1)$. Returning an array with two elements uses a constant amount of space.
 
 ---
