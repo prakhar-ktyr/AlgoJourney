@@ -334,7 +334,7 @@ const STRIVERS_SHEET = [
           {
             title: "Left Rotate an array by one place",
             difficulty: "Easy",
-            // lcLink: "https://leetcode.com/problems/rotate-array/",
+            lcLink: null,
             gfgLink: "https://www.geeksforgeeks.org/problems/cyclically-rotate-an-array-by-one2614/1",
           },
           {
