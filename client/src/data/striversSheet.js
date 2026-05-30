@@ -335,7 +335,8 @@ const STRIVERS_SHEET = [
             title: "Left Rotate an array by one place",
             difficulty: "Easy",
             lcLink: null,
-            gfgLink: "https://www.geeksforgeeks.org/problems/cyclically-rotate-an-array-by-one2614/1",
+            gfgLink:
+              "https://www.geeksforgeeks.org/problems/cyclically-rotate-an-array-by-one2614/1",
           },
           {
             title: "Left rotate an array by D places",
@@ -365,7 +366,7 @@ const STRIVERS_SHEET = [
             title: "Find missing number in an array",
             difficulty: "Easy",
             lcLink: "https://leetcode.com/problems/missing-number/",
-            gfgLink: "https://bit.ly/3A2pKTh",
+            gfgLink: "https://www.geeksforgeeks.org/problems/missing-number-in-array1416/1",
           },
           {
             title: "Maximum Consecutive Ones",
