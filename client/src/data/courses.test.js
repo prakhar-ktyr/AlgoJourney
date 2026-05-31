@@ -66,6 +66,19 @@ describe("courses loader", () => {
     expect(COURSES.c.slug).toBe("c");
   });
 
+  it("parses the section frontmatter from markdown files", () => {
+    const os = getCourse("operating-systems");
+    expect(os).not.toBeNull();
+
+    // The first lesson should be in the Introduction & Foundations section
+    const home = getLesson("operating-systems", "os-home");
+    expect(home.section).toBe("Introduction & Foundations");
+
+    // Check a memory management lesson
+    const mem = getLesson("operating-systems", "os-paging");
+    expect(mem.section).toBe("Memory Management");
+  });
+
   it("registers the Python course with substantive content", () => {
     expect(hasCourse("python")).toBe(true);
     const py = getCourse("python");
@@ -615,12 +628,14 @@ describe("courses loader", () => {
   it("provides per-course language lists", () => {
     expect(getCourseLanguages("dsa")).toEqual(["C++", "Java", "Python", "JavaScript"]);
     expect(getCourseLanguages("oop")).toEqual(["C++", "C#", "Java", "Python", "JavaScript"]);
-    expect(getCourseLanguages("discrete-mathematics")).toEqual(
-      ["C++", "C#", "Java", "Python", "JavaScript"],
-    );
-    expect(getCourseLanguages("testing-qa")).toEqual(
-      ["Python", "JavaScript", "Java", "C#"],
-    );
+    expect(getCourseLanguages("discrete-mathematics")).toEqual([
+      "C++",
+      "C#",
+      "Java",
+      "Python",
+      "JavaScript",
+    ]);
+    expect(getCourseLanguages("testing-qa")).toEqual(["Python", "JavaScript", "Java", "C#"]);
     expect(getCourseLanguages("c")).toBeNull();
     expect(COURSE_LANGUAGE_MAP.dsa).not.toContain("C#");
     expect(COURSE_LANGUAGE_MAP.oop).toContain("C#");

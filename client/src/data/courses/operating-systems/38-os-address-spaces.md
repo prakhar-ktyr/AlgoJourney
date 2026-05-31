@@ -1,5 +1,6 @@
 ---
 title: Logical vs Physical Addresses
+section: "Memory Management"
 ---
 
 # Logical vs Physical Addresses

@@ -1,5 +1,6 @@
 ---
 title: History of Operating Systems
+section: "Introduction & Foundations"
 ---
 
 # History of Operating Systems

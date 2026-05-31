@@ -1,5 +1,6 @@
 ---
 title: Resource Allocation Graphs
+section: "Deadlocks"
 ---
 
 # Resource Allocation Graphs

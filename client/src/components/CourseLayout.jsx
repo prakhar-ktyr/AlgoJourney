@@ -54,6 +54,20 @@ export default function CourseLayout({
     [lesson.body, language, languages],
   );
 
+  const groupedLessons = useMemo(() => {
+    const groups = [];
+    let currentGroup = { section: null, lessons: [] };
+    for (const l of course.lessons) {
+      if (l.section !== currentGroup.section) {
+        if (currentGroup.lessons.length > 0) groups.push(currentGroup);
+        currentGroup = { section: l.section, lessons: [] };
+      }
+      currentGroup.lessons.push(l);
+    }
+    if (currentGroup.lessons.length > 0) groups.push(currentGroup);
+    return groups;
+  }, [course.lessons]);
+
   const lessonHref = (l) =>
     l.order === course.lessons[0].order ? basePath : `${basePath}/${l.slug}`;
 
@@ -88,27 +102,41 @@ export default function CourseLayout({
               className={`absolute bottom-14 left-0 w-64 max-h-80 overflow-y-auto rounded-xl border ${theme.toolbar} backdrop-blur shadow-2xl p-3`}
               aria-label="Lesson navigation"
             >
-              <ol className="space-y-1">
-                {course.lessons.map((l) => {
-                  const isCurrent = l.slug === lesson.slug;
-                  return (
-                    <li key={l.slug}>
-                      <Link
-                        to={lessonHref(l)}
-                        onClick={() => setReaderNav(false)}
-                        aria-current={isCurrent ? "page" : undefined}
-                        className={`block rounded-md px-3 py-2 text-sm transition ${
-                          isCurrent
-                            ? "bg-indigo-600/90 text-white font-medium"
-                            : "opacity-70 hover:opacity-100 hover:bg-black/10"
-                        }`}
-                      >
-                        {l.title}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ol>
+              <div className="space-y-4">
+                {groupedLessons.map((group, groupIdx) => (
+                  <div
+                    key={groupIdx}
+                    className={groupIdx > 0 ? "pt-2 border-t border-gray-200/10" : ""}
+                  >
+                    {group.section && (
+                      <h3 className="px-3 text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-2 mt-1">
+                        {group.section}
+                      </h3>
+                    )}
+                    <ol className="space-y-1">
+                      {group.lessons.map((l) => {
+                        const isCurrent = l.slug === lesson.slug;
+                        return (
+                          <li key={l.slug}>
+                            <Link
+                              to={lessonHref(l)}
+                              onClick={() => setReaderNav(false)}
+                              aria-current={isCurrent ? "page" : undefined}
+                              className={`block rounded-md px-3 py-2 text-sm transition ${
+                                isCurrent
+                                  ? "bg-indigo-600/90 text-white font-medium"
+                                  : "opacity-70 hover:opacity-100 hover:bg-black/10"
+                              }`}
+                            >
+                              {l.title}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  </div>
+                ))}
+              </div>
             </nav>
           )}
         </div>
@@ -207,27 +235,38 @@ export default function CourseLayout({
             aria-label={`${topic.name} course lessons`}
             className="md:sticky md:top-20 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-xl border border-gray-800 bg-gray-900/60 p-3"
           >
-            <ol className="space-y-1">
-              {course.lessons.map((l) => {
-                const active = l.slug === lesson.slug;
-                return (
-                  <li key={l.slug}>
-                    <Link
-                      to={lessonHref(l)}
-                      onClick={() => setSidebarOpen(false)}
-                      aria-current={active ? "page" : undefined}
-                      className={`block rounded-md px-3 py-2 text-sm transition ${
-                        active
-                          ? "bg-indigo-600/90 text-white font-medium"
-                          : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                      }`}
-                    >
-                      {l.title}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ol>
+            <div className="space-y-6">
+              {groupedLessons.map((group, groupIdx) => (
+                <div key={groupIdx} className={groupIdx > 0 ? "pt-4 border-t border-gray-800" : ""}>
+                  {group.section && (
+                    <h3 className="px-3 text-[11px] font-black uppercase tracking-widest text-indigo-400 mb-3">
+                      {group.section}
+                    </h3>
+                  )}
+                  <ol className="space-y-1">
+                    {group.lessons.map((l) => {
+                      const active = l.slug === lesson.slug;
+                      return (
+                        <li key={l.slug}>
+                          <Link
+                            to={lessonHref(l)}
+                            onClick={() => setSidebarOpen(false)}
+                            aria-current={active ? "page" : undefined}
+                            className={`block rounded-md px-3 py-2 text-sm transition ${
+                              active
+                                ? "bg-indigo-600/90 text-white font-medium"
+                                : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                            }`}
+                          >
+                            {l.title}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </div>
+              ))}
+            </div>
           </nav>
         </aside>
 

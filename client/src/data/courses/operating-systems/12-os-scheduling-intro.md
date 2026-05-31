@@ -1,5 +1,6 @@
 ---
 title: Introduction to CPU Scheduling
+section: "Processes & Scheduling"
 ---
 
 # Introduction to CPU Scheduling

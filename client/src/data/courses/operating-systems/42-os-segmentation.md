@@ -1,5 +1,6 @@
 ---
 title: Segmentation
+section: "Memory Management"
 ---
 
 # Segmentation

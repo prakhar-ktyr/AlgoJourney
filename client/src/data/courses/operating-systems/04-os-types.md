@@ -1,5 +1,6 @@
 ---
 title: Types of Operating Systems
+section: "Introduction & Foundations"
 ---
 
 # Types of Operating Systems

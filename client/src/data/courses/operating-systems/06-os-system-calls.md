@@ -1,5 +1,6 @@
 ---
 title: System Calls
+section: "Introduction & Foundations"
 ---
 
 # System Calls

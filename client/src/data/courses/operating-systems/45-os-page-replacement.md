@@ -1,5 +1,6 @@
 ---
 title: Page Replacement Algorithms
+section: "Memory Management"
 ---
 
 # Page Replacement Algorithms
