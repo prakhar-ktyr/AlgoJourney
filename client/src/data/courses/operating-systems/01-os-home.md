@@ -1,5 +1,6 @@
 ---
 title: Operating Systems
+section: "Introduction & Foundations"
 ---
 
 # Operating Systems

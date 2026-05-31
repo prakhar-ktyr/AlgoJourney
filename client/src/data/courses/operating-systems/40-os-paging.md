@@ -1,5 +1,6 @@
 ---
 title: Paging
+section: "Memory Management"
 ---
 
 # Paging

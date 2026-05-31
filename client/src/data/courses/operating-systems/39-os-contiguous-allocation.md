@@ -1,5 +1,6 @@
 ---
 title: Contiguous Memory Allocation
+section: "Memory Management"
 ---
 
 # Contiguous Memory Allocation

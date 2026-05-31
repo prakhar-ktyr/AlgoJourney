@@ -1,5 +1,6 @@
 ---
 title: Context Switching
+section: "Processes & Scheduling"
 ---
 
 # Context Switching

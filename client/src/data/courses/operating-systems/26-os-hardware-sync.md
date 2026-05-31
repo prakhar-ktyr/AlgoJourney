@@ -1,5 +1,6 @@
 ---
 title: Hardware Synchronization
+section: "Process Synchronization"
 ---
 
 # Hardware Synchronization

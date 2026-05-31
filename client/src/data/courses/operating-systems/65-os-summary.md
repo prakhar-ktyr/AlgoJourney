@@ -1,5 +1,6 @@
 ---
 title: Course Summary & Modern Trends
+section: "Virtualization & Advanced Topics"
 ---
 
 # Course Summary & Modern Trends

@@ -1,5 +1,6 @@
 ---
 title: Monitors
+section: "Process Synchronization"
 ---
 
 # Monitors

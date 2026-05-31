@@ -1,5 +1,6 @@
 ---
 title: Deadlock Prevention
+section: "Deadlocks"
 ---
 
 # Deadlock Prevention

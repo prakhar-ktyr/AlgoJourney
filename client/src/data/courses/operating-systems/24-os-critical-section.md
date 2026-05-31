@@ -1,5 +1,6 @@
 ---
 title: The Critical Section Problem
+section: "Process Synchronization"
 ---
 
 # The Critical Section Problem

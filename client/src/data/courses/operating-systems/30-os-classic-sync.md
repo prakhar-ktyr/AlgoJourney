@@ -1,5 +1,6 @@
 ---
 title: Classic Synchronization Problems
+section: "Process Synchronization"
 ---
 
 # Classic Synchronization Problems

@@ -1,5 +1,6 @@
 ---
 title: Deadlock Characterization
+section: "Deadlocks"
 ---
 
 # Deadlock Characterization

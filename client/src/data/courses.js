@@ -49,10 +49,7 @@ function parseFrontmatter(text) {
     if (!kv) continue;
     let val = kv[2].trim();
     // Strip surrounding quotes (YAML allows "..." or '...' for strings)
-    if (
-      (val.startsWith('"') && val.endsWith('"')) ||
-      (val.startsWith("'") && val.endsWith("'"))
-    ) {
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
       val = val.slice(1, -1);
     }
     meta[kv[1]] = val;
@@ -72,6 +69,7 @@ function buildLesson(raw, path) {
     slug: lessonSlug,
     order: parseInt(orderStr, 10),
     title: meta.title || lessonSlug,
+    section: meta.section || null,
     body: body.trim(),
   };
 }
@@ -232,13 +230,10 @@ export function filterLessonBody(body, language) {
   );
   validTags.add(language.toLowerCase());
 
-  filtered = filtered.replace(
-    /```([A-Za-z+]*)\r?\n([\s\S]*?)```/g,
-    (match, tag) => {
-      if (!tag) return match; // untagged fences stay
-      return validTags.has(tag.toLowerCase()) ? match : "";
-    },
-  );
+  filtered = filtered.replace(/```([A-Za-z+]*)\r?\n([\s\S]*?)```/g, (match, tag) => {
+    if (!tag) return match; // untagged fences stay
+    return validTags.has(tag.toLowerCase()) ? match : "";
+  });
 
   // Collapse runs of 3+ blank lines into 2.
   filtered = filtered.replace(/\n{3,}/g, "\n\n");

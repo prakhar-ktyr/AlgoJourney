@@ -1,5 +1,6 @@
 ---
 title: Deadlock Avoidance & Banker's Algorithm
+section: "Deadlocks"
 ---
 
 # Deadlock Avoidance & Banker's Algorithm

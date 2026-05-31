@@ -1,5 +1,6 @@
 ---
 title: File System Recovery & Journaling
+section: "File Systems"
 ---
 
 # File System Recovery & Journaling

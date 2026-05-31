@@ -1,5 +1,6 @@
 ---
 title: Introduction to Virtual Memory
+section: "Memory Management"
 ---
 
 # Introduction to Virtual Memory

@@ -1,5 +1,6 @@
 ---
 title: Introduction to Synchronization
+section: "Process Synchronization"
 ---
 
 # Introduction to Synchronization

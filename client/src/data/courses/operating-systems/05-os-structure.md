@@ -1,5 +1,6 @@
 ---
 title: OS Structure & Components
+section: "Introduction & Foundations"
 ---
 
 # OS Structure & Components

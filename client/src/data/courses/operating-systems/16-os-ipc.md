@@ -1,5 +1,6 @@
 ---
 title: Inter-Process Communication
+section: "Processes & Scheduling"
 ---
 
 # Inter-Process Communication

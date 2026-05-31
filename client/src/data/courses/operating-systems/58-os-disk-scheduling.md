@@ -1,5 +1,6 @@
 ---
 title: Disk Scheduling Algorithms
+section: "I/O Systems"
 ---
 
 # Disk Scheduling Algorithms

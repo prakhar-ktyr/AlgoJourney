@@ -1,5 +1,6 @@
 ---
 title: Directory Structure
+section: "File Systems"
 ---
 
 # Directory Structure
