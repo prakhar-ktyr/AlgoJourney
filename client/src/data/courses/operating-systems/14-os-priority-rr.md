@@ -1,5 +1,6 @@
 ---
 title: Priority & Round Robin Scheduling
+section: "Processes & Scheduling"
 ---
 
 # Priority & Round Robin Scheduling

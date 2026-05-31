@@ -1,5 +1,6 @@
 ---
 title: Mutex Locks
+section: "Process Synchronization"
 ---
 
 # Mutex Locks

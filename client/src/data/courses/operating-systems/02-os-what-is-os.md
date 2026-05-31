@@ -1,5 +1,6 @@
 ---
 title: What is an Operating System
+section: "Introduction & Foundations"
 ---
 
 # What is an Operating System

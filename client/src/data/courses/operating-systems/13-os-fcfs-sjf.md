@@ -1,5 +1,6 @@
 ---
 title: FCFS & SJF Scheduling
+section: "Processes & Scheduling"
 ---
 
 # FCFS & SJF Scheduling

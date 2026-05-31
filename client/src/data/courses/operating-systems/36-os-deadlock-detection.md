@@ -1,5 +1,6 @@
 ---
 title: Deadlock Detection & Recovery
+section: "Deadlocks"
 ---
 
 # Deadlock Detection & Recovery

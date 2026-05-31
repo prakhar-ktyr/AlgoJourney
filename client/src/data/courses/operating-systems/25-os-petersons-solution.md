@@ -1,5 +1,6 @@
 ---
 title: "Peterson's Solution"
+section: "Process Synchronization"
 ---
 
 # Peterson's Solution

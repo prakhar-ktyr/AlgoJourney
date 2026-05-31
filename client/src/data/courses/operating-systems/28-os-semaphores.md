@@ -1,5 +1,6 @@
 ---
 title: Semaphores
+section: "Process Synchronization"
 ---
 
 # Semaphores

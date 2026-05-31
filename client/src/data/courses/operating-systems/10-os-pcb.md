@@ -1,5 +1,6 @@
 ---
 title: Process Control Block
+section: "Processes & Scheduling"
 ---
 
 # Process Control Block

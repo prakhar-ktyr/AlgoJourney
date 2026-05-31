@@ -1,5 +1,6 @@
 ---
 title: Introduction to Processes
+section: "Processes & Scheduling"
 ---
 
 # Introduction to Processes

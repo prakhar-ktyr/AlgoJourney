@@ -1,5 +1,6 @@
 ---
 title: Process States & Lifecycle
+section: "Processes & Scheduling"
 ---
 
 # Process States & Lifecycle

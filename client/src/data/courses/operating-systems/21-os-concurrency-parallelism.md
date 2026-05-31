@@ -1,5 +1,6 @@
 ---
 title: Concurrency vs Parallelism
+section: "Threads & Concurrency"
 ---
 
 # Concurrency vs Parallelism

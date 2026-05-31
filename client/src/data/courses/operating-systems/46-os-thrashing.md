@@ -1,5 +1,6 @@
 ---
 title: Thrashing & Working Set Model
+section: "Memory Management"
 ---
 
 # Thrashing & Working Set Model

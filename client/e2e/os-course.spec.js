@@ -39,6 +39,23 @@ test.describe("Operating Systems Course — E2E", () => {
     expect(count).toBeGreaterThanOrEqual(60);
   });
 
+  test("sidebar displays section headers for grouping", async ({ page }) => {
+    await page.goto("/tutorials/operating-systems");
+    await page.waitForLoadState("networkidle");
+
+    // Ensure the section headers are visible in the sidebar
+    const sidebar = page.locator("#course-sidebar");
+    await expect(
+      sidebar.getByRole("heading", { name: "Introduction & Foundations", exact: true }),
+    ).toBeVisible();
+    await expect(
+      sidebar.getByRole("heading", { name: "Memory Management", exact: true }),
+    ).toBeVisible();
+    await expect(
+      sidebar.getByRole("heading", { name: "Security & Protection", exact: true }),
+    ).toBeVisible();
+  });
+
   test("navigating to a specific lesson loads correct content", async ({ page }) => {
     await page.goto("/tutorials/operating-systems/os-processes");
     await page.waitForLoadState("networkidle");

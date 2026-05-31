@@ -1,5 +1,6 @@
 ---
 title: Introduction to Deadlocks
+section: "Deadlocks"
 ---
 
 # Introduction to Deadlocks
