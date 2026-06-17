@@ -1,4 +1,4 @@
-/** Striver's A2Z DSA Course Sheet — all 454 problems */
+/** Striver's A2Z DSA Course Sheet */
 
 const STRIVERS_SHEET = [
   {
@@ -77,10 +77,159 @@ const STRIVERS_SHEET = [
         subStepTitle: "Build-up Logical Thinking",
         problems: [
           {
-            title: "Patterns",
+            title: "Pattern 1",
             difficulty: "Easy",
             lcLink: null,
             gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/n-forest_6570177",
+          },
+          {
+            title: "Pattern 2",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/n-2-forest_6570178",
+          },
+          {
+            title: "Pattern 3",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/n-triangles_6573689",
+          },
+          {
+            title: "Pattern 4",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/triangle_6573690",
+          },
+          {
+            title: "Pattern 5",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/seeding_6581892",
+          },
+          {
+            title: "Pattern 6",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/reverse-number-triangle_6581889",
+          },
+          {
+            title: "Pattern 7",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/star-triangle_6573671",
+          },
+          {
+            title: "Pattern 8",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/reverse-star-triangle_6573685",
+          },
+          {
+            title: "Pattern 9",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/star-diamond_6573686",
+          },
+          {
+            title: "Pattern 10",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/rotated-triangle_6573688",
+          },
+          {
+            title: "Pattern 11",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/binary-number-triangle_6581890",
+          },
+          {
+            title: "Pattern 12",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/number-crown_6581894",
+          },
+          {
+            title: "Pattern 13",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/increasing-number-triangle_6581893",
+          },
+          {
+            title: "Pattern 14",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/increasing-letter-triangle_6581897",
+          },
+          {
+            title: "Pattern 15",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/reverse-letter-triangle_6581906",
+          },
+          {
+            title: "Pattern 16",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/alpha-ramp_6581888",
+          },
+          {
+            title: "Pattern 17",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/alpha-hill_6581921",
+          },
+          {
+            title: "Pattern 18",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/alpha-triangle_6581429",
+          },
+          {
+            title: "Pattern 19",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/symmetric-void_6581919",
+          },
+          {
+            title: "Pattern 20",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/symmetry_6581914",
+          },
+          {
+            title: "Pattern 21",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink: "https://www.naukri.com/code360/problems/ninja-and-the-star-pattern-i_6581920",
+          },
+          {
+            title: "Pattern 22",
+            difficulty: "Easy",
+            lcLink: null,
+            gfgLink: null,
+            cnLink:
+              "https://www.naukri.com/code360/problems/ninja-and-the-number-pattern-i_6581959",
           },
         ],
       },
@@ -386,7 +535,7 @@ const STRIVERS_SHEET = [
             lcLink: null,
             // gfgLink:
             //   "https://practice.geeksforgeeks.org/problems/longest-sub-array-with-sum-k0809/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=longest-sub-array-with-sum-k",
-            cnLink: "https://www.naukri.com/code360/problems/longest-subarray-with-sum-k_6682399"
+            cnLink: "https://www.naukri.com/code360/problems/longest-subarray-with-sum-k_6682399",
           },
           {
             title: "Longest subarray with sum K (Positives + Negatives)",

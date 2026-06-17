@@ -2,7 +2,14 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import STRIVERS_SHEET from "../data/striversSheet";
 import DSASheetPage from "./DSASheetPage";
+
+const TOTAL_PROBLEMS = STRIVERS_SHEET.reduce(
+  (stepTotal, step) =>
+    stepTotal + step.subSteps.reduce((subTotal, sub) => subTotal + sub.problems.length, 0),
+  0,
+);
 
 const renderPage = () =>
   render(
@@ -24,7 +31,7 @@ describe("DSASheetPage", () => {
 
   it("shows the progress bar at 0%", () => {
     renderPage();
-    expect(screen.getByText(/0\/454/)).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`0/${TOTAL_PROBLEMS}`))).toBeInTheDocument();
   });
 
   describe("Accordion – Step headers", () => {
@@ -101,7 +108,7 @@ describe("DSASheetPage", () => {
       expect(checkbox).not.toBeChecked();
       await user.click(checkbox);
       expect(checkbox).toBeChecked();
-      expect(screen.getByText(/1\/454/)).toBeInTheDocument();
+      expect(screen.getByText(new RegExp(`1/${TOTAL_PROBLEMS}`))).toBeInTheDocument();
     });
 
     it("shows difficulty labels with color", async () => {
@@ -134,6 +141,19 @@ describe("DSASheetPage", () => {
       expect(link).toHaveAttribute(
         "href",
         "https://www.naukri.com/code360/problems/if-else-decision-making_8357235",
+      );
+    });
+
+    it("renders the expanded Coding Ninjas link for Pattern 1", async () => {
+      const user = userEvent.setup();
+      renderPage();
+      await user.click(screen.getByLabelText(/Step 1: Learn the basics/));
+      await user.click(screen.getByLabelText("Build-up Logical Thinking"));
+      const row = screen.getByText("Pattern 1").closest("tr");
+      expect(row).not.toBeNull();
+      expect(within(row).getByRole("link", { name: "CN" })).toHaveAttribute(
+        "href",
+        "https://www.naukri.com/code360/problems/n-forest_6570177",
       );
     });
 
