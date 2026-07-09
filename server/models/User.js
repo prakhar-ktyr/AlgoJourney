@@ -66,6 +66,12 @@ const userSchema = new mongoose.Schema(
       },
     ],
 
+    // DSA progress by slug (synced from client localStorage)
+    completedDSASlugs: {
+      type: [String],
+      default: [],
+    },
+
     // Streak & engagement
     currentStreak: {
       type: Number,
