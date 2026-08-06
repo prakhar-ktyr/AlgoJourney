@@ -1687,7 +1687,7 @@ const STRIVERS_SHEET = [
             title: "Convert Infix To Prefix Notation",
             difficulty: "Medium",
             lcLink: null,
-            gfgLink: "https://bit.ly/3T0gZ4P",
+            gfgLink: "https://www.geeksforgeeks.org/problems/infix-to-prefix-notation/1",
           },
         ],
       },
