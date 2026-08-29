@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import connectDB from "./db.js";
 import healthRoutes from "./routes/health.js";
 import authRoutes from "./routes/auth.js";
+import progressRoutes from "./routes/progress.js";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ if (process.env.NODE_ENV !== "test") {
 // Routes
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/progress", progressRoutes);
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {

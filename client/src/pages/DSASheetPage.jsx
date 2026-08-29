@@ -1,7 +1,9 @@
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import STRIVERS_SHEET from "../data/striversSheet";
 import { problemSlug } from "../lib/slugify";
+import { useAuth } from "../context/AuthContext";
+import { apiFetch, apiJson } from "../lib/api";
 
 const SHEET_VIEW_STATE_KEY = "dsa-sheet-view-state";
 
@@ -164,6 +166,7 @@ function countStepProblems(step) {
 const ALL_PROBLEMS = flattenProblems(STRIVERS_SHEET);
 
 export default function DSASheetPage() {
+  const { user } = useAuth();
   const [openSteps, setOpenSteps] = useState(() => new Set(loadViewState()?.openSteps ?? []));
   const [openSubSteps, setOpenSubSteps] = useState(
     () => new Set(loadViewState()?.openSubSteps ?? []),
@@ -176,6 +179,69 @@ export default function DSASheetPage() {
       return new Set();
     }
   });
+
+  // Ref to track the latest completed set for debounced sync
+  const completedRef = useRef(completed);
+  useEffect(() => {
+    completedRef.current = completed;
+  }, [completed]);
+
+  // Debounce timer ref for server sync
+  const syncTimerRef = useRef(null);
+
+  // Sync progress to server (debounced)
+  const syncToServer = useCallback(() => {
+    if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
+    syncTimerRef.current = setTimeout(async () => {
+      try {
+        await apiJson("/progress", { completedSlugs: [...completedRef.current] }, "PUT");
+      } catch {
+        // Silently fail — localStorage is the fallback
+      }
+    }, 1000);
+  }, []);
+
+  // On mount (or when user changes), merge server progress with localStorage
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+
+    async function fetchAndMerge() {
+      try {
+        const res = await apiFetch("/progress");
+        if (!res.ok || cancelled) return;
+        const data = await res.json();
+        const serverSlugs = data.completedSlugs || [];
+
+        setCompleted((prev) => {
+          // Merge: union of local + server
+          const merged = new Set([...prev, ...serverSlugs]);
+          localStorage.setItem("dsa-sheet-completed", JSON.stringify([...merged]));
+
+          // If merged has more than server, push merged back
+          if (merged.size > serverSlugs.length) {
+            apiJson("/progress", { completedSlugs: [...merged] }, "PUT").catch(() => {});
+          }
+
+          return merged;
+        });
+      } catch {
+        // Server unavailable — use localStorage only
+      }
+    }
+
+    fetchAndMerge();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
+    };
+  }, []);
 
   // Persist accordion open/closed state across navigations within the session.
   useEffect(() => {
@@ -268,6 +334,8 @@ export default function DSASheetPage() {
       localStorage.setItem("dsa-sheet-completed", JSON.stringify([...next]));
       return next;
     });
+    // If logged in, debounce-sync to server
+    if (user) syncToServer();
   };
 
   const progress =

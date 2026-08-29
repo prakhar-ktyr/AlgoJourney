@@ -3,12 +3,15 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ReaderModeToolbar from "./components/ReaderModeToolbar";
 import { ReaderModeProvider, useReaderMode } from "./context/ReaderModeContext";
+import { AuthProvider } from "./context/AuthContext";
 import HomePage from "./pages/HomePage";
 import TutorialsPage from "./pages/TutorialsPage";
 import TopicPage from "./pages/TopicPage";
 import DSASheetPage from "./pages/DSASheetPage";
 import ProblemResourcePage from "./pages/ProblemResourcePage";
 import AboutPage from "./pages/AboutPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 function AppShell() {
@@ -26,6 +29,8 @@ function AppShell() {
           <Route path="/dsa-sheet" element={<DSASheetPage />} />
           <Route path="/dsa-sheet/problem/:slug" element={<ProblemResourcePage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
@@ -37,9 +42,11 @@ function AppShell() {
 
 function App() {
   return (
-    <ReaderModeProvider>
-      <AppShell />
-    </ReaderModeProvider>
+    <AuthProvider>
+      <ReaderModeProvider>
+        <AppShell />
+      </ReaderModeProvider>
+    </AuthProvider>
   );
 }
 

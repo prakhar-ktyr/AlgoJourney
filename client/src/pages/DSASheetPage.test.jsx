@@ -5,6 +5,24 @@ import { MemoryRouter } from "react-router-dom";
 import STRIVERS_SHEET from "../data/striversSheet";
 import DSASheetPage from "./DSASheetPage";
 
+// Mock AuthContext — tests run as logged-out user
+vi.mock("../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: null,
+    loading: false,
+    login: vi.fn(),
+    signup: vi.fn(),
+    logout: vi.fn(),
+  }),
+}));
+
+// Mock api module to prevent real network calls
+vi.mock("../lib/api", () => ({
+  apiFetch: vi.fn().mockResolvedValue({ ok: false }),
+  apiJson: vi.fn().mockResolvedValue({ ok: true }),
+  apiUrl: vi.fn((p) => `/api${p}`),
+}));
+
 const TOTAL_PROBLEMS = STRIVERS_SHEET.reduce(
   (stepTotal, step) =>
     stepTotal + step.subSteps.reduce((subTotal, sub) => subTotal + sub.problems.length, 0),

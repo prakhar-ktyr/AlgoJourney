@@ -1,7 +1,26 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import App from "./App.jsx";
+
+// Mock AuthContext — tests run as logged-out user
+vi.mock("./context/AuthContext", () => ({
+  AuthProvider: ({ children }) => children,
+  useAuth: () => ({
+    user: null,
+    loading: false,
+    login: vi.fn(),
+    signup: vi.fn(),
+    logout: vi.fn(),
+  }),
+}));
+
+// Mock api module to prevent real network calls from DSASheetPage
+vi.mock("./lib/api", () => ({
+  apiFetch: vi.fn().mockResolvedValue({ ok: false }),
+  apiJson: vi.fn().mockResolvedValue({ ok: true }),
+  apiUrl: vi.fn((p) => `/api${p}`),
+}));
 
 const renderApp = (route = "/") =>
   render(
